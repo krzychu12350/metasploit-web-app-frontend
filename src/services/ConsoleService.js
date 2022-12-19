@@ -3,19 +3,19 @@ const METHOD_TYPE = "console";
 
 class ConsoleService {
     create() {
-        return http.post(METHOD_TYPE + "create");
+        return http.post(METHOD_TYPE + "/create");
     }
-    destroy() {
-        return http.post(METHOD_TYPE + "/destroy");
+    destroy(data) {
+        return http.post(METHOD_TYPE + "/destroy", data);
     }
     list() {
         return http.post(METHOD_TYPE + "/list");
     }
-    write() {
-        return http.post(METHOD_TYPE + "/write");
+    write(data) {
+        return http.post(METHOD_TYPE + "/write", data);
     }
-    read() {
-        return http.post(METHOD_TYPE + "/read");
+    read(data) {
+        return http.post(METHOD_TYPE + "/read", data);
     }
     sessionDetach() {
         return http.post(METHOD_TYPE + "/sessionDetach");

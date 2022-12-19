@@ -2,15 +2,10 @@
   <NavbarComponent />
   <BreadcrumbComponent subpageName="Analysis" />
 
-  <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+  <div class="fixed bottom-0 min-w-full">
+    <BottomTabsComponent></BottomTabsComponent>
     <TerminalComponent></TerminalComponent>
   </div>
-
-  <footer
-    class="w-full h-40 bg-indigo-600 border-t-2 border-white fixed left-0 bottom-0 flex justify-center items-center"
-  >
-    <BottomTabsComponent></BottomTabsComponent>
-  </footer>
 </template>
 
 <script>
