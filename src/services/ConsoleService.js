@@ -18,10 +18,10 @@ class ConsoleService {
         return http.post(METHOD_TYPE + "/read", data);
     }
     sessionDetach() {
-        return http.post(METHOD_TYPE + "/sessionDetach");
+        return http.post(METHOD_TYPE + "/session-detach");
     }
     sessionKill() {
-        return http.post(METHOD_TYPE + "/sessionKill");
+        return http.post(METHOD_TYPE + "/session-kill");
     }
 }
 

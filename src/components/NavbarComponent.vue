@@ -141,9 +141,7 @@
   </Disclosure>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
+<script setup>
 import {
   Disclosure,
   DisclosureButton,
@@ -181,7 +179,7 @@ const userNavigation = [
   { name: "Settings", href: "#" },
   { name: "Sign out", href: "/setup" },
 ];
-
+/*
 export default defineComponent({
   name: "NavbarComponent",
   components: {
@@ -209,6 +207,7 @@ export default defineComponent({
     };
   },
 });
+*/
 </script>
 
 <style scoped></style>

@@ -183,7 +183,7 @@ export default defineComponent({
       //this.exploits = this.getAllExploits();
 
       this.paginate(this.users);
-        /*
+      /*
       allExploitsArray.forEach((x: String) => {
         //console.log(x);
        // this.getExploitDetails(x);
@@ -207,15 +207,17 @@ export default defineComponent({
 
       slicedModules.forEach((x: any) => {
         /// console.log(x);
-        //currentModules.push(x + "111");
-        this.getExploitDetails("aix/local/ibstat_path");
+        currentModules.push(x);
+        let a = this.getExploitDetails("aix/local/ibstat_path");
+        console.log(a);
+        //currentModules.push(a);
         //this.getExploitDetails(x);
       });
 
       //console.log(currentModules);
       this.currentDisplayExploits = currentModules;
 
-      return slicedModules;
+      return currentModules;
     },
   },
   created() {

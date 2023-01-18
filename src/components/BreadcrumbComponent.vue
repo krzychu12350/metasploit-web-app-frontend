@@ -33,8 +33,7 @@
   </nav>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup>
 import { HomeIcon } from "@heroicons/vue/24/solid";
 
 const pages = [
@@ -42,19 +41,8 @@ const pages = [
   { name: "Session 1", href: "#", current: true },
 ];
 
-export default defineComponent({
-  name: "BreadcrumbComponent",
-  components: {
-    HomeIcon,
-  },
-  props: {
-    subpageName: String,
-  },
-  setup() {
-    return {
-      pages,
-    };
-  },
+const props = defineProps({
+  subpageName: String,
 });
 </script>
 

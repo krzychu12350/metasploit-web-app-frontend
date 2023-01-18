@@ -24,13 +24,13 @@ class ModuleService {
         return http.post(METHOD_TYPE + "/options");
     }
     compatiblePayloads() {
-        return http.post(METHOD_TYPE + "/compatiblePayloads");
+        return http.post(METHOD_TYPE + "/compatible-payloads");
     }
     targetCompatible() {
-        return http.post(METHOD_TYPE + "/targetCompatible");
+        return http.post(METHOD_TYPE + "/target-compatible");
     }
     compatibleSessions() {
-        return http.post(METHOD_TYPE + "/compatibleSessions");
+        return http.post(METHOD_TYPE + "/compatible-sessions");
     }
     encode() {
         return http.post(METHOD_TYPE + "/encode");

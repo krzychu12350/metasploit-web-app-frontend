@@ -3,13 +3,13 @@ const METHOD_TYPE = "core";
 
 class CoreService {
     addModule() {
-        return http.post(METHOD_TYPE + "/add-Module");
+        return http.post(METHOD_TYPE + "/add-module");
     }
     moduleStats() {
-        return http.post(METHOD_TYPE + "/module-Stats");
+        return http.post(METHOD_TYPE + "/module-stats");
     }
     reloadModules() {
-        return http.post(METHOD_TYPE + "/reload-Modules");
+        return http.post(METHOD_TYPE + "/reload-modules");
     }
     save() {
         return http.post(METHOD_TYPE + "/save");
@@ -21,10 +21,10 @@ class CoreService {
         return http.post(METHOD_TYPE + "/unsetg");
     }
     threadList() {
-        return http.post(METHOD_TYPE + "/thread-List");
+        return http.post(METHOD_TYPE + "/thread-list");
     }
     threadKill() {
-        return http.post(METHOD_TYPE + "/thread-Kill");
+        return http.post(METHOD_TYPE + "/thread-kill");
     }
     stop() {
         return http.post(METHOD_TYPE + "/stop");

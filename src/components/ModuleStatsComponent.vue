@@ -43,31 +43,50 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup>
 //import { DotsVerticalIcon } from "@heroicons/vue/24/solid";
-import { defineComponent } from "vue";
+import { ref, onMounted, reactive } from "vue";
 import CoreService from "../services/CoreService";
-import ModuleStat from "../types/Core";
 
-const projects = [
-  { name: "Graph API", initials: "GA", href: "#", members: 16, bgColor: "bg-pink-600" },
-  {
-    name: "Component Design",
-    initials: "CD",
-    href: "#",
-    members: 12,
-    bgColor: "bg-purple-600",
-  },
-  { name: "Templates", initials: "T", href: "#", members: 16, bgColor: "bg-yellow-500" },
-  {
-    name: "React Components",
-    initials: "RC",
-    href: "#",
-    members: 8,
-    bgColor: "bg-green-500",
-  },
-];
+onMounted(() => {
+  getMsfModuleStats();
+});
+let moduleStats = ref([]);
 
+async function getMsfModuleStats() {
+  CoreService.moduleStats()
+    .then((response) => {
+      //this.moduleStats = response.data.data;
+      //console.log(response.data.data);
+      const data = response.data.data;
+      //console.log(data);
+
+      //console.log(Object.keys(this.moduleStats));
+      //console.log(Object.values(this.moduleStats));
+      /*
+          const allStats: {
+            //import { DotsVerticalIcon } from "@heroicons/vue/24/solid";
+            name: string;
+            number: any;
+          }[] = [];
+          */
+      const allStats = [];
+      Object.keys(data).forEach((key) => {
+        let val = data[key]; // value of the current key
+        //console.log(key);
+        //console.log(val);
+        const singleStat = { name: key, number: val };
+        allStats.push(singleStat);
+      });
+      moduleStats.value = allStats;
+      //console.log(allStats);
+    })
+    .catch((e) => {
+      console.log(e);
+    });
+}
+
+/*
 export default defineComponent({
   components: {
     // DotsVerticalIcon,
@@ -118,4 +137,5 @@ export default defineComponent({
     },
   },
 });
+*/
 </script>

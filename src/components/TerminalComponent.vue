@@ -81,15 +81,15 @@ an executable program or a batch file`;
       await ConsoleService.read(data).then((res) => {
         console.log(res.data.data);
         //const test = "dddd";
-        this.send_to_terminal = `<p>` + res.data.data + `</p>`;
+        this.send_to_terminal = `<p>` + res.data.data.data + `</p>`;
       });
     },
   },
   mounted() {
-    //this.createConsole();
-    let data = { consoleID: 4, command: "help\\n" };
+    this.createConsole();
+    let data = { consoleID: 0, command: "help\\n" };
     this.writeDataToConsole(data);
-    this.readDataFromConsole(4);
+    this.readDataFromConsole(0);
     //this.send_to_terminal = `<p>Shell to interacte with metasploit.</p>`;
     //this.shell_output = `<p>Initailize</p>`;
     this.prompt("ifconfig");

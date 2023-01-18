@@ -9,18 +9,18 @@ class AuthService {
         return http.post(METHOD_TYPE + "/logout");
     }
     tokenAdd() {
-        return http.post(METHOD_TYPE + "/token-Add");
+        return http.post(METHOD_TYPE + "/token-add");
     }
     tokenGenerate() {
-        return http.post(METHOD_TYPE + "/token-Generate");
+        return http.post(METHOD_TYPE + "/token-generate");
     }
 
     tokenList() {
-        return http.post(METHOD_TYPE + "/token-List");
+        return http.post(METHOD_TYPE + "/token-list");
     }
 
     tokenRemove() {
-        return http.post(METHOD_TYPE + "/token-Remove");
+        return http.post(METHOD_TYPE + "/token-remove");
     }
 }
 

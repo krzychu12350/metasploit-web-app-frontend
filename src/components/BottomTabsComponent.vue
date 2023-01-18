@@ -44,19 +44,11 @@
   </div>
 </template>
 
-<script>
+<script setup>
 const tabs = [
-  { name: "My Account", href: "#", current: true },
-  { name: "Company", href: "#", current: false },
-  { name: "Team Members", href: "#", current: false },
-  { name: "Billing", href: "#", current: false },
+  { name: "Console 0", href: "#", current: true },
+  { name: "Info", href: "#", current: false },
+  { name: "Session 1", href: "#", current: false },
+  { name: "Session 2", href: "#", current: false },
 ];
-
-export default {
-  setup() {
-    return {
-      tabs,
-    };
-  },
-};
 </script>
