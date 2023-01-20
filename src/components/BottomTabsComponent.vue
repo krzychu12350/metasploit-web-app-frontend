@@ -19,22 +19,23 @@
         aria-label="Tabs"
       >
         <a
-          v-for="(tab, tabIdx) in tabs"
-          :key="tab.name"
-          :href="tab.href"
+          v-for="(console, consoleIdx) in consoles"
+          :key="console.id"
+          :href="console.href"
+          @click="emit('changeCurrentConsole', { console_id: console.id })"
           :class="[
-            tab.current ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700',
+            console.current ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700',
             tabIdx === 0 ? 'rounded-l-lg' : '',
             tabIdx === tabs.length - 1 ? 'rounded-r-lg' : '',
-            'group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10',
+            'cursor-pointer group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10',
           ]"
-          :aria-current="tab.current ? 'page' : undefined"
+          :aria-current="console.current ? 'page' : undefined"
         >
-          <span>{{ tab.name }}</span>
+          <span>Console {{ console.id }}</span>
           <span
             aria-hidden="true"
             :class="[
-              tab.current ? 'bg-indigo-500' : 'bg-transparent',
+              console.current ? 'bg-indigo-500' : 'bg-transparent',
               'absolute inset-x-0 bottom-0 h-0.5',
             ]"
           />
@@ -45,10 +46,32 @@
 </template>
 
 <script setup>
-const tabs = [
+import { onBeforeMount, ref, watch } from "vue";
+import ConsoleDataService from "../services/ConsoleDataService";
+import useEventsBus from "../composables/eventBus";
+
+const { emit } = useEventsBus();
+const tabs = ref([
   { name: "Console 0", href: "#", current: true },
   { name: "Info", href: "#", current: false },
   { name: "Session 1", href: "#", current: false },
   { name: "Session 2", href: "#", current: false },
-];
+]);
+
+const consoles = ref();
+
+onBeforeMount(() => {
+  getAllConsoles();
+});
+
+function getAllConsoles() {
+  ConsoleDataService.list()
+    .then((res) => {
+      console.log(res.data.data.consoles);
+      consoles.value = res.data.data.consoles;
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
+}
 </script>

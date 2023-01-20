@@ -26,7 +26,7 @@ import BreadcrumbComponent from "../components/BreadcrumbComponent.vue";
 import ActionsComponent from "../components/ActionsComponent.vue";
 import SessionsComponent from "../components/SessionsComponent.vue";
 import NavbarComponent from "../components/NavbarComponent.vue";
-import ConsoleService from "../services/ConsoleService";
+import ConsoleDataService from "../services/ConsoleDataService";
 import ModuleStatsComponent from "../components/ModuleStatsComponent.vue";
 import AuthService from "../services/AuthService";
 import ToastService from "../services/ToastService";

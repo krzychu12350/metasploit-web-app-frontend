@@ -1,7 +1,7 @@
 import http from "./http-common";
 const METHOD_TYPE = "console";
 
-class ConsoleService {
+class ConsoleDataService {
     create() {
         return http.post(METHOD_TYPE + "/create");
     }
@@ -25,4 +25,4 @@ class ConsoleService {
     }
 }
 
-export default new ConsoleService();
+export default new ConsoleDataService();
