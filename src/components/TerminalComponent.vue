@@ -1,13 +1,12 @@
 <template>
-  <div class="flex flex-col-reverse justify-end">
-    <v-shell
-      class="overflow-y-auto max-h-80 min-h-80 h-80 w-100"
-      :banner="banner"
-      :shell_input="send_to_terminal"
-      :commands="commands"
-      @shell_output="setPrompt"
-    ></v-shell>
-  </div>
+  <v-shell
+    id="terminal"
+    class=""
+    :banner="banner"
+    :shell_input="send_to_terminal"
+    :commands="commands"
+    @shell_output="setPrompt"
+  ></v-shell>
 </template>
 
 <script setup>
@@ -16,6 +15,7 @@ import { ref, reactive, onBeforeMount, watch } from "vue";
 import useEventsBus from "../composables/eventBus";
 
 const { bus } = useEventsBus();
+const currentTerminal = ref(0);
 
 const send_to_terminal = ref("");
 const banner = ref({
@@ -40,7 +40,10 @@ const commands = reactive([
   {
     name: "info",
     get() {
-      return `<p>Shell to interacte with metasploit.</p>`;
+      let dataa = { consoleID: currentTerminal.value, inputCommand: "help" };
+      writeDataToConsole(dataa);
+      readDataFromConsole(currentTerminal.value);
+      return "";
     },
   },
   {
@@ -52,6 +55,7 @@ const commands = reactive([
   {
     name: "help",
     get() {
+      console.log("dziala");
       return "test1234";
     },
   },
@@ -161,13 +165,20 @@ function writeDataToConsole(data) {
     //this.send_to_terminal = `<p>` + res.data.data + `</p>`;
   });
 }
-async function readDataFromConsole(id) {
+function readDataFromConsole(id) {
   let data = { consoleID: id };
-  await ConsoleDataService.read(data).then((res) => {
+  ConsoleDataService.read(data).then((res) => {
     console.log(res.data.data);
     //const test = "dddd";
-    banner.sign = "dddd >";
+    //banner.sign = "dddd >";
     send_to_terminal.value = `<p>` + res.data.data.data + `</p>`;
+  });
+}
+
+function getConsoleList() {
+  return ConsoleDataService.list().then((res) => {
+    console.log(res.data.data.consoles);
+    return res.data.data.consoles;
   });
 }
 
@@ -183,22 +194,34 @@ function setPrompt(value) {
     Subnet mask. . . . . . . . . : 255.255.255.0
     Default Gateway. . . . . . . : 192.168.1.1`;
     */
-  } else if (value.trim() === "test") {
+  } else if (value.trim() === "help") {
     send_to_terminal.value = `dddddddddddddddddd`;
   } else {
-    let dataa = { consoleID: 56, inputCommand: value };
+    let dataa = { consoleID: currentTerminal.value, inputCommand: value };
+    console.log(dataa.consoleID);
     writeDataToConsole(dataa);
-    readDataFromConsole(56);
+    //currentTerminal.value = dataa.consoleID;
+    //currentTerminal.value = 1;
+    readDataFromConsole(currentTerminal.value);
+    send_to_terminal.value = ``;
     /*
     send_to_terminal.value = `'${value}' is not recognized as an internal command or external,
 an executable program or a batch file`;
 */
   }
 }
-onBeforeMount(() => {
+onBeforeMount(async () => {
+  const allConsoles = await getConsoleList();
+  currentTerminal.value = Math.min.apply(
+    Math,
+    allConsoles.map(function (c) {
+      return c.id;
+    })
+  );
+  console.log(currentTerminal.value);
   //this.createConsole();
-  let data = { consoleID: 60, inputCommand: "version" };
-  writeDataToConsole(data);
+  let data = { consoleID: currentTerminal.value, inputCommand: "version" };
+  //writeDataToConsole(data);
   setPrompt("ifconfig");
 });
 
@@ -206,11 +229,30 @@ watch(
   () => bus.value.get("changeCurrentConsole"),
   (data) => {
     alert(data[0].console_id);
-    const consoleId = data[0].console_id;
+
+    currentTerminal.value = data[0].console_id;
     //send_to_terminal.value = `\n\n`;
-    readDataFromConsole(consoleId);
-    let dataa = { consoleID: consoleId, inputCommand: "help" };
+    readDataFromConsole(currentTerminal.value);
+    let dataa = { consoleID: currentTerminal.value, inputCommand: "help" };
     //writeDataToConsole(dataa);
   }
 );
 </script>
+<style>
+/*
+#container {
+  height: 100px;
+}
+
+#container {
+  height: 100vh !important;
+}
+*/
+.cmdline {
+  max-width: 100px !important;
+}
+
+#container > output > pre > p {
+  white-space: pre-wrap !important;
+}
+</style>

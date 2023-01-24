@@ -1,10 +1,28 @@
 <template>
-  <NavbarComponent />
-  <BreadcrumbComponent subpageName="Analysis" />
+  <!--
+  <main class="flex flex-col">
+    <div>
+      <NavbarComponent />
+      <BreadcrumbComponent subpageName="Analysis" />
+    </div>
 
-  <div class="fixed bottom-0 min-w-full">
-    <BottomTabsComponent></BottomTabsComponent>
-    <TerminalComponent></TerminalComponent>
+    <div>
+      <BottomTabsComponent></BottomTabsComponent>
+
+      <TerminalComponent></TerminalComponent>
+    </div>
+  </main>
+  -->
+  <div class="w-screen h-screen">
+    <div class="flex flex-col justify-between h-full">
+      <div><NavbarComponent /> <BreadcrumbComponent subpageName="Analysis" /></div>
+      <div class="bg-black">
+        <BottomTabsComponent></BottomTabsComponent>
+        <div class="h-80 min-h-80 overflow-y-auto">
+          <TerminalComponent class="overflow-hidden"></TerminalComponent>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

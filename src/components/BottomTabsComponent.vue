@@ -1,23 +1,25 @@
 <template>
   <div class="min-w-full">
     <div class="sm:hidden">
-      <label for="tabs" class="sr-only">Select a tab</label>
+      <label for="consoles" class="sr-only">Select a console</label>
       <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
       <select
-        id="tabs"
-        name="tabs"
+        id="consoles"
+        name="consoles"
         class="block w-full focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
       >
-        <option v-for="tab in tabs" :key="tab.name" :selected="tab.current">
-          {{ tab.name }}
+        <option
+          v-for="console in consoles"
+          :key="console.id"
+          :selected="consoles.current"
+          @click="emit('changeCurrentConsole', { console_id: console.id })"
+        >
+          Console {{ console.id }}
         </option>
       </select>
     </div>
     <div class="hidden sm:block">
-      <nav
-        class="relative z-0 rounded-lg shadow flex divide-x divide-gray-200"
-        aria-label="Tabs"
-      >
+      <nav class="flex flex-wrap" aria-label="Tabs">
         <a
           v-for="(console, consoleIdx) in consoles"
           :key="console.id"
