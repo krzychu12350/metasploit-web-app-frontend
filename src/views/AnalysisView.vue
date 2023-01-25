@@ -13,9 +13,13 @@
     </div>
   </main>
   -->
+  <!-- skelet of app -->
   <div class="w-screen h-screen">
     <div class="flex flex-col justify-between h-full">
       <div><NavbarComponent /> <BreadcrumbComponent subpageName="Analysis" /></div>
+      <div>
+        <ScannedHostsComponent></ScannedHostsComponent>
+      </div>
       <div class="bg-black">
         <BottomTabsComponent></BottomTabsComponent>
         <div class="h-80 min-h-80 overflow-y-auto">
@@ -26,12 +30,14 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import NavbarComponent from "../components/NavbarComponent.vue";
 import BreadcrumbComponent from "../components/BreadcrumbComponent.vue";
 import TerminalComponent from "../components/TerminalComponent.vue";
 import ToastService from "../services/ToastService";
 import BottomTabsComponent from "../components/BottomTabsComponent.vue";
+import ScannedHostsComponent from "../components/ScannedHostsComponent.vue";
+/*
 export default {
   name: "AnalysisView",
   components: {
@@ -51,6 +57,7 @@ export default {
     },
   },
 };
+*/
 </script>
 
 <style scoped></style>

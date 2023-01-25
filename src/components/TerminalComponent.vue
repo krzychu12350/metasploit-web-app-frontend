@@ -249,7 +249,7 @@ watch(
 }
 */
 .cmdline {
-  max-width: 100px !important;
+  max-width: 200px !important;
 }
 
 #container > output > pre > p {

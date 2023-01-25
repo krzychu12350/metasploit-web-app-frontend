@@ -13,6 +13,7 @@
     "@heroicons/vue": "^2.0.12",
     "primeicons": "^6.0.1",
     "primevue": "^3.21.0",
+    "v-contextmenu": "^3.0.0",
     "vue": "^3.2.45",
     "vue-axios": "^3.5.2",
     "vue-command": "^23.0.1",
