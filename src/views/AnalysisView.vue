@@ -28,6 +28,7 @@
       </div>
     </div>
   </div>
+  <host-details-modal-component></host-details-modal-component>
 </template>
 
 <script setup>
@@ -37,6 +38,8 @@ import TerminalComponent from "../components/TerminalComponent.vue";
 import ToastService from "../services/ToastService";
 import BottomTabsComponent from "../components/BottomTabsComponent.vue";
 import ScannedHostsComponent from "../components/ScannedHostsComponent.vue";
+import HostDetailsModalComponent from "../components/hosts/HostDetailsModalComponent.vue";
+
 /*
 export default {
   name: "AnalysisView",

@@ -11,14 +11,14 @@
 
 <script setup>
 import ConsoleDataService from "../services/ConsoleDataService";
-import { ref, reactive, onBeforeMount, watch } from "vue";
+import { ref, reactive, onBeforeMount, onMounted, onUnmounted, watch } from "vue";
 import useEventsBus from "../composables/eventBus";
 
 const { bus } = useEventsBus();
 const currentTerminal = ref(0);
 
 const send_to_terminal = ref("");
-const banner = ref({
+const banner = reactive({
   header: "Metasploit Shell",
   subHeader: "Metasploit Shell is pure power just enjoy 🔥",
   helpHeader: 'Enter "help" for more information.',
@@ -165,13 +165,27 @@ function writeDataToConsole(data) {
     //this.send_to_terminal = `<p>` + res.data.data + `</p>`;
   });
 }
-function readDataFromConsole(id) {
+async function readDataFromConsole(id) {
   let data = { consoleID: id };
   ConsoleDataService.read(data).then((res) => {
     console.log(res.data.data);
-    //const test = "dddd";
-    //banner.sign = "dddd >";
-    send_to_terminal.value = `<p>` + res.data.data.data + `</p>`;
+    setTimeout(() => {
+      send_to_terminal.value = "<p>" + res.data.data.data + "</p>";
+      //const test = "dddd";
+      //banner.sign = "dddd >";
+      //console.log("`" + String(res.data.data.prompt) + "`");
+
+      //banner.value.sing = "`" + res.data.data.prompt + "`";
+      //console.log(send_to_terminal.value);
+
+      banner.sign = res.data.data.prompt;
+      setTimeout(() => {
+        if (res.data.data.busy === true) readDataFromConsole(id);
+      }, 1000);
+      //console.log(banner);
+
+      //console.log(res.data.data.busy);
+    }, 100);
   });
 }
 
@@ -182,7 +196,7 @@ function getConsoleList() {
   });
 }
 
-function setPrompt(value) {
+async function setPrompt(value) {
   if (value.trim() === "ifconfig") {
     send_to_terminal.value = `\n\n`;
     /*
@@ -202,7 +216,8 @@ function setPrompt(value) {
     writeDataToConsole(dataa);
     //currentTerminal.value = dataa.consoleID;
     //currentTerminal.value = 1;
-    readDataFromConsole(currentTerminal.value);
+    await readDataFromConsole(currentTerminal.value);
+
     send_to_terminal.value = ``;
     /*
     send_to_terminal.value = `'${value}' is not recognized as an internal command or external,
@@ -210,15 +225,20 @@ an executable program or a batch file`;
 */
   }
 }
+const allConsoles = ref([]);
+onMounted(() => {});
+onUnmounted(() => {});
+
 onBeforeMount(async () => {
-  const allConsoles = await getConsoleList();
+  allConsoles.value = await getConsoleList();
   currentTerminal.value = Math.min.apply(
     Math,
-    allConsoles.map(function (c) {
+    allConsoles.value.map(function (c) {
       return c.id;
     })
   );
   console.log(currentTerminal.value);
+  readDataFromConsole(currentTerminal.value);
   //this.createConsole();
   let data = { consoleID: currentTerminal.value, inputCommand: "version" };
   //writeDataToConsole(data);

@@ -21,7 +21,8 @@
     </main>
   </div>
 </template>
-<script>
+<script setup>
+import { onMounted } from "vue";
 import BreadcrumbComponent from "../components/BreadcrumbComponent.vue";
 import ActionsComponent from "../components/ActionsComponent.vue";
 import SessionsComponent from "../components/SessionsComponent.vue";
@@ -31,6 +32,17 @@ import ModuleStatsComponent from "../components/ModuleStatsComponent.vue";
 import AuthService from "../services/AuthService";
 import ToastService from "../services/ToastService";
 
+function test() {
+  ToastService.showToast("test", "default");
+  AuthService.tokenList().then((res) => {
+    console.log(res.data);
+    return res.data;
+  });
+}
+onMounted(() => {
+  test();
+});
+/*
 export default {
   name: "Dashboard",
   components: {
@@ -56,4 +68,5 @@ export default {
     },
   },
 };
+*/
 </script>
