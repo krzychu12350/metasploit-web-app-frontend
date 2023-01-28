@@ -14,7 +14,7 @@ import ConsoleDataService from "../services/ConsoleDataService";
 import { ref, reactive, onBeforeMount, onMounted, onUnmounted, watch } from "vue";
 import useEventsBus from "../composables/eventBus";
 
-const { bus } = useEventsBus();
+const { bus, emit } = useEventsBus();
 const currentTerminal = ref(0);
 
 const send_to_terminal = ref("");
@@ -153,10 +153,13 @@ an executable program or a batch file`;
   },
 };
 */
-function createConsole() {
-  ConsoleDataService.create().then((res) => {
-    console.log(res.data);
-  });
+async function createConsole() {
+  return ConsoleDataService.create()
+    .then((res) => {
+      console.log(res.data);
+      return res.data.data;
+    })
+    .catch((err) => console.log(err));
 }
 function writeDataToConsole(data) {
   ConsoleDataService.write(data).then((res) => {
@@ -190,10 +193,12 @@ async function readDataFromConsole(id) {
 }
 
 function getConsoleList() {
-  return ConsoleDataService.list().then((res) => {
-    console.log(res.data.data.consoles);
-    return res.data.data.consoles;
-  });
+  return ConsoleDataService.list()
+    .then((res) => {
+      console.log(res.data.data.consoles);
+      return res.data.data.consoles;
+    })
+    .catch((err) => console.log(err));
 }
 
 async function setPrompt(value) {
@@ -255,6 +260,24 @@ watch(
     readDataFromConsole(currentTerminal.value);
     let dataa = { consoleID: currentTerminal.value, inputCommand: "help" };
     //writeDataToConsole(dataa);
+  }
+);
+
+watch(
+  () => bus.value.get("runNmapScan"),
+  async () => {
+    alert("nmap scan");
+
+    const createdConsoleData = await createConsole();
+    currentTerminal.value = createdConsoleData.id;
+    emit("refreshTabs");
+    alert(createdConsoleData.id);
+    let dataa = {
+      consoleID: currentTerminal.value,
+      inputCommand: "db_nmap -v -sF -Pn -O 192.168.0.0/24",
+    };
+    writeDataToConsole(dataa);
+    readDataFromConsole(currentTerminal.value);
   }
 );
 </script>

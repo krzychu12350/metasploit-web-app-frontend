@@ -52,7 +52,8 @@ import { onBeforeMount, ref, watch } from "vue";
 import ConsoleDataService from "../services/ConsoleDataService";
 import useEventsBus from "../composables/eventBus";
 
-const { emit } = useEventsBus();
+const { bus } = useEventsBus();
+
 const tabs = ref([
   { name: "Console 0", href: "#", current: true },
   { name: "Info", href: "#", current: false },
@@ -76,4 +77,11 @@ function getAllConsoles() {
       console.log(error.message);
     });
 }
+
+watch(
+  () => bus.value.get("refreshTabs"),
+  () => {
+    getAllConsoles();
+  }
+);
 </script>

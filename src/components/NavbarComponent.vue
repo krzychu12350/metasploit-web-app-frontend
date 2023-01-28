@@ -63,6 +63,7 @@
                       :key="item.name"
                       :href="item.href"
                       class="-m-3 flex items-start rounded-lg p-3 hover:bg-gray-50"
+                      @click="emit('runNmapScan')"
                     >
                       <component
                         :is="item.icon"
@@ -324,11 +325,14 @@ import {
   XMarkIcon,
 } from "@heroicons/vue/24/outline";
 import { ChevronDownIcon } from "@heroicons/vue/20/solid";
+import useEventsBus from "../composables/eventBus";
+
+const { emit } = useEventsBus();
 
 const solutions = [
   {
-    name: "Analytics",
-    description: "Get a better understanding of where your traffic is coming from.",
+    name: "Nmap scan",
+    description: "Scan a network and save result in the database",
     href: "#",
     icon: ChartBarIcon,
   },
