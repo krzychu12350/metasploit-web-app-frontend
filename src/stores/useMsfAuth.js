@@ -7,7 +7,7 @@ import TokenDataService from "../services/TokenDataService";
 
 export const useMsfAuth = defineStore("auth", {
   state: () => ({
-    msfAccessToken: TokenDataService.getMsfAccessToken(),
+    msfAccessToken: null,
     loggedIn: TokenDataService.getMsfAccessToken() ? true : false,
   }),
   getters: {
@@ -27,7 +27,7 @@ export const useMsfAuth = defineStore("auth", {
       if (response) {
         this.setMsfAccessToken(response.data.data.token);
         //alert(response.data.data.token);
-        //http.defaults.headers.common["Authorization"] = this.msfAccessToken;
+        http.defaults.headers.common["Authorization"] = this.msfAccessToken;
         //console.log(http.defaults.headers.common["Authorization"]);
         //http.headers.Authorization = this.msfAccessToken;
 
@@ -64,7 +64,7 @@ export const useMsfAuth = defineStore("auth", {
 
     async logout() {
       const response = await AuthDataService.tokenRemove({
-        "tokenToBeRemoved": this.msfAccessToken
+        "tokenToBeRemoved": await TokenDataService.getMsfAccessToken()
       });
       if (response) {
         this.setMsfAccessToken(null);

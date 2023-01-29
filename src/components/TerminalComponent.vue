@@ -188,7 +188,7 @@ async function readDataFromConsole(id) {
       //console.log(banner);
 
       //console.log(res.data.data.busy);
-    }, 500);
+    }, 200);
   });
 }
 

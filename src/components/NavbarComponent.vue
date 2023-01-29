@@ -336,11 +336,11 @@ import { useRouter } from "vue-router";
 const { emit } = useEventsBus();
 const router = useRouter();
 
-async function handleLogout() {
+function handleLogout() {
   useMsfAuth()
     .logout()
-    .then(() => router.push("/setup"));
-  //.catch((err) => console.log(err));
+    .then(() => router.push("/setup"))
+    .catch((err) => console.log(err.response.data));
 }
 
 const solutions = [

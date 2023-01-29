@@ -127,7 +127,7 @@
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 import { useMsfAuth } from "../stores/useMsfAuth";
 import ToastService from "../services/ToastService";
@@ -136,7 +136,11 @@ import { useRouter } from "vue-router";
 const enabled = ref(false);
 const router = useRouter();
 
+const $loading = inject("$loading");
+const fullPage = ref(true);
+
 function connectWithMsf() {
+  const loader = $loading.show();
   const credentials = {
     myUserName: "user",
     myPassword: "pass123",
@@ -147,7 +151,12 @@ function connectWithMsf() {
     .login(credentials)
     .then(() => {
       router.push("/");
-      //loader.hide();
+      loader.hide();
+    })
+    .catch((err) => {
+      loader.hide();
+      console.log(err.response);
+      ToastService.showToast("Invalid email or password");
     });
 }
 </script>

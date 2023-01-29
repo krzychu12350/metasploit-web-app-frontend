@@ -21,8 +21,7 @@ class TokenDataService {
     }
     */
     async getMsfAccessToken() {
-        const msfAccessToken = localStorage.getItem("msf_access_token");
-        return msfAccessToken;
+        return localStorage.getItem("msf_access_token");
     }
 
     async setMsfAccessToken(msfAccessToken) {
