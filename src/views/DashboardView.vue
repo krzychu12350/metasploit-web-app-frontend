@@ -29,11 +29,11 @@ import SessionsComponent from "../components/SessionsComponent.vue";
 import NavbarComponent from "../components/NavbarComponent.vue";
 import ConsoleDataService from "../services/ConsoleDataService";
 import ModuleStatsComponent from "../components/ModuleStatsComponent.vue";
-import AuthService from "../services/AuthService";
+import AuthService from "../services/AuthDataService";
 import ToastService from "../services/ToastService";
 
 function test() {
-  ToastService.showToast("test", "default");
+  //ToastService.showToast("test", "default");
   AuthService.tokenList().then((res) => {
     console.log(res.data);
     return res.data;

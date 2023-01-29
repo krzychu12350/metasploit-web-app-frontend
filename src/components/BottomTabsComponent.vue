@@ -52,7 +52,7 @@ import { onBeforeMount, ref, watch } from "vue";
 import ConsoleDataService from "../services/ConsoleDataService";
 import useEventsBus from "../composables/eventBus";
 
-const { bus } = useEventsBus();
+const { emit, bus } = useEventsBus();
 
 const tabs = ref([
   { name: "Console 0", href: "#", current: true },

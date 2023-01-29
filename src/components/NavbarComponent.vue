@@ -3,14 +3,14 @@
     <div class="mx-auto max-w-7xl px-6">
       <div class="flex items-center justify-between py-6 md:justify-start md:space-x-10">
         <div class="flex justify-start lg:w-0 lg:flex-1">
-          <a href="#">
+          <RouterLink to="/">
             <span class="sr-only">Your Company</span>
             <img
               class="h-8 w-auto sm:h-10"
               src="../assets/metasploit-framework-logo.svg"
               alt=""
             />
-          </a>
+          </RouterLink>
         </div>
         <div class="-my-2 -mr-2 md:hidden">
           <PopoverButton
@@ -110,7 +110,11 @@
             class="text-base font-medium text-gray-300 hover:text-gray-100"
             >Sessions</router-link
           >
-
+          <router-link
+            to="/analysis"
+            class="text-base font-medium text-gray-300 hover:text-gray-100"
+            >Analysis</router-link
+          >
           <!--
           { name: "Dashboard", href: "/", current: true }, { name: "Analysis", href:
           "/analysis", current: false }, { name: "Modules", href: "/modules", current:
@@ -211,8 +215,8 @@
           >
             -->
           <a
-            href="/setup"
-            class="ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+            @click="handleLogout"
+            class="cursor-pointer ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
             >Logout</a
           >
         </div>
@@ -326,8 +330,18 @@ import {
 } from "@heroicons/vue/24/outline";
 import { ChevronDownIcon } from "@heroicons/vue/20/solid";
 import useEventsBus from "../composables/eventBus";
+import { useMsfAuth } from "../stores/useMsfAuth";
+import { useRouter } from "vue-router";
 
 const { emit } = useEventsBus();
+const router = useRouter();
+
+async function handleLogout() {
+  useMsfAuth()
+    .logout()
+    .then(() => router.push("/setup"));
+  //.catch((err) => console.log(err));
+}
 
 const solutions = [
   {

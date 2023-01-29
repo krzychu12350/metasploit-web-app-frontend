@@ -104,14 +104,13 @@
               </SwitchGroup>
 
               <div>
-                <router-link to="/">
-                  <button
-                    type="submit"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                  >
-                    Connect
-                  </button>
-                </router-link>
+                <button
+                  type="submit"
+                  @click.prevent="connectWithMsf"
+                  class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                >
+                  Connect
+                </button>
               </div>
             </form>
           </div>
@@ -127,25 +126,30 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script setup>
+import { ref } from "vue";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
+import { useMsfAuth } from "../stores/useMsfAuth";
+import ToastService from "../services/ToastService";
+import { useRouter } from "vue-router";
 
-export default defineComponent({
-  name: "Setup",
-  components: {
-    Switch,
-    SwitchGroup,
-    SwitchLabel,
-  },
-  setup() {
-    const enabled = ref(false);
+const enabled = ref(false);
+const router = useRouter();
 
-    return {
-      enabled,
-    };
-  },
-});
+function connectWithMsf() {
+  const credentials = {
+    myUserName: "user",
+    myPassword: "pass123",
+  };
+  console.log(credentials);
+
+  useMsfAuth()
+    .login(credentials)
+    .then(() => {
+      router.push("/");
+      //loader.hide();
+    });
+}
 </script>
 
 <style>
