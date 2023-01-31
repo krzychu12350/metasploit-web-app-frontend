@@ -115,6 +115,11 @@
             class="text-base font-medium text-gray-300 hover:text-gray-100"
             >Analysis</router-link
           >
+          <router-link
+            to="/connections"
+            class="text-base font-medium text-gray-300 hover:text-gray-100"
+            >RPC Connections</router-link
+          >
           <!--
           { name: "Dashboard", href: "/", current: true }, { name: "Analysis", href:
           "/analysis", current: false }, { name: "Modules", href: "/modules", current:

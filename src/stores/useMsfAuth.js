@@ -3,7 +3,7 @@ import http from "../services/http-common";
 import AuthDataService from "../services/AuthDataService";
 import ToastService from "../services/ToastService";
 import TokenDataService from "../services/TokenDataService";
-
+import MsfRpcServerConnectionService from "../services/MsfRpcServerConnectionService";
 
 export const useMsfAuth = defineStore("auth", {
   state: () => ({
@@ -19,7 +19,16 @@ export const useMsfAuth = defineStore("auth", {
     async setMsfAccessToken(msfAccessToken) {
       this.msfAccessToken = msfAccessToken;
     },
-    
+    async setConnection(connectionSettings) {
+    console.log('setting conn');
+     MsfRpcServerConnectionService.setConnection(connectionSettings)
+     .then((res)=> {
+      console.log(res.data);
+     })
+     .catch((err)=> {
+      console.log(err.response.data);
+    });
+    },
     async login(credentials) {
       const response = await AuthDataService.login(credentials);
       console.log(response);
@@ -33,7 +42,7 @@ export const useMsfAuth = defineStore("auth", {
 
         await TokenDataService.setMsfAccessToken(this.msfAccessToken);
         //alert(await TokenDataService.getMsfAccessToken());
-        const ifPersistedToken = await AuthDataService.tokenAdd({ "newToken": this.msfAccessToken})
+        const ifPersistedToken = await AuthDataService.tokenAdd({ "new_token": this.msfAccessToken})
        // console.log(ifPersistedToken.data.data.result);
         if(ifPersistedToken.data.data.result === "success") {
           //console.log(ifPersistedToken.data.data.result);
@@ -42,7 +51,8 @@ export const useMsfAuth = defineStore("auth", {
 
          
         }
-        ToastService.showToast("You have been connected successfully with Metasploit RPC")      
+
+        ToastService.showToast("You have been connected successfully with Metasploit RPC Server")      
         /*
         const token = `Bearer ${response.authorization.access_token}`;
         localStorage.setItem("token", token);
@@ -64,7 +74,7 @@ export const useMsfAuth = defineStore("auth", {
 
     async logout() {
       const response = await AuthDataService.tokenRemove({
-        "tokenToBeRemoved": await TokenDataService.getMsfAccessToken()
+        "token_to_be_removed": await TokenDataService.getMsfAccessToken()
       });
       if (response) {
         this.setMsfAccessToken(null);

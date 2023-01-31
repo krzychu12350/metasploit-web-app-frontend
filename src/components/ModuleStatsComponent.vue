@@ -81,8 +81,8 @@ async function getMsfModuleStats() {
       moduleStats.value = allStats;
       //console.log(allStats);
     })
-    .catch((e) => {
-      console.log(e);
+    .catch((err) => {
+      console.log(err.response.data);
     });
 }
 

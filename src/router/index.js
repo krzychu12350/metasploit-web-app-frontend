@@ -9,6 +9,8 @@ import JobsView from "../views/JobsView.vue";
 import PayloadGeneratorView from "../views/PayloadGeneratorView.vue";
 import SingleSessionView from "../views/SingleSessionView.vue";
 import ModulesView from "../views/ModulesView.vue";
+import { useMsfAuth } from '../stores/useMsfAuth';
+
 const routes = [
     {
         path: "/",
@@ -71,5 +73,15 @@ const router = createRouter({
     routes,
     linkActiveClass: "active",
 });
+
+router.beforeEach((to, from, next) => {
+    const publicPages = ['/setup'];
+    const authRequired = !publicPages.includes(to.path);
+    if (authRequired && !useMsfAuth().loggedIn) {
+        next('/setup');
+    } else {
+        next();
+    }
+  });
 
 export default router;

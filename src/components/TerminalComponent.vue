@@ -40,7 +40,7 @@ const commands = reactive([
   {
     name: "info",
     get() {
-      let dataa = { consoleID: currentTerminal.value, inputCommand: "help" };
+      let dataa = { console_id: currentTerminal.value, input_command: "help" };
       writeDataToConsole(dataa);
       readDataFromConsole(currentTerminal.value);
       return "";
@@ -134,7 +134,7 @@ an executable program or a batch file`;
       });
     },
     async readDataFromConsole(id) {
-      let data = { consoleID: id };
+      let data = { console_id: id };
       await ConsoleDataService.read(data).then((res) => {
         console.log(res.data.data);
         //const test = "dddd";
@@ -144,7 +144,7 @@ an executable program or a batch file`;
   },
   mounted() {
     //this.createConsole();
-    let data = { consoleID: 60, inputCommand: "version" };
+    let data = { console_id: 60, input_command: "version" };
     this.writeDataToConsole(data);
     //this.readDataFromConsole(51);
     //this.send_to_terminal = `<p>Shell to interacte with metasploit.</p>`;
@@ -169,7 +169,7 @@ function writeDataToConsole(data) {
   });
 }
 async function readDataFromConsole(id) {
-  let data = { consoleID: id };
+  let data = { console_id: id };
   ConsoleDataService.read(data).then((res) => {
     console.log(res.data.data);
     setTimeout(() => {
@@ -216,10 +216,10 @@ async function setPrompt(value) {
   } else if (value.trim() === "help") {
     send_to_terminal.value = `dddddddddddddddddd`;
   } else {
-    let dataa = { consoleID: currentTerminal.value, inputCommand: value };
-    console.log(dataa.consoleID);
+    let dataa = { console_id: currentTerminal.value, input_command: value };
+    console.log(dataa.console_id);
     writeDataToConsole(dataa);
-    //currentTerminal.value = dataa.consoleID;
+    //currentTerminal.value = dataa.console_id;
     //currentTerminal.value = 1;
     await readDataFromConsole(currentTerminal.value);
 
@@ -245,7 +245,7 @@ onBeforeMount(async () => {
   console.log(currentTerminal.value);
   readDataFromConsole(currentTerminal.value);
   //this.createConsole();
-  let data = { consoleID: currentTerminal.value, inputCommand: "version" };
+  let data = { console_id: currentTerminal.value, input_command: "version" };
   //writeDataToConsole(data);
   setPrompt("ifconfig");
 });
@@ -258,7 +258,7 @@ watch(
     currentTerminal.value = data[0].console_id;
     //send_to_terminal.value = `\n\n`;
     readDataFromConsole(currentTerminal.value);
-    let dataa = { consoleID: currentTerminal.value, inputCommand: "help" };
+    let dataa = { console_id: currentTerminal.value, input_command: "help" };
     //writeDataToConsole(dataa);
   }
 );
@@ -273,8 +273,8 @@ watch(
     emit("refreshTabs");
     alert(createdConsoleData.id);
     let dataa = {
-      consoleID: currentTerminal.value,
-      inputCommand: "db_nmap -v -sF -Pn -O 192.168.0.0/24",
+      console_id: currentTerminal.value,
+      input_command: "db_nmap -v -sF -Pn -O 192.168.0.0/24",
     };
     writeDataToConsole(dataa);
     readDataFromConsole(currentTerminal.value);

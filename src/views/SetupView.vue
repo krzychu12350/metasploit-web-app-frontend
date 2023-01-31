@@ -17,36 +17,66 @@
 
         <div class="mt-8">
           <div class="mt-6">
-            <form action="#" method="POST" class="space-y-6">
+            <Form
+              @submit="onSubmit"
+              :validation-schema="schema"
+              @invalid-submit="onInvalidSubmit"
+              method="POST"
+              class="space-y-6"
+            >
               <div>
                 <label for="email" class="block text-sm font-medium text-gray-800">
                   User name
                 </label>
                 <div class="mt-1">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autocomplete="email"
+                  <Field
+                    id="user_name"
+                    name="user_name"
+                    type="text"
                     placeholder="User name"
                     class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
                   />
                 </div>
+                <div class="text-sm text-red-600 mt-2">
+                  <ErrorMessage name="user_name" />
+                </div>
               </div>
 
               <div class="space-y-1">
-                <label for="password" class="block text-sm font-medium text-gray-800">
+                <label
+                  for="user_password"
+                  class="block text-sm font-medium text-gray-800"
+                >
                   Password
                 </label>
-                <div class="mt-1">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
+                <div class="relative mt-1">
+                  <Field
+                    id="user_password"
+                    name="user_password"
                     placeholder="Password"
-                    autocomplete="current-password"
+                    autocomplete="user_password"
+                    :type="[showPassword ? 'text' : 'password']"
                     class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
                   />
+                  <div
+                    class="absolute inset-y-0 right-0 flex items-center mr-3 cursor-pointer"
+                  >
+                    <EyeIcon
+                      v-if="showPassword === true"
+                      class="h-5 w-5 text-gray-400 hover:text-gray-800"
+                      aria-hidden="true"
+                      @click="togglePasswordVisibity"
+                    />
+                    <EyeSlashIcon
+                      v-else
+                      @click="togglePasswordVisibity"
+                      class="h-5 w-5 text-gray-400 hover:text-gray-800"
+                      aria-hidden="true"
+                    />
+                  </div>
+                </div>
+                <div class="text-sm text-red-600 mt-2">
+                  <ErrorMessage name="user_password" />
                 </div>
               </div>
 
@@ -55,14 +85,18 @@
                   IP Address
                 </label>
                 <div class="mt-1">
-                  <input
-                    id="ip-address"
-                    name="password"
+                  <Field
+                    id="ip"
+                    name="ip"
                     type="text"
                     placeholder="IP Address"
-                    autocomplete="current-password"
+                    autocomplete="ip"
+                    v-on:keypress="isDigitOrDot($event)"
                     class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
                   />
+                  <div class="text-sm text-red-600 mt-2">
+                    <ErrorMessage name="ip" />
+                  </div>
                 </div>
               </div>
 
@@ -71,29 +105,50 @@
                   Port
                 </label>
                 <div class="mt-1">
-                  <input
+                  <Field
                     id="port"
-                    name="password"
+                    name="port"
                     type="text"
                     placeholder="Port"
-                    autocomplete="current-password"
+                    autocomplete="port"
+                    v-on:keypress="isDigit($event)"
                     class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
                   />
                 </div>
+                <div class="text-sm text-red-600 mt-2">
+                  <ErrorMessage name="port" />
+                </div>
               </div>
-
+              <div class="space-y-1">
+                <label for="password" class="block text-sm font-medium text-gray-800">
+                  Web Server URI
+                </label>
+                <div class="mt-1">
+                  <Field
+                    id="web_server_uri"
+                    name="web_server_uri"
+                    type="text"
+                    placeholder="Web Server URI"
+                    autocomplete="web_server_uri"
+                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
+                  />
+                </div>
+                <div class="text-sm text-red-600 mt-2">
+                  <ErrorMessage name="web_server_uri" />
+                </div>
+              </div>
               <SwitchGroup as="div" class="flex items-center">
                 <Switch
-                  v-model="enabled"
+                  v-model="isHttpEnabled"
                   :class="[
-                    enabled ? 'bg-gray-800' : 'bg-gray-200',
+                    isHttpEnabled ? 'bg-gray-800' : 'bg-gray-200',
                     'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500',
                   ]"
                 >
                   <span
                     aria-hidden="true"
                     :class="[
-                      enabled ? 'translate-x-5' : 'translate-x-0',
+                      isHttpEnabled ? 'translate-x-5' : 'translate-x-0',
                       'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200',
                     ]"
                   />
@@ -102,17 +157,15 @@
                   <span class="text-sm font-medium text-gray-900">Over HTTPS </span>
                 </SwitchLabel>
               </SwitchGroup>
-
               <div>
                 <button
                   type="submit"
-                  @click.prevent="connectWithMsf"
                   class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                 >
                   Connect
                 </button>
               </div>
-            </form>
+            </Form>
           </div>
         </div>
       </div>
@@ -127,26 +180,98 @@
   </div>
 </template>
 <script setup>
-import { ref, inject } from "vue";
+import { ref, inject, defineProps, toRef, computed } from "vue";
+import { LockClosedIcon, EyeIcon, EyeSlashIcon } from "@heroicons/vue/20/solid";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 import { useMsfAuth } from "../stores/useMsfAuth";
 import ToastService from "../services/ToastService";
 import { useRouter } from "vue-router";
+import { Form, Field, ErrorMessage } from "vee-validate";
 
-const enabled = ref(false);
+import * as yup from "yup";
+
+const isHttpEnabled = ref(false);
 const router = useRouter();
 
 const $loading = inject("$loading");
 const fullPage = ref(true);
+const showPassword = ref(false);
 
-function connectWithMsf() {
-  const loader = $loading.show();
+const togglePasswordVisibity = () => {
+  showPassword.value = !showPassword.value;
+};
+
+const schema = yup.object({
+  user_name: yup
+    .string()
+    .required("Username is a required field")
+    .min(3, "Username must be at least 3 characters"),
+  user_password: yup
+    .string()
+    .required("Password is a required field")
+    .min(3, "Password must be at least 3 characters"),
+  ip: yup
+    .string()
+    .required("IP Address is a required field")
+    .matches(
+      /(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/,
+      "Enter proper IP Address"
+    ),
+  port: yup
+    .number()
+    .required("Port is a required field")
+    .transform((value) =>
+      isNaN(value) || value === null || value === undefined ? 0 : value
+    )
+    .min(0, "Port must be at least 0")
+    .max(65536, "Port can be maximum 65536"),
+  web_server_uri: yup
+    .string()
+    .matches(/[a-zA-Z0-9]$/, "Enter correct Web Server URI")
+    .required("Web Server URI is a required field"),
+});
+
+const onSubmit = (credentials) => {
+  credentials.ssl = isHttpEnabled.value;
+  /*
   const credentials = {
-    myUserName: "user",
-    myPassword: "pass123",
+    user_password: "pass123",
+    ssl: true,
+    user_name: "user",
+    ip: "127.0.0.1",
+    port: 55553,
+    web_server_uri: "/api/1.0",
   };
+  */
   console.log(credentials);
+  connectWithMsf(credentials);
+};
 
+function onInvalidSubmit({ values, errors, results }) {
+  console.log(values); // current form values
+  console.log(errors); // a map of field names and their first error message
+  console.log(results); // a detailed map of field names and their validation results
+}
+
+// too many attempts
+const isTooManyAttempts = computed(() => {
+  return submitCount.value >= 1;
+});
+
+function connectWithMsf(credentials) {
+  const loader = $loading.show();
+  setMsfConnection(credentials, loader);
+}
+
+function setMsfConnection(credentials, loader) {
+  useMsfAuth()
+    .setConnection(credentials)
+    .then(() => {
+      loginToMsfRpc(credentials, loader);
+    });
+}
+
+function loginToMsfRpc(credentials, loader) {
   useMsfAuth()
     .login(credentials)
     .then(() => {
@@ -155,9 +280,33 @@ function connectWithMsf() {
     })
     .catch((err) => {
       loader.hide();
-      console.log(err.response);
-      ToastService.showToast("Invalid email or password");
+      //console.log(err.response);
+      ToastService.showToast(
+        "Invalid credentials, check your MSF RPC Server Configuration",
+        "error"
+      );
     });
+}
+
+function isLetter(e) {
+  let char = String.fromCharCode(e.keyCode); // Get the character
+  if (/^[A-Za-z ]+$/.test(char)) return true;
+  // Match with regex
+  else e.preventDefault(); // If not match, don't add to input text
+}
+
+function isDigit(e) {
+  let char = String.fromCharCode(e.keyCode); // Get the character
+  if (/^[0-9]+$/.test(char)) return true;
+  // Match with regex
+  else e.preventDefault(); // If not match, don't add to input text
+}
+
+function isDigitOrDot(e) {
+  let char = String.fromCharCode(e.keyCode); // Get the character
+  if (/^[0-9\.:]+$/.test(char)) return true;
+  // Match with regex
+  else e.preventDefault(); // If not match, don't add to input text
 }
 </script>
 
