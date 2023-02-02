@@ -97,7 +97,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import ModuleService from "../services/ModuleService";
+import ModuleDataService from "@/services/ModuleDataService";
 const people = [
   {
     name: "Jane Cooper",

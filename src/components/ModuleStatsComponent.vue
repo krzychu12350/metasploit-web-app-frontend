@@ -1,5 +1,6 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
 <template>
+  <!--
   <div>
     <h2 class="text-gray-500 text-xs font-medium uppercase tracking-wide">
       Modules Statistics
@@ -14,7 +15,7 @@
             'bg-gray-800 flex-shrink-0 flex items-center justify-center w-16 text-white text-sm font-medium rounded-l-md',
           ]"
         >
-          <!--{{ project.initials }}-->
+        
           {{ moduleStat.name.slice(0, 2).toUpperCase() }}
         </div>
         <div
@@ -34,19 +35,37 @@
               class="w-8 h-8 bg-white inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               <span class="sr-only">Open options</span>
-              <!--<DotsVerticalIcon class="w-5 h-5" aria-hidden="true" />-->
+             <DotsVerticalIcon class="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
         </div>
       </li>
     </ul>
   </div>
+  -->
+  <div>
+    <h2 class="text-lg leading-6 font-medium text-gray-900">Modules Statistics</h2>
+    <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+      <div
+        v-for="(stat, index) in moduleStats"
+        :key="stat.index"
+        class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6"
+      >
+        <dt class="text-sm font-medium text-gray-500 truncate">
+          {{ stat.name.toUpperCase() }}
+        </dt>
+        <dd class="mt-1 text-3xl font-semibold text-gray-900">
+          {{ stat.number }}
+        </dd>
+      </div>
+    </dl>
+  </div>
 </template>
 
 <script setup>
 //import { DotsVerticalIcon } from "@heroicons/vue/24/solid";
 import { ref, onMounted, reactive } from "vue";
-import CoreService from "../services/CoreService";
+import CoreService from "../services/CoreDataService";
 
 onMounted(() => {
   getMsfModuleStats();

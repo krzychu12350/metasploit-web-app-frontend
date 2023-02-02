@@ -5,8 +5,8 @@ class SessionService {
     list() {
         return http.post(METHOD_TYPE + "/list");
     }
-    stop() {
-        return http.post(METHOD_TYPE + "/stop");
+    stop(data) {
+        return http.post(METHOD_TYPE + "/stop", data);
     }
     shellRead() {
         return http.post(METHOD_TYPE + "/shell-read");

@@ -152,9 +152,10 @@ import { defineComponent, ref } from "vue";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 
 import BreadcrumbComponent from "../components/BreadcrumbComponent.vue";
-import SessionsComponent from "../components/SessionsComponent.vue";
+import SessionsTableComponent from "../components/sessions/SessionsTableComponent.vue";
 import NavbarComponent from "../components/NavbarComponent.vue";
-import ConsoleService from "../services/ConsoleService";
+import ConsoleDataService from "../services/ConsoleDataService";
+
 import ToastService from "../services/ToastService";
 
 const consoles = [
@@ -167,7 +168,7 @@ export default defineComponent({
   components: {
     NavbarComponent,
     BreadcrumbComponent,
-    SessionsComponent,
+    SessionsTableComponent,
 
     Switch,
     SwitchGroup,

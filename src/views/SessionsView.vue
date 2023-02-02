@@ -11,13 +11,13 @@
                 </div>
                  /End replace -->
 
-        <SessionsComponent />
+        <SessionsTableComponent></SessionsTableComponent>
+        <SessionKillingModal></SessionKillingModal>
       </div>
     </main>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script setup>
 import {
   Disclosure,
   DisclosureButton,
@@ -35,7 +35,9 @@ import {
 } from "@heroicons/vue/24/outline";
 import BreadcrumbComponent from "../components/BreadcrumbComponent.vue";
 import ActionsComponent from "../components/ActionsComponent.vue";
-import SessionsComponent from "../components/SessionsComponent.vue";
+import SessionsTableComponent from "../components/sessions/SessionsTableComponent.vue";
+import SessionKillingModal from "../components/sessions/SessionKillingModal.vue";
+
 import NavbarComponent from "../components/NavbarComponent.vue";
 
 const user = {
@@ -56,12 +58,12 @@ const userNavigation = [
   { name: "Settings", href: "#" },
   { name: "Sign out", href: "#" },
 ];
-
+/*
 export default defineComponent({
   name: "SessionsView",
   components: {
     NavbarComponent,
-    SessionsComponent,
+    SessionsTableComponent,
     ActionsComponent,
     Disclosure,
     DisclosureButton,
@@ -85,4 +87,5 @@ export default defineComponent({
     };
   },
 });
+*/
 </script>

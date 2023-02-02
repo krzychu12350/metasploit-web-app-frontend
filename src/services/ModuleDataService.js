@@ -14,6 +14,9 @@ class ModuleService {
     payloads() {
         return http.post(METHOD_TYPE + "/payloads");
     }
+    nops() {
+        return http.post(METHOD_TYPE + "/nops");
+    }
     encoders() {
         return http.post(METHOD_TYPE + "/encoders");
     }

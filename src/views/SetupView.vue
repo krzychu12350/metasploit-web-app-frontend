@@ -187,8 +187,10 @@ import { useMsfAuth } from "../stores/useMsfAuth";
 import ToastService from "../services/ToastService";
 import { useRouter } from "vue-router";
 import { Form, Field, ErrorMessage } from "vee-validate";
+import { onUnmounted } from "vue";
 
 import * as yup from "yup";
+import ConsoleDataService from "../services/ConsoleDataService";
 
 const isHttpEnabled = ref(false);
 const router = useRouter();
@@ -232,7 +234,6 @@ const schema = yup.object({
 });
 
 const onSubmit = (credentials) => {
-  credentials.ssl = isHttpEnabled.value;
   /*
   const credentials = {
     user_password: "pass123",
@@ -243,6 +244,7 @@ const onSubmit = (credentials) => {
     web_server_uri: "/api/1.0",
   };
   */
+  credentials.ssl = isHttpEnabled.value;
   console.log(credentials);
   connectWithMsf(credentials);
 };
@@ -252,6 +254,11 @@ function onInvalidSubmit({ values, errors, results }) {
   console.log(errors); // a map of field names and their first error message
   console.log(results); // a detailed map of field names and their validation results
 }
+
+onUnmounted(() => {
+  //alert("create console");
+  ConsoleDataService.create();
+});
 
 // too many attempts
 const isTooManyAttempts = computed(() => {

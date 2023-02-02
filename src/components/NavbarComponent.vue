@@ -115,6 +115,86 @@
             class="text-base font-medium text-gray-300 hover:text-gray-100"
             >Analysis</router-link
           >
+          <Popover class="relative" v-slot="{ open }">
+            <PopoverButton
+              :class="[
+                open ? 'text-gray-100' : 'text-gray-300',
+                'group inline-flex items-center rounded-md bg-gray-800 text-base font-medium hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
+              ]"
+            >
+              <span>Modules</span>
+              <ChevronDownIcon
+                :class="[
+                  open ? 'text-gray-100' : 'text-gray-300',
+                  'ml-2 h-5 w-5 group-hover:text-gray-100',
+                ]"
+                aria-hidden="true"
+              />
+            </PopoverButton>
+
+            <transition
+              enter-active-class="transition ease-out duration-200"
+              enter-from-class="opacity-0 translate-y-1"
+              enter-to-class="opacity-100 translate-y-0"
+              leave-active-class="transition ease-in duration-150"
+              leave-from-class="opacity-100 translate-y-0"
+              leave-to-class="opacity-0 translate-y-1"
+            >
+              <PopoverPanel
+                class="absolute z-10 -ml-4 mt-3 w-screen max-w-md transform px-2 sm:px-0 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2"
+              >
+                <!--
+                  {
+    name: "Nmap scan",
+    description: "Scan a network and save result in the database",
+    href: "#",
+    icon: ChartBarIcon,
+  },
+                -->
+                <div
+                  class="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"
+                >
+                  <div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
+                    <a
+                      class="-m-3 flex items-start rounded-lg p-3 hover:bg-gray-50 cursor-pointer"
+                      @click="emit('showModulesSearchEngine')"
+                    >
+                      <component
+                        :is="WindowIcon"
+                        class="h-6 w-6 flex-shrink-0 text-indigo-600"
+                        aria-hidden="true"
+                      />
+                      <div class="ml-4">
+                        <p class="text-base font-medium text-gray-900">Search Module</p>
+                        <p class="mt-1 text-sm text-gray-500">
+                          Find specific module and run its
+                        </p>
+                      </div>
+                    </a>
+                  </div>
+                  <!--
+                  <div
+                    class="space-y-6 bg-gray-50 px-5 py-5 sm:flex sm:space-y-0 sm:space-x-10 sm:px-8"
+                  >
+                    <div v-for="item in callsToAction" :key="item.name" class="flow-root">
+                      <a
+                        :href="item.href"
+                        class="-m-3 flex items-center rounded-md p-3 text-base font-medium text-gray-900 hover:bg-gray-100"
+                      >
+                        <component
+                          :is="item.icon"
+                          class="h-6 w-6 flex-shrink-0 text-gray-400"
+                          aria-hidden="true"
+                        />
+                        <span class="ml-3">{{ item.name }}</span>
+                      </a>
+                    </div>
+                  </div>
+                  -->
+                </div>
+              </PopoverPanel>
+            </transition>
+          </Popover>
           <router-link
             to="/connections"
             class="text-base font-medium text-gray-300 hover:text-gray-100"
@@ -333,19 +413,30 @@ import {
   Squares2X2Icon,
   XMarkIcon,
 } from "@heroicons/vue/24/outline";
-import { ChevronDownIcon } from "@heroicons/vue/20/solid";
+import { ChevronDownIcon, WindowIcon } from "@heroicons/vue/20/solid";
 import useEventsBus from "../composables/eventBus";
 import { useMsfAuth } from "../stores/useMsfAuth";
 import { useRouter } from "vue-router";
+import { ref, inject } from "vue";
+
+const $loading = inject("$loading");
+const fullPage = ref(true);
 
 const { emit } = useEventsBus();
 const router = useRouter();
 
 function handleLogout() {
+  const loader = $loading.show();
   useMsfAuth()
     .logout()
-    .then(() => router.push("/setup"))
-    .catch((err) => console.log(err.response.data));
+    .then(() => {
+      router.push("/setup");
+      loader.hide();
+    })
+    .catch((err) => {
+      loader.hide();
+      console.log(err.response.data);
+    });
 }
 
 const solutions = [
@@ -361,25 +452,23 @@ const solutions = [
     href: "#",
     icon: CursorArrowRaysIcon,
   },
+];
+
+const modulesActions = [
   {
-    name: "Security",
-    description: "Your customers' data will be safe and secure.",
+    name: "Nmap scan",
+    description: "Scan a network and save result in the database",
     href: "#",
-    icon: ShieldCheckIcon,
+    icon: ChartBarIcon,
   },
   {
-    name: "Integrations",
-    description: "Connect with third-party tools that you're already using.",
+    name: "Engagement",
+    description: "Speak directly to your customers in a more meaningful way.",
     href: "#",
-    icon: Squares2X2Icon,
-  },
-  {
-    name: "Automations",
-    description: "Build strategic funnels that will drive your customers to convert",
-    href: "#",
-    icon: ArrowPathIcon,
+    icon: CursorArrowRaysIcon,
   },
 ];
+
 const callsToAction = [
   { name: "Watch Demo", href: "#", icon: PlayIcon },
   { name: "Contact Sales", href: "#", icon: PhoneIcon },

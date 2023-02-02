@@ -1,38 +1,22 @@
 <template>
   <NavbarComponent />
   <BreadcrumbComponent />
+  <JobsTableComponent></JobsTableComponent>
+  <JobKillingModal></JobKillingModal>
+  <!--
   <h1>Jobs view</h1>
   <div v-for="job in jobs">
     <p>{{ job }}</p>
   </div>
+  -->
 </template>
 
 <script setup>
 import { ref, onBeforeMount } from "vue";
 import NavbarComponent from "../components/NavbarComponent.vue";
 import BreadcrumbComponent from "../components/BreadcrumbComponent.vue";
-import JobDataService from "../services/JobDataService";
-/*
-export default defineComponent({
-  name: "JobsView",
-  components: {
-    NavbarComponent,
-    BreadcrumbComponent,
-  },
-  setup() {
-    return {};
-  },
-});
-*/
-const jobs = ref();
-
-onBeforeMount(() => {
-  JobDataService.list().then((res) => {
-    //console.log(res.data);
-    jobs.value = res.data.data;
-    console.log(jobs.value);
-  });
-});
+import JobsTableComponent from "../components/jobs/JobsTableComponent.vue";
+import JobKillingModal from "../components/jobs/JobKillingModal.vue";
 </script>
 
 <style scoped></style>

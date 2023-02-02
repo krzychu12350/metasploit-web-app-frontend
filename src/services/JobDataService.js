@@ -5,11 +5,11 @@ class JobService {
     list() {
         return http.post(METHOD_TYPE + "/list");
     }
-    info() {
-        return http.post(METHOD_TYPE + "/info");
+    info(data) {
+        return http.post(METHOD_TYPE + "/info", data);
     }
-    stop() {
-        return http.post(METHOD_TYPE + "/stop");
+    stop(data) {
+        return http.post(METHOD_TYPE + "/stop", data);
     }
 }
 

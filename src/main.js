@@ -12,6 +12,8 @@ import { createPinia } from 'pinia'
 import {LoadingPlugin} from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
 
+import InstantSearch from 'vue-instantsearch/vue3/es'
+
 const pinia = createPinia()
 
 export const app = createApp(App)
@@ -28,6 +30,7 @@ export const app = createApp(App)
     // slots
 })
 .use(pinia)
+.use(InstantSearch)
 .use(contextmenu)
 .use(shell)
 .use(router)

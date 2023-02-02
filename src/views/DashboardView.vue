@@ -17,6 +17,8 @@
                 </div>
                  /End replace -->
         <ModuleStatsComponent />
+        <ModulesSearchEngineComponent></ModulesSearchEngineComponent>
+        <AlgoliaInstantSearch></AlgoliaInstantSearch>
       </div>
     </main>
   </div>
@@ -25,12 +27,13 @@
 import { onMounted } from "vue";
 import BreadcrumbComponent from "../components/BreadcrumbComponent.vue";
 import ActionsComponent from "../components/ActionsComponent.vue";
-import SessionsComponent from "../components/SessionsComponent.vue";
+import ModulesSearchEngineComponent from "../components/modules/ModulesSearchEngineComponent.vue";
 import NavbarComponent from "../components/NavbarComponent.vue";
 import ConsoleDataService from "../services/ConsoleDataService";
 import ModuleStatsComponent from "../components/ModuleStatsComponent.vue";
 import AuthService from "../services/AuthDataService";
 import ToastService from "../services/ToastService";
+import AlgoliaInstantSearch from "../components/modules/AlgoliaInstantSearch.vue";
 
 function test() {
   //ToastService.showToast("test", "default");
