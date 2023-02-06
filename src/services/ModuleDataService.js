@@ -20,7 +20,7 @@ class ModuleService {
     encoders() {
         return http.post(METHOD_TYPE + "/encoders");
     }
-    info(data ){
+    info(data){
         return http.post(METHOD_TYPE + "/info", data);
     }
     options() {

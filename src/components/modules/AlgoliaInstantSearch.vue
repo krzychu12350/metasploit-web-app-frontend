@@ -1,4 +1,5 @@
 <template>
+  fff
   <input type="text" v-model="search" />
   <p v-if="noResults">Sorry, no results for {{ search }}</p>
   <div v-for="(r, i) in results" :key="i">
@@ -16,7 +17,7 @@ const myList = ["aaaa", "bbbb", "cccc", "abc", "xyz"];
 const { search, results, noResults } = useVueFuse(modules);
 
 async function getAllExploits() {
-  return ModuleDataService.payloads()
+  return ModuleDataService.exploits()
     .then(async (res) => {
       modules.value = await res.data.data.modules;
       console.log(modules);

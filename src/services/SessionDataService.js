@@ -8,23 +8,23 @@ class SessionService {
     stop(data) {
         return http.post(METHOD_TYPE + "/stop", data);
     }
-    shellRead() {
-        return http.post(METHOD_TYPE + "/shell-read");
+    shellRead(data) {
+        return http.post(METHOD_TYPE + "/shell-read", data);
     }
-    shellWrite() {
-        return http.post(METHOD_TYPE + "/shell-write");
+    shellWrite(data) {
+        return http.post(METHOD_TYPE + "/shell-write", data);
     }
-    meterpreterWrite() {
-        return http.post(METHOD_TYPE + "/meterpreter-write");
+    meterpreterWrite(data) {
+        return http.post(METHOD_TYPE + "/meterpreter-write", data);
     }
-    meterpreterRead() {
-        return http.post(METHOD_TYPE + "/meterpreter-read");
+    meterpreterRead(data) {
+        return http.post(METHOD_TYPE + "/meterpreter-read", data);
     }
     meterpreterRun() {
-        return http.post(METHOD_TYPE + "/meterpreter-run");
+        return http.post(METHOD_TYPE + "/meterpreter-run", data);
     }
-    meterpreterScript() {
-        return http.post(METHOD_TYPE + "/meterpreter-script");
+    meterpreterScript(data) {
+        return http.post(METHOD_TYPE + "/meterpreter-script", data);
     }
     meterpreterSession() {
         return http.post(METHOD_TYPE + "/meterpreter-session");
@@ -35,17 +35,17 @@ class SessionService {
     compatibleModules() {
         return http.post(METHOD_TYPE + "/compatible-modules");
     }
-    shellUpgrade() {
-        return http.post(METHOD_TYPE + "/shell-upgrade");
+    shellUpgrade(data) {
+        return http.post(METHOD_TYPE + "/shell-upgrade", data);
     }
-    ringClear() {
-        return http.post(METHOD_TYPE + "/ring-clear");
+    ringClear(data) {
+        return http.post(METHOD_TYPE + "/ring-clear", data);
     }
-    ringLast() {
-        return http.post(METHOD_TYPE + "/ring-last");
+    ringLast(data) {
+        return http.post(METHOD_TYPE + "/ring-last", data);
     }
-    ringPut() {
-        return http.post(METHOD_TYPE + "/ring-put");
+    ringPut(data) {
+        return http.post(METHOD_TYPE + "/ring-put", data);
     }
 }
 

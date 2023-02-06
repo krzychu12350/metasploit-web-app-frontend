@@ -165,7 +165,7 @@
                         aria-hidden="true"
                       />
                       <div class="ml-4">
-                        <p class="text-base font-medium text-gray-900">Search Module</p>
+                        <p class="text-base font-medium text-gray-900">Run a module</p>
                         <p class="mt-1 text-sm text-gray-500">
                           Find specific module and run its
                         </p>
@@ -199,6 +199,11 @@
             to="/connections"
             class="text-base font-medium text-gray-300 hover:text-gray-100"
             >RPC Connections</router-link
+          >
+          <router-link
+            to="/plugins"
+            class="text-base font-medium text-gray-300 hover:text-gray-100"
+            >Plugins</router-link
           >
           <!--
           { name: "Dashboard", href: "/", current: true }, { name: "Analysis", href:

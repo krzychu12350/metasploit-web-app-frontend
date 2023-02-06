@@ -44,7 +44,7 @@
   </div>
   -->
   <div>
-    <h2 class="text-lg leading-6 font-medium text-gray-900">Modules Statistics</h2>
+    <h2 class="text-xl leading-6 font-semibold text-gray-900">Modules Statistics</h2>
     <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
       <div
         v-for="(stat, index) in moduleStats"

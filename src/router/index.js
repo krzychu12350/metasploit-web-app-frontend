@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import HomeView from "../views/DashboardView.vue";
 import SetupView from "../views/SetupView.vue";
-//import NotFoundViewVue from "../views/NotFoundView.vue";
+import NotFoundView from "../views/NotFoundView.vue";
 import SessionsView from "../views/SessionsView.vue";
 import TeamsView from "../views/TeamsView.vue";
 import AnalysisView from "../views/AnalysisView.vue";
@@ -9,6 +9,7 @@ import JobsView from "../views/JobsView.vue";
 import PayloadGeneratorView from "../views/PayloadGeneratorView.vue";
 import SingleSessionView from "../views/SingleSessionView.vue";
 import ModulesView from "../views/ModulesView.vue";
+import SessionInteractWorkspaceView from '../views/SessionInteractWorkspaceView.vue'
 import { useMsfAuth } from '../stores/useMsfAuth';
 
 const routes = [
@@ -57,13 +58,16 @@ const routes = [
         name: "Setup",
         component: SetupView,
     },
-    /*
+    {
+        path: "/session-interact",
+        component: SessionInteractWorkspaceView,
+    },
     {
         path: '/:pathMatch(.*)*', // Unrecognized path automatically matches 404
         name: "NotFoundView",
-        component: NotFoundViewVue,
+        component: NotFoundView,
     },
-    */
+    
 
 ]
 
