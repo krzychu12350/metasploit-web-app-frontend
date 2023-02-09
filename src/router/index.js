@@ -44,7 +44,7 @@ const routes = [
         component: SessionsView,
     },
     {
-        path: "/sessions/1",
+        path: "/sessions/3",
         name: "SingleSessionView",
         component: SingleSessionView,
     },
@@ -59,8 +59,9 @@ const routes = [
         component: SetupView,
     },
     {
-        path: "/session-interact",
+        path: "/sessions/:id",
         component: SessionInteractWorkspaceView,
+        params: true,
     },
     {
         path: '/:pathMatch(.*)*', // Unrecognized path automatically matches 404

@@ -82,8 +82,13 @@
                     {{ session.via_payload }}
                   </td>
                   <td
-                    class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+                    class="flex relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                   >
+                    <ArrowRightOnRectangleIcon
+                      class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
+                      @click="router.push('/sessions/' + key)"
+                      aria-hidden="true"
+                    />
                     <XMarkIcon
                       class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
                       @click="emit('showSessionKillingModal', { sessionId: key })"
@@ -101,12 +106,14 @@
 </template>
 
 <script setup>
-import { HomeIcon } from "@heroicons/vue/24/solid";
+import { HomeIcon, ArrowRightOnRectangleIcon } from "@heroicons/vue/24/solid";
 import SessionDataService from "../../services/SessionDataService";
 import { watch, ref, reactive, onBeforeMount, onMounted } from "vue";
 import { PencilIcon, XMarkIcon, CalculatorIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const { bus, emit } = useEventsBus();
 
 const sessions2 = [
