@@ -12,6 +12,7 @@ const CoreCommands = {
     DOWNLOAD: "download",
     RM: "rm",
     RMDIR: "rmdir",
+    MKDIR: "mkdir",
 };
 
  const NetworkingCommands = {

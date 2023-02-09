@@ -17,6 +17,7 @@
           <ArrowSmallUpIcon
             @click="goToParentDir()"
             class="w-10 h-10 text-indigo-500 cursor-pointer"
+            v-tooltip.top="'Go to the parent directory'"
           ></ArrowSmallUpIcon>
         </div>
 
@@ -28,9 +29,20 @@
             id="path"
             :value="victimLwd"
             class="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-            placeholder="you@example.com"
+            placeholder="Path..."
           />
         </div>
+        <div class="ml-4">
+          <font-awesome-icon
+            @click="emit('showCreateNewDirectoryModal')"
+            icon="fa-solid fa-folder-plus"
+            class="w-10 h-10 text-indigo-500 cursor-pointer"
+            v-tooltip.top="'Make new directory'"
+          />
+        </div>
+        <diV>
+          <button>Upload</button>
+        </diV>
       </div>
 
       <div class="grid grid-cols-6">
@@ -57,6 +69,7 @@
         <v-contextmenu-item v-if="clickedFile[2] == 'fil'" @click="downloadSpecificFile()"
           >Download</v-contextmenu-item
         >
+        <v-contextmenu-item>Rename (mv command)</v-contextmenu-item>
         <v-contextmenu-item
           @click="
             emit('showFileDeletingModal', {
@@ -220,6 +233,7 @@
   <file-or-dir-props-modal></file-or-dir-props-modal>
   <file-deleting-modal></file-deleting-modal>
   <file-content-modal>></file-content-modal>
+  <create-new-directory-modal></create-new-directory-modal>
 </template>
 
 <script setup>
@@ -231,6 +245,7 @@ import useEventsBus from "../../../composables/eventBus";
 import FileOrDirPropsModal from "./fileSystem/FilePropsModal.vue";
 import FileDeletingModal from "./fileSystem/FileDeletingModal.vue";
 import FileContentModal from "./fileSystem/FileContentModal.vue";
+import CreateNewDirectoryModal from "./fileSystem/CreateNewDirectoryModal.vue";
 /*arrow-small-up*/
 import { ArrowSmallUpIcon } from "@heroicons/vue/20/solid";
 import ToastService from "../../../services/ToastService";
@@ -401,8 +416,32 @@ watch(
   }
 );
 
+watch(
+  () => bus.value.get("createNewDirectory"),
+  async (val) => {
+    const dirName = val[0].directory_name;
+
+    const responseMessage = await createNewDirectory(dirName);
+    console.log(responseMessage);
+    if (responseMessage.includes("Operation failed"))
+      ToastService.showToast(
+        "Cannot create a file when that file already exists. ",
+        "error"
+      );
+    else ToastService.showToast("Created " + dirName + " directory");
+  }
+);
+
 async function goToParentDir() {
   await writeToMeterpreterSession(meterpreterCommands.FileSystemCommands.CD + " ..");
   await readFileSystemData();
+}
+async function createNewDirectory(directoryName) {
+  const response = await writeToMeterpreterSession(
+    meterpreterCommands.FileSystemCommands.MKDIR + " " + directoryName
+  );
+  await readFileSystemData();
+
+  return response;
 }
 </script>
