@@ -40,9 +40,9 @@
             v-tooltip.top="'Make new directory'"
           />
         </div>
-        <diV>
+        <div>
           <button>Upload</button>
-        </diV>
+        </div>
       </div>
 
       <div class="grid grid-cols-6">
@@ -61,7 +61,13 @@
             @click.right="changeClickedFile(row)"
             v-contextmenu:contextmenu
           />
-          <span class="text-xs"> {{ row[4] }}</span>
+          <input
+            @blur="handleBlurInput(row[4])"
+            class="text-xs"
+            :value="row[4]"
+            :id="row[4]"
+            disabled="true"
+          />
         </div>
       </div>
       <v-contextmenu ref="contextmenu">
@@ -69,7 +75,9 @@
         <v-contextmenu-item v-if="clickedFile[2] == 'fil'" @click="downloadSpecificFile()"
           >Download</v-contextmenu-item
         >
-        <v-contextmenu-item>Rename (mv command)</v-contextmenu-item>
+        <v-contextmenu-item @click="renameFile(clickedFile)"
+          >Rename (mv command)</v-contextmenu-item
+        >
         <v-contextmenu-item
           @click="
             emit('showFileDeletingModal', {
@@ -260,6 +268,7 @@ let meterpreterData = ref();
 let rows = reactive([]);
 let victimLwd = ref();
 let clickedFile = ref();
+let isFileNameInputDisabled = ref(true);
 const { bus, emit } = useEventsBus();
 
 onBeforeMount(async () => {
@@ -443,5 +452,24 @@ async function createNewDirectory(directoryName) {
   await readFileSystemData();
 
   return response;
+}
+
+async function renameFile(file) {
+  const input = document.getElementById(file[4]);
+  //input.style.width = "10px";
+  input.style.width = input.value.length + 2 + "ch";
+  input.disabled = false;
+  input.focus();
+  console.log(input);
+  //isFileNameInputDisabled.value = false;
+}
+async function handleBlurInput(oldfileName) {
+  const input = document.getElementById(oldfileName);
+  input.disabled = true;
+  const newFileName = input.value;
+  // alert(oldfileName);
+  await writeToMeterpreterSession(
+    meterpreterCommands.FileSystemCommands.MV + " " + oldfileName + " " + newFileName
+  );
 }
 </script>

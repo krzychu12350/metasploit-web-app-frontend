@@ -13,6 +13,7 @@ const CoreCommands = {
     RM: "rm",
     RMDIR: "rmdir",
     MKDIR: "mkdir",
+    MV: "mv",
 };
 
  const NetworkingCommands = {
