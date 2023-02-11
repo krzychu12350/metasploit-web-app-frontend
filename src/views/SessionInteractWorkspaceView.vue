@@ -53,7 +53,7 @@ import SystemInfoComponent from "../components/sessions/sessionInteract/SystemIn
 import NetworkComponent from "../components/sessions/sessionInteract/NetworkInfoComponent.vue";
 import MeterpreterSessionComponents from "../constants/MeterpreterSessionComponents";
 import UserInterfaceComponent from "../components/sessions/sessionInteract/UserInterfaceComponent.vue";
-import FileSystemComponent from "../components/sessions/sessionInteract/FileSystemComponent.vue";
+import FileSystemComponent from "../components/sessions/sessionInteract/fileSystem/victim/VictimFileSystemComponent.vue";
 import { defineAsyncComponent } from "vue";
 import useEventsBus from "../composables/eventBus";
 import { useRoute } from "vue-router";

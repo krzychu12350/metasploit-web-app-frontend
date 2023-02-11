@@ -103,7 +103,7 @@ import {
   TransitionRoot,
 } from "@headlessui/vue";
 import { ExclamationTriangleIcon, XMarkIcon } from "@heroicons/vue/24/outline";
-import useEventsBus from "../../../../composables/eventBus";
+import useEventsBus from "../../../../../../composables/eventBus";
 
 let open = ref(false);
 let filePropsData = reactive([]);

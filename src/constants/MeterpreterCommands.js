@@ -14,6 +14,14 @@ const CoreCommands = {
     RMDIR: "rmdir",
     MKDIR: "mkdir",
     MV: "mv",
+    CHECKSUM: "checksum",
+    CP: "cp",
+    SHOW_MOUNT: "show_mount",
+    LCD: "lcd",
+    LLS: "lls",
+    LPWD: "lpwd",
+    GETLWD: "getlwd",
+    UPLOAD: "upload",
 };
 
  const NetworkingCommands = {

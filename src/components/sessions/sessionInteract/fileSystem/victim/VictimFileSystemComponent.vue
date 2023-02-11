@@ -21,32 +21,61 @@
           ></ArrowSmallUpIcon>
         </div>
 
-        <div class="w-5/6">
+        <div class="w-5/6 mr-2">
           <label for="email" class="sr-only">Path</label>
           <input
+            v-on:keyup.enter="changeCurrentDirectory()"
             type="text"
             name="path"
             id="path"
-            :value="victimLwd"
+            v-model="victimLwd"
             class="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
             placeholder="Path..."
           />
         </div>
-        <div class="ml-4">
+        <div>
+          <label for="email" class="sr-only block text-sm font-medium text-gray-700"
+            >Email</label
+          >
+          <div class="relative rounded-md shadow-sm">
+            <div
+              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+            >
+              <MagnifyingGlassIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
+            </div>
+            <input
+              type="text"
+              name="search"
+              id="search"
+              v-model="search"
+              class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+              placeholder="Search"
+            />
+          </div>
+        </div>
+
+        <div class="ml-2 flex items-center">
           <font-awesome-icon
             @click="emit('showCreateNewDirectoryModal')"
             icon="fa-solid fa-folder-plus"
-            class="w-10 h-10 text-indigo-500 cursor-pointer"
+            class="w-8 h-8 text-indigo-500 cursor-pointer"
             v-tooltip.top="'Make new directory'"
           />
-        </div>
-        <div>
-          <button>Upload</button>
+          <font-awesome-icon
+            class="w-9 h-9 text-indigo-500 cursor-pointer ml-2"
+            icon="fa-solid fa-cloud-arrow-up"
+            v-tooltip.top="'Upload a file'"
+            @click="emit('showAttackerFilesUploadModal', { victim_lwd: victimLwd })"
+          />
         </div>
       </div>
 
       <div class="grid grid-cols-6">
-        <div v-for="(row, rowIdx) in rows" :key="rowIdx" class="flex flex-col p-1">
+        <div
+          v-for="(row, rowIdx) in filteredFiles"
+          :key="rowIdx"
+          class="flex flex-col p-1"
+        >
           <font-awesome-icon
             v-if="row[2] == 'dir'"
             class="w-10 h-10 text-yellow-400"
@@ -63,6 +92,7 @@
           />
           <input
             @blur="handleBlurInput(row[4])"
+            v-on:keyup.enter="handleBlurInput(row[4])"
             class="text-xs"
             :value="row[4]"
             :id="row[4]"
@@ -75,9 +105,8 @@
         <v-contextmenu-item v-if="clickedFile[2] == 'fil'" @click="downloadSpecificFile()"
           >Download</v-contextmenu-item
         >
-        <v-contextmenu-item @click="renameFile(clickedFile)"
-          >Rename (mv command)</v-contextmenu-item
-        >
+        <v-contextmenu-item>Copy</v-contextmenu-item>
+        <v-contextmenu-item @click="renameFile(clickedFile)">Rename</v-contextmenu-item>
         <v-contextmenu-item
           @click="
             emit('showFileDeletingModal', {
@@ -96,8 +125,8 @@
         >
 
         <v-contextmenu-submenu title="Checksum">
-          <v-contextmenu-item>MDA</v-contextmenu-item>
-          <v-contextmenu-item>SDH 1</v-contextmenu-item>
+          <v-contextmenu-item @click="getFileCheckSum('md5')">MD5</v-contextmenu-item>
+          <v-contextmenu-item @click="getFileCheckSum('sha1')">SHA 1</v-contextmenu-item>
         </v-contextmenu-submenu>
       </v-contextmenu>
 
@@ -242,21 +271,25 @@
   <file-deleting-modal></file-deleting-modal>
   <file-content-modal>></file-content-modal>
   <create-new-directory-modal></create-new-directory-modal>
+  <file-checksum-modal></file-checksum-modal>
+  <files-upload-modal></files-upload-modal>
 </template>
 
 <script setup>
-import { ref, reactive, onBeforeMount, inject, watch } from "vue";
-import SessionDataService from "../../../services/SessionDataService";
+import { ref, reactive, onBeforeMount, inject, watch, computed } from "vue";
+import SessionDataService from "../../../../../services/SessionDataService";
 import { useRoute } from "vue-router";
-import meterpreterCommands from "../../../constants/MeterpreterCommands";
-import useEventsBus from "../../../composables/eventBus";
-import FileOrDirPropsModal from "./fileSystem/FilePropsModal.vue";
-import FileDeletingModal from "./fileSystem/FileDeletingModal.vue";
-import FileContentModal from "./fileSystem/FileContentModal.vue";
-import CreateNewDirectoryModal from "./fileSystem/CreateNewDirectoryModal.vue";
+import meterpreterCommands from "../../../../../constants/MeterpreterCommands";
+import useEventsBus from "../../../../../composables/eventBus";
+import FileOrDirPropsModal from "./components/FilePropsModal.vue";
+import FileDeletingModal from "./components/FileDeletingModal.vue";
+import FileContentModal from "./components/FileContentModal.vue";
+import CreateNewDirectoryModal from "./components/CreateNewDirectoryModal.vue";
+import FileChecksumModal from "./components/FileChecksumModal.vue";
+import FilesUploadModal from "../attacker/FilesUploadModal.vue";
 /*arrow-small-up*/
-import { ArrowSmallUpIcon } from "@heroicons/vue/20/solid";
-import ToastService from "../../../services/ToastService";
+import { ArrowSmallUpIcon, MagnifyingGlassIcon } from "@heroicons/vue/20/solid";
+import ToastService from "../../../../../services/ToastService";
 
 const $loading = inject("$loading");
 const formContainer = ref(null);
@@ -268,6 +301,7 @@ let meterpreterData = ref();
 let rows = reactive([]);
 let victimLwd = ref();
 let clickedFile = ref();
+let search = ref("");
 let isFileNameInputDisabled = ref(true);
 const { bus, emit } = useEventsBus();
 
@@ -302,7 +336,7 @@ async function readFileSystemData() {
     meterpreterCommands.FileSystemCommands.LS
   );
   console.log(fileSystemData);
-  processFileSystemData(fileSystemData);
+  await processFileSystemData(fileSystemData);
   victimLwd.value = await writeToMeterpreterSession(
     meterpreterCommands.FileSystemCommands.GETWD
   );
@@ -466,10 +500,40 @@ async function renameFile(file) {
 async function handleBlurInput(oldfileName) {
   const input = document.getElementById(oldfileName);
   input.disabled = true;
+  input.blur();
   const newFileName = input.value;
   // alert(oldfileName);
-  await writeToMeterpreterSession(
-    meterpreterCommands.FileSystemCommands.MV + " " + oldfileName + " " + newFileName
-  );
+  if (oldfileName != newFileName) {
+    await writeToMeterpreterSession(
+      meterpreterCommands.FileSystemCommands.MV + " " + oldfileName + " " + newFileName
+    );
+  }
 }
+
+async function changeCurrentDirectory() {
+  //const test = await victimLwd.value.replace(/\\/g, "/");
+  //alert(test);
+  await writeToMeterpreterSession(
+    meterpreterCommands.FileSystemCommands.CD + " " + victimLwd.value.replace(/\\/g, "/")
+  );
+  await readFileSystemData();
+}
+
+async function getFileCheckSum(algoType) {
+  const fileCheckSum = await writeToMeterpreterSession(
+    meterpreterCommands.FileSystemCommands.CHECKSUM +
+      " " +
+      algoType +
+      " " +
+      clickedFile.value[4]
+  );
+
+  emit("showFileChecksumModal", { file_checksum: fileCheckSum });
+}
+
+const filteredFiles = computed(() => {
+  return search.value != ""
+    ? rows.filter((file) => file[4]?.toLowerCase().includes(search.value.toLowerCase()))
+    : rows;
+});
 </script>

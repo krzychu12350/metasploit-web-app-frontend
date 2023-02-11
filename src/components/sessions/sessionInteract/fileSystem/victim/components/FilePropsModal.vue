@@ -44,11 +44,16 @@
               </div>
               <div class="mt-3 text-center sm:mt-5">
                 <DialogTitle as="h3" class="text-lg leading-6 font-medium text-gray-900">
-                  File content
+                  Properties
                 </DialogTitle>
 
                 <div class="flex flex-col mt-2">
-                  <span>{{ fileContent }}</span>
+                  <span v-if="filePropsData[2] == 'dir'">Type: File folder</span>
+                  <span v-else>Type: File</span>
+                  <span>Name: {{ filePropsData[4] }}</span>
+                  <span>Size: {{ filePropsData[1] }}</span>
+                  <span>Last modifed: {{ filePropsData[3].slice(0, 19) }}</span>
+                  <span>Mode: {{ filePropsData[0] }}</span>
 
                   <!--
                   <p class="text-sm text-gray-500">
@@ -88,12 +93,12 @@ import {
 } from "@headlessui/vue";
 
 import { CheckIcon } from "@heroicons/vue/24/outline";
-import useEventsBus from "../../../../composables/eventBus";
+import useEventsBus from "../../../../../../composables/eventBus";
 
 const { bus } = useEventsBus();
 
 const open = ref(false);
-let fileContent = reactive([]);
+let filePropsData = reactive([]);
 
 function toggleModal() {
   open.value = !open.value;
@@ -104,13 +109,12 @@ onMounted(() => {
 });
 
 watch(
-  () => bus.value.get("showFileContentModal"),
+  () => bus.value.get("showFileOrDirDetailsModal"),
   (val) => {
     toggleModal();
     //alert("testt");
     //console.log(val[0].host_id);
-    fileContent = val[0].file_content;
-    console.log(fileContent);
+    filePropsData = val[0].clicked_file;
   }
 );
 </script>

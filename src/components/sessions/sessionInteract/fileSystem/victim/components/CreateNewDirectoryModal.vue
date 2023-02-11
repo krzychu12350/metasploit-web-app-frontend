@@ -120,7 +120,7 @@ import {
 } from "@headlessui/vue";
 
 import { CheckIcon } from "@heroicons/vue/24/outline";
-import useEventsBus from "../../../../composables/eventBus";
+import useEventsBus from "../../../../../../composables/eventBus";
 
 const { bus, emit } = useEventsBus();
 
