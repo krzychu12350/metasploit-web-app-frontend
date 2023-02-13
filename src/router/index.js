@@ -44,7 +44,7 @@ const routes = [
         component: SessionsView,
     },
     {
-        path: "/sessions/3",
+        path: "/sessions/55",
         name: "SingleSessionView",
         component: SingleSessionView,
     },

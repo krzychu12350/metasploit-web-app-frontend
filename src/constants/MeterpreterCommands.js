@@ -40,10 +40,20 @@ const CoreCommands = {
     PS: "ps",
     GETPID: "getpid",
     SYSINFO: "sysinfo",
+    KILL: "kill",
+    SHUTDOWN: "shutdown",
+    REBOOT: "reboot",
 };
 
  const UserInterfaceCommands = {
-  
+    KEYBOARD_SEND: "keyboard_send", 
+    KEYEVENT: "keyevent", 
+    KEYSCAN_DUMP: "keyscan_dump",
+    KEYSCAN_START: "keyscan_start",
+    KEYSCAN_STOP: "keyscan_stop",
+    MOUSE: "mouse",
+    UICTL: "uictl",
+    IDLETIME: "idletime",
 };
 
  const WebcamCommands = {

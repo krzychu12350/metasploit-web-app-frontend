@@ -16,7 +16,7 @@ import HelloWorld from "./components/HelloWorld.vue";
   -->
 
   <router-view />
-  <menu-view />
+  <RunModuleModalComponent></RunModuleModalComponent>
 </template>
 
 <style scoped>

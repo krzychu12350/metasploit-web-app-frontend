@@ -97,7 +97,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import ModuleDataService from "@/services/ModuleDataService";
+import ModuleDataService from "../services/ModuleDataService";
 const people = [
   {
     name: "Jane Cooper",
@@ -133,7 +133,7 @@ export default defineComponent({
 
   methods: {
     async getAllExploits() {
-      return ModuleService.exploits()
+      return ModuleDataService.exploits()
         .then((response) => {
           //let exploits = response.data.data.modules;
           /*
@@ -157,7 +157,7 @@ export default defineComponent({
         moduleType: "exploits",
       };
 
-      return ModuleService.info(data)
+      return ModuleDataService.info(data)
         .then((response) => {
           //this.singleModule = response.data.data;
           return response.data.data;
@@ -208,8 +208,8 @@ export default defineComponent({
       slicedModules.forEach((x: any) => {
         /// console.log(x);
         currentModules.push(x);
-        let a = this.getExploitDetails("aix/local/ibstat_path");
-        console.log(a);
+        //let a = this.getExploitDetails("aix/local/ibstat_path");
+        //console.log(a);
         //currentModules.push(a);
         //this.getExploitDetails(x);
       });

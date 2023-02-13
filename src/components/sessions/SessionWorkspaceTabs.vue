@@ -17,10 +17,10 @@
       <div class="border-b border-gray-200">
         <nav class="-mb-px flex space-x-8" aria-label="Tabs">
           <a
-            v-for="tab in tabs"
+            v-for="(tab, index) in tabs"
             :key="tab.name"
             :href="tab.href"
-            @click="changeCurrentTab(tab.name)"
+            @click="changeCurrentTab(tab, index)"
             :class="[
               tab.current
                 ? 'border-indigo-500 text-indigo-600'
@@ -50,17 +50,29 @@
 <script setup>
 import { InformationCircleIcon, UserIcon, UsersIcon } from "@heroicons/vue/24/solid";
 import useEventsBus from "../../composables/eventBus";
+import { reactive, onMounted } from "vue";
 
-const tabs = [
+const tabs = reactive([
   { name: "System Info", href: "#", icon: InformationCircleIcon, current: false },
   { name: "Network", href: "#", icon: InformationCircleIcon, current: false },
-  { name: "File System", href: "#", icon: InformationCircleIcon, current: true },
+  { name: "File System", href: "#", icon: InformationCircleIcon, current: false },
   { name: "User Interface", href: "#", icon: InformationCircleIcon, current: false },
-];
+  { name: "Processes", href: "#", icon: InformationCircleIcon, current: false },
+  { name: "Power", href: "#", icon: InformationCircleIcon, current: false },
+]);
+
+onMounted(() => {
+  tabs[0].current = true;
+});
 
 const { emit } = useEventsBus();
 
-function changeCurrentTab(tabName) {
-  emit("setActiveTab", { tab_name: tabName.replace(/\s/g, "") });
+function changeCurrentTab(tab, index) {
+  tabs.map((t) => {
+    t.current = false;
+  });
+  tabs[index].current = true;
+
+  emit("setActiveTab", { tab_name: tab.name.replace(/\s/g, "") });
 }
 </script>

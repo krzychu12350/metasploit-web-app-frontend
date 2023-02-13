@@ -1,21 +1,26 @@
 <template>
+  <!--
   <NavbarComponent />
   <BreadcrumbComponent />
   <div class="min-h-full">
-    <!--<ActionsComponent />-->
+
     <main>
       <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <!-- Replace with your content
-                <div class="px-4 py-4 sm:px-0">
-                    <div class="border-4 border-dashed border-gray-200 rounded-lg h-96" />
-                </div>
-                 /End replace -->
-
-        <SessionsTableComponent></SessionsTableComponent>
-        <SessionKillingModal></SessionKillingModal>
+    
+        
       </div>
     </main>
   </div>
+  -->
+  <ViewBaseComponent>
+    <template v-slot:subpage-header>
+      <BreadcrumbComponent subpageName="Sessions"
+    /></template>
+    <template v-slot:subpage-content>
+      <SessionsTableComponent></SessionsTableComponent>
+      <SessionKillingModal></SessionKillingModal>
+    </template>
+  </ViewBaseComponent>
 </template>
 <script setup>
 import {
@@ -35,6 +40,7 @@ import {
 } from "@heroicons/vue/24/outline";
 import BreadcrumbComponent from "../components/BreadcrumbComponent.vue";
 import ActionsComponent from "../components/ActionsComponent.vue";
+import ViewBaseComponent from "../components/ViewBaseComponent.vue";
 import SessionsTableComponent from "../components/sessions/SessionsTableComponent.vue";
 import SessionKillingModal from "../components/sessions/SessionKillingModal.vue";
 

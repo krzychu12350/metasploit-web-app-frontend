@@ -5,6 +5,13 @@
         <dt class="text-sm font-medium text-gray-500">{{ info[0] }}</dt>
         <dd class="mt-1 text-sm text-gray-900">{{ info[1] }}</dd>
       </div>
+   
+      <div class="sm:col-span-1">
+        <dd v-for="row in victimLocalDatetime" class="mt-1 text-sm text-gray-900">
+          <dt class="text-sm font-medium text-gray-500">{{ row[0] }}</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ row[1] }}</dd>
+        </dd>
+      </div>
       <!--
       <div class="sm:col-span-1">
         <dt class="text-sm font-medium text-gray-500">Email address</dt>
@@ -33,49 +40,63 @@
 </template>
 
 <script setup>
-import { ref, reactive, onBeforeMount } from "vue";
+import { ref, reactive, onBeforeMount, onMounted } from "vue";
 import SessionDataService from "../../../services/SessionDataService";
 import { useRoute } from "vue-router";
 import meterpreterCommands from "../../../constants/MeterpreterCommands";
+import useMeterpreterSession from "../../../composables/meterpreterSession";
 
 const route = useRoute();
 const currentSessionId = ref(route.params.id);
 let meterpreterData = ref({});
-let sysinfo = reactive([]);
+let sysinfo = ref([]);
+let victimLocalDatetime = ref([]);
 
-onBeforeMount(() => {
-  //console.log(meterpreterCommands.SystemCommands.SYSINFO);
-  SessionDataService.meterpreterWrite({
-    session_id: currentSessionId.value,
-    ps: meterpreterCommands.SystemCommands.SYSINFO,
-  })
-    .then((res) => {
-      console.log(res.data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+const {
+  writeToMeterpreter,
+  readFromMeterpreter,
+  processTextDataToArray,
+} = useMeterpreterSession();
 
-  SessionDataService.meterpreterRead({
-    session_id: currentSessionId.value,
-  })
-    .then((res) => {
-      console.log(res.data);
-      const response = res.data.data.data;
-      //console.log(response);
-      const rows = response.split("\n");
-      console.log(rows);
+async function requestLocalDataTime() {
+  return writeToMeterpreter(
+    currentSessionId.value,
+    meterpreterCommands.SystemCommands.LOCALTIME
+  );
+}
 
-      rows.forEach((info) => {
-        let divider = info.split(":");
-        sysinfo.push(divider);
-      });
-      console.log(sysinfo);
-      //meterpreterData.value = res.data.data;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+async function readLocalDataTime() {
+  const localDataTime = await readFromMeterpreter(currentSessionId.value);
+  victimLocalDatetime.value = await processTextDataToArray(localDataTime);
+}
+
+async function requestSystemInfo() {
+  return writeToMeterpreter(
+    currentSessionId.value,
+    meterpreterCommands.SystemCommands.SYSINFO
+  );
+}
+
+async function readSystemInfo() {
+  const systemInfoData = await readFromMeterpreter(currentSessionId.value);
+  sysinfo.value = await processTextDataToArray(systemInfoData);
+  /*
+  const rows = systemInfo.data.data.split("\n");
+  console.log(rows);
+
+  rows.forEach((info) => {
+    let divider = info.split(":");
+    sysinfo.push(divider);
+  });
+  */
+}
+
+onMounted(async () => {
+  await requestSystemInfo();
+  await readSystemInfo();
+  await requestLocalDataTime();
+  await readLocalDataTime();
+
+  //victimLocalDatetime.value = localDateTimeResponse.data.data;
 });
-//alert(meterpreterCommands.SystemCommands.SYSINFO);
 </script>

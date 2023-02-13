@@ -52,8 +52,11 @@ import SessionWorkspaceTabs from "../components/sessions/SessionWorkspaceTabs.vu
 import SystemInfoComponent from "../components/sessions/sessionInteract/SystemInfoComponent.vue";
 import NetworkComponent from "../components/sessions/sessionInteract/NetworkInfoComponent.vue";
 import MeterpreterSessionComponents from "../constants/MeterpreterSessionComponents";
-import UserInterfaceComponent from "../components/sessions/sessionInteract/UserInterfaceComponent.vue";
+import UserInterfaceComponent from "../components/sessions/sessionInteract/userInterface/UserInterfaceComponent.vue";
 import FileSystemComponent from "../components/sessions/sessionInteract/fileSystem/victim/VictimFileSystemComponent.vue";
+import ProcessesComponent from "../components/sessions/sessionInteract/processes/ProcessesComponent.vue";
+import PowerComponent from "../components/sessions/sessionInteract/PowerComponent.vue";
+
 import { defineAsyncComponent } from "vue";
 import useEventsBus from "../composables/eventBus";
 import { useRoute } from "vue-router";
@@ -134,5 +137,7 @@ function changeSelectedComponent(componentName) {
   else if (componentName == "UserInterfaceComponent")
     selected.value = UserInterfaceComponent;
   else if (componentName == "FileSystemComponent") selected.value = FileSystemComponent;
+  else if (componentName == "ProcessesComponent") selected.value = ProcessesComponent;
+  else if (componentName == "PowerComponent") selected.value = PowerComponent;
 }
 </script>
