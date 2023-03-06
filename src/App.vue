@@ -1,5 +1,6 @@
-<script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
+<script setup>
+import ModulesSearchEngineComponent from "./components/modules/ModulesSearchEngineComponent.vue";
+import RunModuleModalComponent from "./components/modules/RunModuleModalComponent.vue";
 </script>
 
 <template>
@@ -16,7 +17,10 @@ import HelloWorld from "./components/HelloWorld.vue";
   -->
 
   <router-view />
+  <!--
+  <ModulesSearchEngineComponent></ModulesSearchEngineComponent>
   <RunModuleModalComponent></RunModuleModalComponent>
+  -->
 </template>
 
 <style scoped>

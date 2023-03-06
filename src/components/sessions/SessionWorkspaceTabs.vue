@@ -7,8 +7,15 @@
         id="tabs"
         name="tabs"
         class="block w-full focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
+        @change="test($event)"
       >
-        <option v-for="tab in tabs" :key="tab.name" :selected="tab.name">
+        <option
+          v-for="(tab, index) in tabs"
+          :key="index"
+          :id="index"
+          :value="index"
+          :selected="tab.name"
+        >
           {{ tab.name }}
         </option>
       </select>
@@ -18,7 +25,7 @@
         <nav class="-mb-px flex space-x-8" aria-label="Tabs">
           <a
             v-for="(tab, index) in tabs"
-            :key="tab.name"
+            :key="index"
             :href="tab.href"
             @click="changeCurrentTab(tab, index)"
             :class="[
@@ -65,6 +72,15 @@ onMounted(() => {
   tabs[0].current = true;
 });
 
+function test(e) {
+  console.log(e.target.value);
+  tabs.map((t) => {
+    t.current = false;
+  });
+  tabs[e.target.value].current = true;
+
+  emit("setActiveTab", { tab_name: tabs[e.target.value].name.replace(/\s/g, "") });
+}
 const { emit } = useEventsBus();
 
 function changeCurrentTab(tab, index) {

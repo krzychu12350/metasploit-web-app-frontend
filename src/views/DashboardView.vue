@@ -5,7 +5,6 @@
     /></template>
     <template v-slot:subpage-content>
       <ModuleStatsComponent />
-      <ModulesSearchEngineComponent></ModulesSearchEngineComponent>
     </template>
   </ViewBaseComponent>
   <!--

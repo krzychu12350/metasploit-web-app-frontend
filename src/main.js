@@ -8,13 +8,13 @@ import shell from "vue-shell";
 import contextmenu from "v-contextmenu";
 import "v-contextmenu/dist/themes/dark.css";
 import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import VueBaseTooltip from 'vue-base-tooltip'
 import 'vue-base-tooltip/style.css'
 import {LoadingPlugin} from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
-
+import LongPress from 'vue3-directive-long-press';
 import InstantSearch from 'vue-instantsearch/vue3/es'
-
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
 
@@ -28,6 +28,7 @@ import { faFolder, faFile, faFolderPlus, faCloudArrowUp } from '@fortawesome/fre
 library.add(faFolder, faFile, faFolderPlus, faCloudArrowUp)
 
 const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 
 export const app = createApp(App)
 .use(LoadingPlugin, {
@@ -44,6 +45,7 @@ export const app = createApp(App)
     // slots
 })
 .use(pinia)
+.use(LongPress)
 .use(VueBaseTooltip, { offset: 10 })
 .use(InstantSearch)
 .use(contextmenu)

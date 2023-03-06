@@ -164,7 +164,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, onBeforeMount, reactive } from "vue";
+import { computed, ref, watch, onBeforeMount, reactive, onMounted } from "vue";
 import {
   MagnifyingGlassIcon,
   ChevronRightIcon,
@@ -237,6 +237,52 @@ async function getAllExploits() {
     });
 }
 
+async function getAllAuxiliaries() {
+  return ModuleDataService.auxiliary()
+    .then((res) => {
+      const response = res.data.data.modules;
+      response.forEach(function (exploit, index) {
+        response[index] = { module_name: exploit, module_type: "auxiliary" };
+      });
+      console.log(response);
+      return response;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+async function getAllPosts() {
+  return ModuleDataService.post()
+    .then((res) => {
+      const response = res.data.data.modules;
+      response.forEach(function (exploit, index) {
+        response[index] = { module_name: exploit, module_type: "post" };
+      });
+      console.log(response);
+      return response;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+async function getAllSpecificCategoryModules(categoryName) {
+  const test = exploits();
+  return ModuleDataService.test
+    .then((res) => {
+      const response = res.data.data.modules;
+      response.forEach(function (exploit, index) {
+        response[index] = { module_name: exploit, module_type: categoryName };
+      });
+      console.log(response);
+      return response;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 async function getModulesDetails(modules) {
   console.log("dziala");
   modules.value.forEach(async function (module, i) {
@@ -248,7 +294,7 @@ async function getModulesDetails(modules) {
 }
 
 async function getModuleDetails2(module) {
-  console.log(module);
+  //console.log(module);
   /*
   const data = {
     module_type: "payload",
@@ -263,7 +309,7 @@ async function getModuleDetails2(module) {
     .catch((error) => {
       console.log(error);
     });
-
+  console.log(test);
   activeModuleDetails.value = test;
   return test;
 }
@@ -273,14 +319,22 @@ const showRunningModuleModal = () => {
   emit("showRunModuleModal", { module_data: activeModuleDetails });
 };
 
-function test(module) {
-  setTimeout(() => getModuleDetails2(module), 300);
+async function test(module) {
+  await getModuleDetails2(module);
+  // setTimeout(() => getModuleDetails2(module), 300);
 }
 
-onBeforeMount(async () => {
-  modules.value = await getAllPayloads();
+onMounted(async () => {
   const exploits = await getAllExploits();
-  modules.value = modules.value.concat(exploits);
+  const payloads = await getAllPayloads();
+  const auxiliaries = await getAllAuxiliaries();
+  const posts = await getAllPosts();
+  //nops
+  //encoders
+
+  //console.log(payloads);
+  //const exploits = await getAllSpecificCategoryModules("exploit");
+  modules.value = modules.value.concat(exploits, payloads, auxiliaries);
   console.log(modules.value);
   // modules.value.push("testtttttttt");
   //getModulesDetails(modules);

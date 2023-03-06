@@ -16,6 +16,7 @@
         <div>
           <ArrowSmallUpIcon
             @click="goToParentDir()"
+            @pointerdown="goToParentDir()"
             class="w-10 h-10 text-indigo-500 cursor-pointer"
             v-tooltip.top="'Go to the parent directory'"
           ></ArrowSmallUpIcon>

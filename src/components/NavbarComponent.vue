@@ -5,11 +5,7 @@
         <div class="flex justify-start lg:w-0 lg:flex-1">
           <RouterLink to="/">
             <span class="sr-only">Your Company</span>
-            <img
-              class="h-8 w-auto sm:h-10"
-              src="../assets/metasploit-framework-logo.svg"
-              alt=""
-            />
+            <img class="h-8 w-auto sm:h-10" src="/logo.svg" alt="" />
           </RouterLink>
         </div>
         <div class="-my-2 -mr-2 md:hidden">
@@ -21,11 +17,14 @@
           </PopoverButton>
         </div>
         <PopoverGroup as="nav" class="hidden space-x-10 md:flex">
-          <router-link
-            to="/"
-            class="text-base font-medium text-gray-300 hover:text-gray-100"
-            >Dashboard</router-link
-          >
+          <div class="hidden md:ml-6 md:flex md:items-center md:space-x-4">
+            <router-link
+              to="/"
+              class="text-base font-medium text-gray-300 hover:text-gray-100 bg-gray-900 rounded-lg text-white p-2 rounded"
+              >Dashboard</router-link
+            >
+          </div>
+
           <Popover class="relative" v-slot="{ open }">
             <PopoverButton
               :class="[
@@ -62,7 +61,7 @@
                       v-for="item in solutions"
                       :key="item.name"
                       :href="item.href"
-                      class="-m-3 flex items-start rounded-lg p-3 hover:bg-gray-50"
+                      class="-m-3 flex items-start"
                       @click="emit('runNmapScan')"
                     >
                       <component
@@ -70,7 +69,7 @@
                         class="h-6 w-6 flex-shrink-0 text-indigo-600"
                         aria-hidden="true"
                       />
-                      <div class="ml-4">
+                      <div class="ml-4 text-white">
                         <p class="text-base font-medium text-gray-900">{{ item.name }}</p>
                         <p class="mt-1 text-sm text-gray-500">{{ item.description }}</p>
                       </div>
@@ -195,6 +194,11 @@
               </PopoverPanel>
             </transition>
           </Popover>
+          <router-link
+            to="/modules"
+            class="text-base font-medium text-gray-300 hover:text-gray-100"
+            >Modules</router-link
+          >
           <router-link
             to="/connections"
             class="text-base font-medium text-gray-300 hover:text-gray-100"
@@ -424,12 +428,15 @@ import useEventsBus from "../composables/eventBus";
 import { useMsfAuth } from "../stores/useMsfAuth";
 import { useRouter } from "vue-router";
 import { ref, inject } from "vue";
+import { useMsfModules } from "../stores/useMsfModules";
 
 const $loading = inject("$loading");
 const fullPage = ref(true);
 
 const { emit } = useEventsBus();
 const router = useRouter();
+
+const useMetasploitModules = useMsfModules();
 
 function handleLogout() {
   const loader = $loading.show();
@@ -443,6 +450,7 @@ function handleLogout() {
       loader.hide();
       console.log(err.response.data);
     });
+  useMetasploitModules.clearAllMsfModules();
 }
 
 const solutions = [

@@ -20,28 +20,34 @@
     </div>
     <div class="hidden sm:block">
       <nav class="flex flex-wrap" aria-label="Tabs">
-        <a
-          v-for="(console, consoleIdx) in consoles"
-          :key="console.id"
-          :href="console.href"
-          @click="emit('changeCurrentConsole', { console_id: console.id })"
-          :class="[
-            console.current ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700',
-            tabIdx === 0 ? 'rounded-l-lg' : '',
-            tabIdx === tabs.length - 1 ? 'rounded-r-lg' : '',
-            'cursor-pointer group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10',
-          ]"
-          :aria-current="console.current ? 'page' : undefined"
+        <div
+          v-for="(console, index) in consoles"
+          class="flex items-center justify-between cursor-pointer group min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
         >
-          <span>Console {{ console.id }}</span>
-          <span
-            aria-hidden="true"
-            :class="[
-              console.current ? 'bg-indigo-500' : 'bg-transparent',
-              'absolute inset-x-0 bottom-0 h-0.5',
-            ]"
-          />
-        </a>
+          <div class="w-5/6">
+            <a
+              :key="console.id"
+              :href="console.href"
+              @click="emit('changeCurrentConsole', { console_id: console.id })"
+              class="flex items-center justify-center"
+              :class="[
+                console.current ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700',
+                tabIdx === 0 ? 'rounded-l-lg' : '',
+                tabIdx === tabs.length - 1 ? 'rounded-r-lg' : '',
+              ]"
+              :aria-current="console.current ? 'page' : undefined"
+            >
+              <span>Console {{ console.id }}</span></a
+            >
+          </div>
+
+          <div class="h-full w-1/6">
+            <XMarkIcon
+              @click="killConsole(console.id)"
+              class="w-5 h-5 cursor-pointer hover:bg-gray-200"
+            ></XMarkIcon>
+          </div>
+        </div>
       </nav>
     </div>
   </div>
@@ -51,6 +57,8 @@
 import { onBeforeMount, ref, watch } from "vue";
 import ConsoleDataService from "../services/ConsoleDataService";
 import useEventsBus from "../composables/eventBus";
+import { XMarkIcon } from "@heroicons/vue/24/solid";
+import ToastService from "../services/ToastService";
 
 const { emit, bus } = useEventsBus();
 
@@ -63,15 +71,29 @@ const tabs = ref([
 
 const consoles = ref();
 
-onBeforeMount(() => {
-  getAllConsoles();
+onBeforeMount(async () => {
+  await getAllConsoles();
 });
 
-function getAllConsoles() {
+async function getAllConsoles() {
   ConsoleDataService.list()
     .then((res) => {
       console.log(res.data.data.consoles);
       consoles.value = res.data.data.consoles;
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
+}
+
+async function killConsole(consoleId) {
+  ConsoleDataService.destroy({ console_id: consoleId })
+    .then(async (res) => {
+      //console.log(res.data.data);
+      if (res.data.data.result == "success") {
+        await getAllConsoles();
+        ToastService.showToast("Console " + consoleId + " was killed successfully");
+      }
     })
     .catch((error) => {
       console.log(error.message);

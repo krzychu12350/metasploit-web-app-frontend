@@ -73,7 +73,7 @@
                   <td
                     class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
                   >
-                    {{ job.jid }} {{ jobsDetails[0] }}
+                    {{ jobIdx }} {{ jobsDetails[0] }}
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     {{ job.name }}
@@ -93,13 +93,6 @@
                   <td
                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                   >
-                    <!--
-                    <router-link
-                      to="/sessions/1"
-                      class="text-gray-800 hover:text-gray-600"
-                      >Go<span class="sr-only">, {{ job.jid }}</span></router-link
-                    >
-                    -->
                     <XMarkIcon
                       class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
                       @click="emit('showJobKillingModal', { jobId: job.jid })"
@@ -125,7 +118,7 @@ import { PencilIcon, XMarkIcon, CalculatorIcon } from "@heroicons/vue/24/outline
 import useEventsBus from "../../composables/eventBus";
 
 const { bus, emit } = useEventsBus();
-const jobs = ref({});
+const jobs = ref([]);
 const jobsDetails = ref([]);
 
 async function getAllJobs() {
@@ -148,8 +141,8 @@ async function getJobsDetails() {
     delete jobs.value[id];
     jobs.value[id] = await JobDataService.info(jobData)
       .then((res) => {
-        //console.log(res.data.data);
-        return res.data.data;
+        console.log(res.data);
+        return res.data;
       })
       .catch((err) => {
         console.log(err);

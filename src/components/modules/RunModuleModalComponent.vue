@@ -61,19 +61,20 @@
                     </h3>
                   </div>
                   <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                    <div
-                      v-for="(option, key) in moduleData.options"
-                      class="sm:col-span-3"
-                    >
-                      <label :for="key.toLowerCase()" class="block text-sm font-medium">
-                        {{ key }}
+                    <div v-for="(option, key) in stringTypeOptions" class="sm:col-span-3">
+                      <!--{{ option }}-->
+                      <label
+                        :for="option.name.toLowerCase()"
+                        class="block text-sm font-medium"
+                      >
+                        {{ option.name }}
                       </label>
-                      {{ option }}
+
                       <div class="mt-1">
                         <Field
                           :type="setOptionFieldType(option.type)"
-                          :name="key.toLowerCase()"
-                          :id="key.toLowerCase()"
+                          :name="option.name.toLowerCase()"
+                          :id="option.name.toLowerCase()"
                           :value="option.default"
                           v-on:keypress="isLetter($event)"
                           autocomplete="given-name"
@@ -81,6 +82,9 @@
                         />
                         <p class="mt-2 text-sm text-gray-500" id="email-description">
                           {{ option.desc }}
+                          <span v-if="option.required" class="font-semibold">
+                            (Field required)</span
+                          >
                         </p>
                       </div>
 
@@ -88,79 +92,66 @@
                         <ErrorMessage name="name" />
                       </div>
                     </div>
-                    <!--
-                    <div class="sm:col-span-3">
-                      <label
-                        for="last-name"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        Last name
-                      </label>
-                      <div class="mt-1">
-                        <Field
-                          type="text"
-                          name="surname"
-                          id="surname"
-                          v-on:keypress="isLetter($event)"
-                          autocomplete="family-name"
-                          class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                        />
-                      </div>
-                      <div class="text-sm text-red-600">
-                        <ErrorMessage name="surname" />
-                      </div>
-                    </div>
 
-                    <div class="sm:col-span-3">
-                      <label
-                        for="position"
-                        class="block text-sm font-medium text-gray-700"
+                    <div
+                      class="mt-1 sm:col-span-3"
+                      v-for="(option, key, index) in boolTypeOptions"
+                    >
+                      <div
+                        class="relative flex items-start"
+                        v-show="option.type === 'bool'"
                       >
-                        Position
-                      </label>
-                      <div class="mt-1">
-                        <Field
-                          id="position"
-                          name="position"
-                          type="text"
-                          as="input"
-                          v-on:keypress="isLetter($event)"
-                          class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                        >
-                        </Field>
-                      </div>
-                      <div class="text-sm text-red-600">
-                        <ErrorMessage name="position"
-                          >position is a required field</ErrorMessage
-                        >
-                      </div>
-                    </div>
-
-                    <div class="sm:col-span-3">
-                      <label for="salary" class="block text-sm font-medium text-gray-700">
-                        Salary
-                      </label>
-                      <div class="mt-1">
-                        <Field
-                          type="number"
-                          name="salary"
-                          id="salary"
-                          as="input"
-                          min="1"
-                          v-on:keypress="isDigit($event)"
-                          autocomplete="salary-name"
-                          class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                        />
-                      </div>
-                      <div class="text-sm text-red-600">
-                        <ErrorMessage name="salary" />
+                        <div class="flex items-center h-5">
+                          <Field
+                            :id="option.name"
+                            :aria-describedby="'checkbox' + option.name"
+                            :name="option.name"
+                            type="checkbox"
+                            :value="true"
+                            v-bind:unchecked-value="false"
+                            class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                          />
+                        </div>
+                        <div class="ml-3 text-sm">
+                          <label for="comments" class="font-medium text-gray-700">{{
+                            option.name
+                          }}</label>
+                          <p id="comments-description" class="text-gray-500">
+                            {{ option.desc }}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                         -->
                   </div>
                 </div>
               </div>
 
+              <!--{{ enumTypeOptions }}-->
+              <!-- start enum select -->
+              <div class="flex flex-wrap mt-2">
+                <div v-for="enumOption in enumTypeOptions" class="mt-4 p-2 w-1/2">
+                  <label
+                    :for="enumOption.name"
+                    class="block text-sm font-medium text-gray-700"
+                    >{{ enumOption.name }}</label
+                  >
+                  <Field
+                    :id="enumOption.name"
+                    :name="enumOption.name"
+                    as="select"
+                    class="mt-1 block pl-3 w-full pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  >
+                    <option
+                      v-for="(option, index) in enumOption.enums"
+                      :value="option"
+                      :selected="index === 0"
+                    >
+                      {{ option }}
+                    </option>
+                  </Field>
+                </div>
+              </div>
+              <!-- end enum select -->
               <div class="pt-5">
                 <div class="flex justify-end">
                   <button
@@ -187,7 +178,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, inject } from "vue";
+import { ref, reactive, watch, inject, computed, onMounted } from "vue";
 import { Dialog, DialogOverlay, TransitionChild, TransitionRoot } from "@headlessui/vue";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
@@ -197,23 +188,49 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 
 let open = ref(false);
 let moduleData = reactive({});
+let moduleOptions = reactive([]);
+
+let selectedOpt = ref("none");
+
+// Initial values
+let formValues = ref({});
+
+//let selected = ref(false);
 
 const { bus, emit } = useEventsBus();
 
 function toggleModal() {
   open.value = !open.value;
 }
+
 function setOptionFieldType(optionType) {
   if (optionType == "string") return "text";
   else if (optionType == "bool") return "checkbox";
   else return "text";
 }
 
+function processModuleOptions() {
+  moduleOptions.splice(0);
+  Object.keys(moduleData.options).forEach(function (key) {
+    console.log(key, moduleData.options[key]);
+    moduleData.options[key].name = key;
+    formValues.value[key] = moduleData.options[key].default;
+
+    moduleOptions.push(moduleData.options[key]);
+  });
+  console.log(formValues.value);
+}
+
 watch(
   () => bus.value.get("showRunModuleModal"),
   (val) => {
-    console.log(val[0].module_data);
+    // console.log(val[0].module_data);
     moduleData = val[0].module_data;
+    //moduleOptions = val[0].module_data.options;
+    // console.log(moduleOptions);
+
+    processModuleOptions();
+    console.log(moduleOptions);
     toggleModal();
     /*
     // Initial values
@@ -229,8 +246,9 @@ watch(
 
 const $loading = inject("$loading");
 
-const onSubmit = (newUserData) => {
+const onSubmit = (options) => {
   const loader = $loading.show();
+  console.log(options);
   /*
   newUserData.is_owner = 0;
   UserDataService.update(empData.value.id, newUserData)
@@ -252,8 +270,6 @@ const onSubmit = (newUserData) => {
   ToastService.showToast("Module was run successfully");
   setTimeout(loader.hide(), 5000);
 };
-
-let formValues = ref();
 
 const schema = yup.object({
   /*
@@ -301,4 +317,23 @@ function isDigit(e) {
   // Match with regex
   else e.preventDefault(); // If not match, don't add to input text
 }
+
+const boolTypeOptions = computed(() => {
+  return moduleOptions.filter((o) => {
+    if (o.type === "bool") return o;
+  });
+});
+
+const stringTypeOptions = computed(() => {
+  return moduleOptions.filter((o) => {
+    if (o.type != "bool" && o.type != "enum") return o;
+  });
+});
+
+const optionsType = "enum";
+const enumTypeOptions = computed(() => {
+  return moduleOptions.filter((o) => {
+    if (o.type === "enum") return o;
+  });
+});
 </script>

@@ -5,11 +5,7 @@
     >
       <div class="mx-auto w-full max-w-sm lg:w-96">
         <div>
-          <img
-            class="h-12 mx-auto"
-            src="../assets/metasploit-framework-logo.svg"
-            alt="Workflow"
-          />
+          <img class="h-12 mx-auto" src="/logo.svg" alt="Workflow" />
           <h2 class="text-center mt-6 text-3xl font-extrabold text-gray-800">
             To start connect with Metasploit RPC
           </h2>
@@ -188,6 +184,7 @@ import ToastService from "../services/ToastService";
 import { useRouter } from "vue-router";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { onUnmounted } from "vue";
+import { useMsfModules } from "../stores/useMsfModules";
 
 import * as yup from "yup";
 import ConsoleDataService from "../services/ConsoleDataService";
@@ -198,6 +195,8 @@ const router = useRouter();
 const $loading = inject("$loading");
 const fullPage = ref(true);
 const showPassword = ref(false);
+
+const useMetasploitModules = useMsfModules();
 
 const togglePasswordVisibity = () => {
   showPassword.value = !showPassword.value;
@@ -265,12 +264,12 @@ const isTooManyAttempts = computed(() => {
   return submitCount.value >= 1;
 });
 
-function connectWithMsf(credentials) {
+async function connectWithMsf(credentials) {
   const loader = $loading.show();
-  setMsfConnection(credentials, loader);
+  await setMsfConnection(credentials, loader);
 }
 
-function setMsfConnection(credentials, loader) {
+async function setMsfConnection(credentials, loader) {
   useMsfAuth()
     .setConnection(credentials)
     .then(() => {
@@ -278,10 +277,11 @@ function setMsfConnection(credentials, loader) {
     });
 }
 
-function loginToMsfRpc(credentials, loader) {
+async function loginToMsfRpc(credentials, loader) {
   useMsfAuth()
     .login(credentials)
-    .then(() => {
+    .then(async () => {
+      await useMetasploitModules.fetchAllModules();
       router.push("/");
       loader.hide();
     })

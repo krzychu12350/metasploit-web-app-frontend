@@ -162,7 +162,6 @@ let processes = ref([]);
 const currentSessionId = ref(route.params.id);
 const { bus, emit } = useEventsBus();
 
-const arrayRef = ref(new Array(100).fill(1).map((_, i) => i));
 // paginate array
 const { currentPage, lastPage, next, prev, offset, pageSize } = usePagination({
   currentPage: 1,
