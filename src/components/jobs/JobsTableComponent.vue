@@ -141,8 +141,8 @@ async function getJobsDetails() {
     delete jobs.value[id];
     jobs.value[id] = await JobDataService.info(jobData)
       .then((res) => {
-        console.log(res.data);
-        return res.data;
+        console.log(res.data.data);
+        return res.data.data;
       })
       .catch((err) => {
         console.log(err);

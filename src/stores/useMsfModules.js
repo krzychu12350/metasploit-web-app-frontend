@@ -4,10 +4,14 @@ import ModuleDataService from "../services/ModuleDataService";
 export const useMsfModules = defineStore("modules", {
   state: () => ({
     modules: [],
+    payloads: [],
   }),
   getters: {
     getMsfModules() {
       return this.modules;
+    },
+    getMsfPayloads() {
+      return this.payloads;
     },
   },
   actions: {
@@ -21,6 +25,7 @@ export const useMsfModules = defineStore("modules", {
       const posts = await this.getAllPosts();
       //nops
       //encoders
+      this.payloads = payloads;
       this.modules = this.modules.concat(exploits, payloads, auxiliaries, posts);
     },
     async getAllPayloads() {

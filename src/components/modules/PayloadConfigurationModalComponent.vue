@@ -57,7 +57,8 @@
                 <div class="pt-8">
                   <div>
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
-                      Set {{ moduleData.name }} Options
+                      Set {{ payloadData.name }} Options <br />
+                      {{ payloadData.fullname }}
                     </h3>
                   </div>
                   <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
@@ -148,6 +149,9 @@
                       {{ option }}
                     </option>
                   </Field>
+                  <p id="comments-description" class="text-sm text-gray-500">
+                    {{ enumOption.desc }}
+                  </p>
                 </div>
               </div>
               <!-- end enum select -->
@@ -172,18 +176,6 @@
                 </div>
               </div>
 
-              <!--PAYLOAD SETTINGS-->
-              <p v-if="moduleData.type == 'exploit'">
-                Choose payload {{ moduleData.type }}
-              </p>
-              <div v-if="moduleData.type == 'exploit'">
-                <Multiselect
-                  v-model="selectedPayload"
-                  :options="payloads"
-                  :searchable="true"
-                  placeholder="Choose a payload"
-                />
-              </div>
               <div class="pt-5">
                 <div class="flex justify-end">
                   <button
@@ -195,14 +187,6 @@
                   </button>
 
                   <button
-                    v-if="moduleData.type == 'exploit'"
-                    type="submit"
-                    class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    Configure payload options
-                  </button>
-                  <button
-                    v-else
                     type="submit"
                     class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
@@ -229,6 +213,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import ConsoleDataService from "../../services/ConsoleDataService";
 import Multiselect from "@vueform/multiselect";
 import { useMsfModules } from "../../stores/useMsfModules";
+import ModuleDataService from "../../services/ModuleDataService";
 
 const useMetasploitModules = useMsfModules();
 const selectedPayload = ref("");
@@ -241,8 +226,11 @@ function nameWithLang({ name, language }) {
 }
 
 let open = ref(false);
-let moduleData = reactive({});
-let moduleOptions = reactive([]);
+let selectedModuleData = reactive({});
+let selectedModuleSetOptions = reactive([]);
+let payloadOptions = reactive([]);
+let payloadData = reactive({});
+
 const schema = ref();
 
 let selectedOpt = ref("none");
@@ -251,7 +239,7 @@ let selectedOpt = ref("none");
 let formValues = ref({});
 
 //let selected = ref(false);
-const $loading = inject("$loading");
+
 const { bus, emit } = useEventsBus();
 
 onMounted(async () => {});
@@ -266,88 +254,48 @@ function setOptionFieldType(optionType) {
   else return "text";
 }
 
+async function getPayloadData(payloadName) {
+  return ModuleDataService.info({
+    module_type: "payload",
+    module_name: "payload/" + payloadName,
+  })
+    .then((res) => {
+      console.log(res.data.data);
+      return res.data.data;
+    })
+    .catch((err) => {
+      console.log(err.response.data);
+    });
+}
+
 function processModuleOptions() {
   const fields = [];
-  moduleOptions.splice(0);
-  Object.keys(moduleData.options).forEach(function (key) {
-    if (moduleData.options[key].advanced === false) {
-      moduleData.options[key].name = key;
-      formValues.value[key] = moduleData.options[key].default;
-      console.log(key, moduleData.options[key]);
+  payloadOptions.splice(0);
+  Object.keys(payloadData.options).forEach(function (key) {
+    if (payloadData.options[key].advanced === false) {
+      payloadData.options[key].name = key;
+      formValues.value[key] = payloadData.options[key].default;
+      console.log(key, payloadData.options[key]);
 
-      if (moduleData.options[key].type === "string") {
+      if (payloadData.options[key].type === "string") {
         let newField = new Object();
-        newField.name = moduleData.options[key].name;
+        newField.name = payloadData.options[key].name;
         /*
-      if ((moduleData.options[key].required = "true"))
+      if ((payloadData.options[key].required = "true"))
         newField.validations = ["string", "required"];
       else newField.validations = ["string"];
       */
         //newField.validations = ["string", "required"];
         newField.params = {
-          required: moduleData.options[key].name + " is required",
+          required: payloadData.options[key].name + " is required",
         };
         fields.push(newField);
       }
 
-      moduleOptions.push(moduleData.options[key]);
+      payloadOptions.push(payloadData.options[key]);
     }
   });
-  //console.log(formValues.value);
   console.log(fields);
-  /*
-  const fields2 = [
-    {
-      name: "username",
-      type: "text",
-      label: "Username",
-      placeholder: "Username",
-      validations: ["string", "strict", "trim", "min", "max", "required"],
-      params: {
-        min: 3,
-        max: 20,
-        required: "Username is required",
-      },
-    },
-    {
-      name: "email",
-      type: "email",
-      label: "Email",
-      placeholder: "Email",
-      validations: ["string", "email", "trim", "required"],
-      params: {
-        required: "Email is required",
-      },
-    },
-    {
-      name: "isBig",
-      type: "checkbox",
-      label: "Is Big",
-      validations: ["boolean"],
-      params: {},
-    },
-    {
-      name: "count",
-      type: "number",
-      label: "Count",
-      validations: ["number", "when"],
-      params: {
-        when: [
-          "isBig",
-          {
-            is: true,
-            then: {
-              min: 5,
-            },
-            otherwise: {
-              min: 0,
-            },
-          },
-        ],
-      },
-    },
-  ];
-    */
   schema.value = createValidationSchema(fields);
   console.log(schema.value);
 }
@@ -356,115 +304,61 @@ async function extractPayloadsNamesToArray(payloads) {
 }
 
 watch(
-  () => bus.value.get("showRunModuleModal"),
+  () => bus.value.get("showPayloadConfigurationModal"),
   async (val) => {
     // console.log(val[0].module_data);
-    moduleData = val[0].module_data;
-    //moduleOptions = val[0].module_data.options;
-    // console.log(moduleOptions);
 
+    selectedModuleData = val[0].module_data;
+    selectedModuleSetOptions = val[0].module_options;
+    console.log(selectedModuleData, selectedModuleSetOptions);
+    payloadData = await getPayloadData(selectedModuleSetOptions.PAYLOAD);
+    console.log(payloadData);
     processModuleOptions();
-    console.log(moduleOptions);
     toggleModal();
+    /*
+    processModuleOptions();
+    console.log(payloadOptions);
+
     payloads.value = await useMetasploitModules.getMsfPayloads;
     payloads.value = await extractPayloadsNamesToArray(payloads.value);
     console.log(payloads.value);
-    /*
-    // Initial values
-    formValues = {
-      name: empData.value.name,
-      surname: empData.value.surname,
-      position: empData.value.position,
-      salary: empData.value.salary,
-    };
     */
   }
 );
 
-watch(
-  () => bus.value.get("completeModuleRunningProcess"),
-  (val) => {
-    //loader.hide();
-    const moduleName = val[0].module_name;
-    ToastService.showToast("Module " + moduleName + " was run successfully");
-  }
-);
-watch(
-  () => bus.value.get("closeModuleConfigurationModal"),
-  () => {
-    toggleModal();
-  }
-);
+const $loading = inject("$loading");
 
-const onSubmit = (options) => {
-  options.PAYLOAD = selectedPayload.value;
-  console.log(options);
+const onSubmit = (payloadConfiguredOptions) => {
+  /*
+  let selectedModuleData = reactive({});
+let selectedModuleSetOptions = reactive([]);
+let payloadOptions = reactive([]);
+let payloadData = reactive({});
+*/
+  console.log(selectedModuleData, selectedModuleSetOptions, payloadConfiguredOptions);
+  runModule(selectedModuleData, selectedModuleSetOptions, payloadConfiguredOptions);
+  emit("closeModuleConfigurationModal");
+  toggleModal();
+
+  /*
+  const loader = $loading.show();
   console.log(moduleData);
 
+  options.PAYLOAD = selectedPayload.value;
   console.log(options);
-  if (moduleData.type == "exploit") {
-    showPayloadConfigurationModal(moduleData, options);
-  } else {
-    //$loading.show();
 
-    runModule(moduleData, options);
-    toggleModal();
-    /*
-  newUserData.is_owner = 0;
-  UserDataService.update(empData.value.id, newUserData)
-    .then(() => {
-      ToastService.showToast("User data was updated successfully");
-      toggleModal();
-      emit("refreshEmployeesTable");
-      loader.hide();
-    })
-    .catch((error) => {
-      const message =
-        (error.response && error.response.data && error.response.data.message) ||
-        error.message ||
-        error.toString();
-      console.log(message);
-
-    });
-    */
-  }
+  ToastService.showToast("Module was run successfully");
+  setTimeout(loader.hide(), 5000);
+  */
 };
 
-/*
-const schema = Yup.object({
-  WORKSPACE: Yup.string().required("WORKSPACE is a required field"),
-
-});
-*/
-function showPayloadConfigurationModal(moduleData, moduleSetOptions) {
-  console.log(moduleData, moduleSetOptions);
-  emit("showPayloadConfigurationModal", {
-    module_data: moduleData,
-    module_options: moduleSetOptions,
+async function runModule(module, moduleOptions, payloadOptions) {
+  //console.log(module, payloadOptions);
+  emit("runModule", {
+    module_details: module,
+    module_options: moduleOptions,
+    payload_options: payloadOptions,
   });
-  // alert("showAnotherModal");
-}
-
-async function createConsole() {
-  return ConsoleDataService.create()
-    .then((res) => {
-      console.log(res.data);
-      return res.data.data;
-    })
-    .catch((err) => console.log(err));
-}
-
-function writeDataToConsole(data) {
-  ConsoleDataService.write(data).then((res) => {
-    console.log(res.data.data);
-    //const test = "dddd";
-    //this.send_to_terminal = `<p>` + res.data.data + `</p>`;
-  });
-}
-
-async function runModule(module, moduleOptions) {
-  //console.log(module, moduleOptions);
-  emit("runModule", { module_details: module, module_options: moduleOptions });
   //emit("runNmapScan");
 }
 
@@ -489,25 +383,25 @@ function isDigit(e) {
 }
 
 const boolTypeOptions = computed(() => {
-  return moduleOptions.filter((o) => {
+  return payloadOptions.filter((o) => {
     if (o.type === "bool") return o;
   });
 });
 
 const stringTypeOptions = computed(() => {
-  return moduleOptions.filter((o) => {
+  return payloadOptions.filter((o) => {
     if (o.type != "bool" && o.type != "enum") return o;
   });
 });
 
 const optionsType = "enum";
 const enumTypeOptions = computed(() => {
-  return moduleOptions.filter((o) => {
+  return payloadOptions.filter((o) => {
     if (o.type === "enum") return o;
   });
 });
 
-function createValidationSchema(fields = []) {
+const createValidationSchema = (fields = []) => {
   const ObjectSchema = fields.reduce((schema, field) => {
     if (field?.validations?.length) {
       schema[field.name] = field.validations.reduce(
@@ -532,6 +426,6 @@ function createValidationSchema(fields = []) {
   }, {});
 
   return Yup.object().shape({ ...ObjectSchema });
-}
+};
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>

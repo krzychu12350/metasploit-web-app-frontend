@@ -161,7 +161,7 @@ async function createConsole() {
     })
     .catch((err) => console.log(err));
 }
-function writeDataToConsole(data) {
+async function writeDataToConsole(data) {
   ConsoleDataService.write(data).then((res) => {
     console.log(res.data.data);
     //const test = "dddd";
@@ -186,7 +186,7 @@ async function readDataFromConsole(id) {
         if (res.data.data.busy === true) readDataFromConsole(id);
       }, 1000);
       //console.log(banner);
-
+      return res.data.data.data;
       //console.log(res.data.data.busy);
     }, 200);
   });
@@ -266,18 +266,78 @@ watch(
 watch(
   () => bus.value.get("runNmapScan"),
   async () => {
-    alert("nmap scan");
+    //alert("nmap scan");
 
     const createdConsoleData = await createConsole();
     currentTerminal.value = createdConsoleData.id;
     emit("refreshTabs");
-    alert(createdConsoleData.id);
+    //alert(createdConsoleData.id);
     let dataa = {
       console_id: currentTerminal.value,
       input_command: "db_nmap -v -sF -Pn -O 192.168.0.0/24",
     };
     writeDataToConsole(dataa);
     readDataFromConsole(currentTerminal.value);
+  }
+);
+
+function setOptions(options) {
+  Object.keys(options).forEach((key) => {
+    if (options[key]) {
+      console.log(key, options[key]);
+      writeDataToConsole({
+        console_id: currentTerminal.value,
+        input_command: "set " + key + " " + options[key],
+      });
+    }
+  });
+}
+
+watch(
+  () => bus.value.get("runModule"),
+  async (val) => {
+    let runningModuleCommand = "";
+    console.log(val);
+    const moduleDetails = val[0].module_details;
+    const moduleOptions = val[0].module_options;
+    const payloadOptions = val[0].payload_options;
+    console.log(moduleDetails.fullname);
+    console.log(moduleOptions, payloadOptions);
+
+    const createdConsoleData = await createConsole();
+    emit("refreshTabs");
+    currentTerminal.value = createdConsoleData.id;
+
+    writeDataToConsole({
+      console_id: currentTerminal.value,
+      input_command: "use " + moduleDetails.fullname,
+    });
+    setOptions(moduleOptions);
+
+    writeDataToConsole({
+      console_id: currentTerminal.value,
+      input_command: "options",
+    });
+    writeDataToConsole({
+      console_id: currentTerminal.value,
+      input_command: "advanced",
+    });
+    readDataFromConsole(currentTerminal.value);
+    if (moduleOptions.PAYLOAD) {
+      //alert("jest payload");
+      setOptions(payloadOptions);
+      runningModuleCommand = "run -j";
+    } else {
+      runningModuleCommand = "run";
+    }
+
+    writeDataToConsole({
+      console_id: currentTerminal.value,
+      input_command: runningModuleCommand,
+    });
+    emit("completeModuleRunningProcess", { module_name: moduleDetails.fullname });
+    const test = readDataFromConsole(currentTerminal.value);
+    console.log(test);
   }
 );
 </script>
@@ -292,7 +352,7 @@ watch(
 }
 */
 .cmdline {
-  max-width: 200px !important;
+  min-width: 500px !important;
 }
 
 #container > output > pre > p {

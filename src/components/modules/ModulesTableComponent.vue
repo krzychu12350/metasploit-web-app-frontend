@@ -164,13 +164,15 @@
   -->
   <ModuleDetailsModalComponent></ModuleDetailsModalComponent>
   <run-module-modal-component></run-module-modal-component>
+  <payload-configuration-modal-component></payload-configuration-modal-component>
 </template>
 
 <script setup>
 import { computed, ref, watch, onBeforeMount, reactive, onMounted, inject } from "vue";
 import ModuleDataService from "../../services/ModuleDataService";
 import ModuleDetailsModalComponent from "./ModuleDetailsModalComponent.vue";
-import RunModuleModalComponent from "../../components/modules/RunModuleModalComponent.vue";
+import RunModuleModalComponent from "./RunModuleModalComponent.vue";
+import PayloadConfigurationModalComponent from "./PayloadConfigurationModalComponent.vue";
 import { useArrayPagination } from "vue-composable";
 import { EyeIcon, ChevronDoubleRightIcon } from "@heroicons/vue/24/solid";
 import { useVueFuse } from "vue-fuse";
@@ -293,7 +295,7 @@ const onInput = debounce(() => {
   console.log("debug");
   console.log(result.value);
   getCurrentPaginateModulesDetails(result.value);
-}, 800);
+}, 2000);
 
 function goToPrevPage() {
   prev();
