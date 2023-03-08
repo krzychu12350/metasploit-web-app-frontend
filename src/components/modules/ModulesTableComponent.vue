@@ -109,6 +109,7 @@
                       @click="emit('showRunModuleModal', { module_data: module })"
                       class="w-5 h-5 cursor-pointer text-indigo-500"
                     ></ChevronDoubleRightIcon>
+
                     <EyeIcon
                       @click="emit('showModuleDetailsModal', { module_data: module })"
                       class="w-5 h-5 cursor-pointer text-indigo-500"

@@ -142,8 +142,15 @@
                       "
                       class="flex"
                     >
+                      <ArrowsRightLeftIcon
+                        class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
+                        v-tooltip.top="'Connect'"
+                        @click="switchRpcConnection(connection)"
+                        aria-hidden="true"
+                      />
                       <PencilIcon
                         class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
+                        v-tooltip.top="'Edit connection settings'"
                         @click="
                           emit('showRpcConnectionEditingModal', {
                             all_connections: rpcConnections,
@@ -153,6 +160,7 @@
                         aria-hidden="true"
                       />
                       <XMarkIcon
+                        v-tooltip.top="'Delete connection'"
                         class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
                         @click="showRpcConnectionDeletingModal(connection.id)"
                         aria-hidden="true"
@@ -202,24 +210,32 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, onBeforeMount, onMounted } from "vue";
+import { ref, reactive, watch, onBeforeMount, onMounted, inject } from "vue";
 import ToastService from "../../services/ToastService";
-import { PencilIcon, XMarkIcon, CalculatorIcon } from "@heroicons/vue/24/outline";
+import { PencilIcon, XMarkIcon, ArrowsRightLeftIcon } from "@heroicons/vue/24/outline";
 import MsfRpcServerConnectionService from "../../services/MsfRpcServerConnectionService";
 import useEventsBus from "../../composables/eventBus";
 import { useArrayPagination } from "vue-composable";
 import { useCurrentMsfRpcConnection } from "../../stores/useCurrentMsfRpcConnection";
 import CreatingNewRpcConnectionModal from "./CreatingNewRpcConnectionModal.vue";
 import UpdatingNewRpcConnectionModal from "./UpdatingNewRpcConnectionModal.vue";
+import useMsfRpcConnection from "../../composables/msfRpcConnection";
+import { useMsfAuth } from "../../stores/useMsfAuth";
+import { useMsfModules } from "../../stores/useMsfModules";
+import { useRouter } from "vue-router";
+
+const useCurrentMetasploitRpcConnection = useCurrentMsfRpcConnection();
+let currentRpcConnectionSettings = reactive({});
+const useMetasploitModules = useMsfModules();
 let rpcConnections = ref([]);
+const { bus, emit } = useEventsBus();
+const $loading = inject("$loading");
+const fullPage = ref(true);
+const router = useRouter();
 
 const { result, next, prev, currentPage, lastPage } = useArrayPagination(rpcConnections, {
   pageSize: 5,
 });
-const useCurrentMetasploitRpcConnection = useCurrentMsfRpcConnection();
-let currentRpcConnectionSettings = reactive({});
-
-const { bus, emit } = useEventsBus();
 
 async function fetchAllRpcConnections() {
   MsfRpcServerConnectionService.getConnections()
@@ -256,5 +272,40 @@ watch(
     fetchAllRpcConnections();
   }
 );
+
+async function switchRpcConnection(connectionSettings) {
+  const loader = $loading.show();
+  //await useMsfRpcConnection.setMsfConnection(connectionSettings, loader);
+  await setMsfConnection(connectionSettings, loader);
+  console.log(connectionSettings);
+}
+
+async function setMsfConnection(credentials, loader) {
+  useMsfAuth()
+    .setConnection(credentials)
+    .then(async (connectionSettings) => {
+      console.log(connectionSettings);
+      useCurrentMetasploitRpcConnection.setCurrentRpcConnection(connectionSettings);
+      await loginToMsfRpc(credentials, loader);
+    });
+}
+
+async function loginToMsfRpc(credentials, loader) {
+  useMsfAuth()
+    .login(credentials)
+    .then(async () => {
+      await useMetasploitModules.fetchAllModules();
+      router.push("/");
+      loader.hide();
+    })
+    .catch((err) => {
+      loader.hide();
+      console.log(err);
+      ToastService.showToast(
+        "Invalid credentials, check your MSF RPC Server Configuration",
+        "error"
+      );
+    });
+}
 </script>
 <style scoped></style>
