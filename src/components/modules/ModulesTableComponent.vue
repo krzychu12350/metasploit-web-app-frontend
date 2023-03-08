@@ -1,4 +1,8 @@
 <template>
+  <div class="sm:flex-auto mb-6">
+    <h1 class="text-xl font-semibold text-gray-900">Modules</h1>
+    <p class="mt-2 text-sm text-gray-700">A list of modules you can run</p>
+  </div>
   <input
     type="text"
     class="h-12 w-full border-0 pl-11 pr-4 text-sm text-gray-800 placeholder-gray-400 focus:ring-0 mb-4"

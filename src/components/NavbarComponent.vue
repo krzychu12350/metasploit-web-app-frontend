@@ -175,7 +175,7 @@
             >Modules</router-link
           >
           <router-link
-            to="/connections"
+            to="/rpc-connections"
             class="text-base font-medium text-gray-300 hover:text-gray-100"
             >RPC Connections</router-link
           >

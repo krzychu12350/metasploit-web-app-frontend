@@ -10,6 +10,7 @@ import PayloadGeneratorView from "../views/PayloadGeneratorView.vue";
 import SingleSessionView from "../views/SingleSessionView.vue";
 import ModulesView from "../views/ModulesView.vue";
 import SessionInteractWorkspaceView from '../views/SessionInteractWorkspaceView.vue'
+import RpcConnectionsView from '../views/RpcConnectionsView.vue'
 import { useMsfAuth } from '../stores/useMsfAuth';
 
 const routes = [
@@ -52,6 +53,11 @@ const routes = [
         path: "/payload-generator",
         name: "PayloadGeneratorView",
         component: PayloadGeneratorView,
+    },
+    {
+        path: "/rpc-connections",
+        name: "rpc-connectionss",
+        component: RpcConnectionsView,
     },
     {
         path: "/setup",

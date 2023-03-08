@@ -185,7 +185,7 @@ import { useRouter } from "vue-router";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { onUnmounted } from "vue";
 import { useMsfModules } from "../stores/useMsfModules";
-
+import { useCurrentMsfRpcConnection } from "../stores/useCurrentMsfRpcConnection";
 import * as yup from "yup";
 import ConsoleDataService from "../services/ConsoleDataService";
 
@@ -197,6 +197,7 @@ const fullPage = ref(true);
 const showPassword = ref(false);
 
 const useMetasploitModules = useMsfModules();
+const useCurrentMetasploitRpcConnection = useCurrentMsfRpcConnection();
 
 const togglePasswordVisibity = () => {
   showPassword.value = !showPassword.value;
@@ -272,7 +273,9 @@ async function connectWithMsf(credentials) {
 async function setMsfConnection(credentials, loader) {
   useMsfAuth()
     .setConnection(credentials)
-    .then(() => {
+    .then((connectionSettings) => {
+      console.log(connectionSettings);
+      useCurrentMetasploitRpcConnection.setCurrentRpcConnection(connectionSettings);
       loginToMsfRpc(credentials, loader);
     });
 }
