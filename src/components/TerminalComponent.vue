@@ -13,9 +13,11 @@
 import ConsoleDataService from "../services/ConsoleDataService";
 import { ref, reactive, onBeforeMount, onMounted, onUnmounted, watch } from "vue";
 import useEventsBus from "../composables/eventBus";
+import { useMsfConsoles } from "../stores/useMsfConsoles";
 
 const { bus, emit } = useEventsBus();
 const currentTerminal = ref(0);
+const useConsoles = useMsfConsoles();
 
 const send_to_terminal = ref("");
 const banner = reactive({
@@ -57,6 +59,13 @@ const commands = reactive([
     get() {
       console.log("dziala");
       return "test1234";
+    },
+  },
+  {
+    name: "clearTerminal",
+    get() {
+      console.log("dziala");
+      return `clear \n`;
     },
   },
 ]);
@@ -169,6 +178,7 @@ async function writeDataToConsole(data) {
   });
 }
 async function readDataFromConsole(id) {
+  //commands = "clear \n";
   let data = { console_id: id };
   ConsoleDataService.read(data).then((res) => {
     console.log(res.data.data);
@@ -180,7 +190,9 @@ async function readDataFromConsole(id) {
 
       //banner.value.sing = "`" + res.data.data.prompt + "`";
       //console.log(send_to_terminal.value);
-
+      const terminalDiv = document.getElementById("terminal").innerHTML;
+      //console.log(terminalDiv);
+      useConsoles.storeConsoleData(id, res.data.data.data);
       banner.sign = res.data.data.prompt;
       setTimeout(() => {
         if (res.data.data.busy === true) readDataFromConsole(id);
@@ -236,15 +248,16 @@ onUnmounted(() => {});
 
 onBeforeMount(async () => {
   allConsoles.value = await getConsoleList();
-  currentTerminal.value = Math.min.apply(
+  currentTerminal.value = await Math.min.apply(
     Math,
     allConsoles.value.map(function (c) {
       return c.id;
     })
   );
   console.log(currentTerminal.value);
-  readDataFromConsole(currentTerminal.value);
+  await readDataFromConsole(currentTerminal.value);
   //this.createConsole();
+  // emit("changeCurrentConsole", { console_id: currentTerminal.value });
   let data = { console_id: currentTerminal.value, input_command: "version" };
   //writeDataToConsole(data);
   setPrompt("ifconfig");
@@ -253,13 +266,34 @@ onBeforeMount(async () => {
 watch(
   () => bus.value.get("changeCurrentConsole"),
   (data) => {
+    //send_to_terminal.value = "<br /><br />";
     alert(data[0].console_id);
-
+    //console.log(commands[3].get());
     currentTerminal.value = data[0].console_id;
     //send_to_terminal.value = `\n\n`;
+    //const cmdline = document.getElementsByClassName("cmdline");
+    //console.log(cmdline);
+    //cmdline[cmdline.length - 1].value = "clear";
+    //clear current console data
+    const consoles = useConsoles.getMsfConsoles;
+    const isConsoleIdAlreadyExist = consoles.some(
+      (console) => console.console_id == currentTerminal.value
+    );
+    console.log(isConsoleIdAlreadyExist);
+    if (isConsoleIdAlreadyExist == false)
+      useConsoles.storeConsoleData(currentTerminal.value, "");
+
+    const currentTerminalData = consoles.find(
+      (c) => c.console_id == currentTerminal.value
+    ).console_data;
+    console.log(currentTerminalData);
+
+    send_to_terminal.value = `<p>` + currentTerminalData + `</p>`;
+    /*
     readDataFromConsole(currentTerminal.value);
     let dataa = { console_id: currentTerminal.value, input_command: "help" };
-    //writeDataToConsole(dataa);
+    writeDataToConsole(dataa);
+    */
   }
 );
 
@@ -313,15 +347,6 @@ watch(
       input_command: "use " + moduleDetails.fullname,
     });
     setOptions(moduleOptions);
-
-    writeDataToConsole({
-      console_id: currentTerminal.value,
-      input_command: "options",
-    });
-    writeDataToConsole({
-      console_id: currentTerminal.value,
-      input_command: "advanced",
-    });
     readDataFromConsole(currentTerminal.value);
     if (moduleOptions.PAYLOAD) {
       //alert("jest payload");
@@ -330,11 +355,19 @@ watch(
     } else {
       runningModuleCommand = "run";
     }
-
+    writeDataToConsole({
+      console_id: currentTerminal.value,
+      input_command: "options",
+    });
+    writeDataToConsole({
+      console_id: currentTerminal.value,
+      input_command: "advanced",
+    });
     writeDataToConsole({
       console_id: currentTerminal.value,
       input_command: runningModuleCommand,
     });
+
     emit("completeModuleRunningProcess", { module_name: moduleDetails.fullname });
     const test = readDataFromConsole(currentTerminal.value);
     console.log(test);
@@ -353,9 +386,13 @@ watch(
 */
 .cmdline {
   min-width: 500px !important;
+  width: fit-content !important;
 }
 
 #container > output > pre > p {
   white-space: pre-wrap !important;
+}
+#terminal {
+  overflow: unset !important;
 }
 </style>

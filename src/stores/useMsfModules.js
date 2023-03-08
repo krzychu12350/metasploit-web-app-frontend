@@ -17,6 +17,7 @@ export const useMsfModules = defineStore("modules", {
   actions: {
     clearAllMsfModules() {
       this.modules = [];
+      this.payloads = [];
     },
     async fetchAllModules() {
       const exploits = await this.getAllExploits();

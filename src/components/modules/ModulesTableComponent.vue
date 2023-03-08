@@ -295,7 +295,7 @@ const onInput = debounce(() => {
   console.log("debug");
   console.log(result.value);
   getCurrentPaginateModulesDetails(result.value);
-}, 2000);
+}, 1000);
 
 function goToPrevPage() {
   prev();

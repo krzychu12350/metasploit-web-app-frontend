@@ -51,18 +51,20 @@
               @invalid-submit="onInvalidSubmit"
               :initial-values="formValues"
               method="POST"
-              class="space-y-8"
+              class="space-y-2"
             >
-              <div class="space-y-8">
+              <div class="space-y-2">
                 <div class="pt-8">
                   <div>
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
-                      Set {{ payloadData.name }} Options <br />
-                      {{ payloadData.fullname }}
+                      Set {{ payloadData.name }} Options
                     </h3>
                   </div>
                   <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                    <div v-for="(option, key) in stringTypeOptions" class="sm:col-span-3">
+                    <div
+                      v-for="(option, key) in stringTypeBasicOptions"
+                      class="sm:col-span-3"
+                    >
                       <!--{{ option }}-->
                       <label
                         :for="option.name.toLowerCase()"
@@ -95,11 +97,11 @@
 
                     <div
                       class="mt-1 sm:col-span-3"
-                      v-for="(option, key, index) in boolTypeOptions"
+                      v-for="(option, key, index) in boolTypeBasicOptions"
                     >
                       <div
                         class="relative flex items-start"
-                        v-show="option.type === 'bool'"
+                        v-show="option.type === 'bool' && option.advanced === false"
                       >
                         <div class="flex items-center h-5">
                           <Field
@@ -126,10 +128,10 @@
                 </div>
               </div>
 
-              <!--{{ enumTypeOptions }}-->
+              <!--{{ enumTypeBasicOptions }}-->
               <!-- start enum select -->
               <div class="flex flex-wrap mt-2">
-                <div v-for="enumOption in enumTypeOptions" class="mt-4 p-2 w-1/2">
+                <div v-for="enumOption in enumTypeBasicOptions" class="mt-4 p-2 w-1/2">
                   <label
                     :for="enumOption.name"
                     class="block text-sm font-medium text-gray-700"
@@ -149,33 +151,130 @@
                       {{ option }}
                     </option>
                   </Field>
-                  <p id="comments-description" class="text-sm text-gray-500">
-                    {{ enumOption.desc }}
-                  </p>
                 </div>
               </div>
               <!-- end enum select -->
               <div class="mt-1 sm:col-span-3">
                 <div class="relative flex items-start">
                   <div class="flex items-center h-5">
-                    <Field
+                    <input
                       id="advanced-options"
                       aria-describedby="advanced-options"
                       name="advanced-options"
                       type="checkbox"
-                      value="true"
-                      v-bind:unchecked-value="false"
+                      true-value="1"
+                      false-value="0"
+                      :checked="false"
+                      @click="showAdvancedOptions = !showAdvancedOptions"
                       class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                     />
                   </div>
-                  <div class="ml-3 text-sm">
+                  <div class="ml-3 mb-2 text-sm">
                     <label for="advanced-options" class="font-medium text-gray-700"
                       >Show advanced options</label
                     >
                   </div>
                 </div>
               </div>
+              <!--ADVANCED OPTIONS START -->
+              <div v-if="showAdvancedOptions">
+                <div class="space-y-2">
+                  <div class="pt-2">
+                    <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                      <div
+                        v-for="(option, key) in stringTypeAdvancedOptions"
+                        class="sm:col-span-3"
+                      >
+                        <!--{{ option }}-->
+                        <label
+                          :for="option.name.toLowerCase()"
+                          class="block text-sm font-medium"
+                        >
+                          {{ option.name }}
+                        </label>
 
+                        <div class="mt-1">
+                          <Field
+                            :type="setOptionFieldType(option.type)"
+                            :name="option.name"
+                            :id="option.name.toLowerCase()"
+                            :value="option.default"
+                            autocomplete="given-name"
+                            class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          />
+                          <p class="mt-2 text-sm text-gray-500" id="email-description">
+                            {{ option.desc }}
+                            <span v-if="option.required" class="font-semibold">
+                              (Field required)</span
+                            >
+                          </p>
+                        </div>
+
+                        <div class="text-sm text-red-600">
+                          <ErrorMessage :name="option.name" />
+                        </div>
+                      </div>
+
+                      <div
+                        class="mt-1 sm:col-span-3"
+                        v-for="(option, key, index) in boolTypeAdvancedOptions"
+                      >
+                        <div class="relative flex items-start">
+                          <div class="flex items-center h-5">
+                            <Field
+                              :id="option.name"
+                              :aria-describedby="'checkbox' + option.name"
+                              :name="option.name"
+                              type="checkbox"
+                              :value="true"
+                              v-bind:unchecked-value="false"
+                              class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                            />
+                          </div>
+                          <div class="ml-3 text-sm">
+                            <label for="comments" class="font-medium text-gray-700">{{
+                              option.name
+                            }}</label>
+                            <p id="comments-description" class="text-gray-500">
+                              {{ option.desc }}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- start enum select -->
+                <div class="flex flex-wrap mt-2">
+                  <div
+                    v-for="enumOption in enumTypeAdvancedOptions"
+                    class="mt-4 p-2 w-1/2"
+                  >
+                    <label
+                      :for="enumOption.name"
+                      class="block text-sm font-medium text-gray-700"
+                      >{{ enumOption.name }}</label
+                    >
+                    <Field
+                      :id="enumOption.name"
+                      :name="enumOption.name"
+                      as="select"
+                      class="mt-1 block pl-3 w-full pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                    >
+                      <option
+                        v-for="(option, index) in enumOption.enums"
+                        :value="option"
+                        :selected="index === 0"
+                      >
+                        {{ option }}
+                      </option>
+                    </Field>
+                  </div>
+                </div>
+                <!-- end enum select -->
+              </div>
+
+              <!--ADVANCED OPTIONS END -->
               <div class="pt-5">
                 <div class="flex justify-end">
                   <button
@@ -185,7 +284,6 @@
                   >
                     Cancel
                   </button>
-
                   <button
                     type="submit"
                     class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -231,6 +329,10 @@ let selectedModuleSetOptions = reactive([]);
 let payloadOptions = reactive([]);
 let payloadData = reactive({});
 
+const showAdvancedOptions = ref(false);
+
+let basicModuleOptions = reactive([]);
+let advancedModuleOptions = reactive([]);
 const schema = ref();
 
 let selectedOpt = ref("none");
@@ -270,21 +372,22 @@ async function getPayloadData(payloadName) {
 
 function processModuleOptions() {
   const fields = [];
-  payloadOptions.splice(0);
+  basicModuleOptions.splice(0);
+  advancedModuleOptions.splice(0);
   Object.keys(payloadData.options).forEach(function (key) {
+    payloadData.options[key].name = key;
+    console.log(key, payloadData.options[key]);
     if (payloadData.options[key].advanced === false) {
-      payloadData.options[key].name = key;
       formValues.value[key] = payloadData.options[key].default;
-      console.log(key, payloadData.options[key]);
 
       if (payloadData.options[key].type === "string") {
         let newField = new Object();
         newField.name = payloadData.options[key].name;
-        /*
-      if ((payloadData.options[key].required = "true"))
-        newField.validations = ["string", "required"];
-      else newField.validations = ["string"];
-      */
+
+        if ((payloadData.options[key].required = "true"))
+          newField.validations = ["string", "required"];
+        else newField.validations = ["string"];
+
         //newField.validations = ["string", "required"];
         newField.params = {
           required: payloadData.options[key].name + " is required",
@@ -292,13 +395,20 @@ function processModuleOptions() {
         fields.push(newField);
       }
 
-      payloadOptions.push(payloadData.options[key]);
+      basicModuleOptions.push(payloadData.options[key]);
+    } else {
+      advancedModuleOptions.push(payloadData.options[key]);
     }
   });
+  console.log(basicModuleOptions);
+  console.log(advancedModuleOptions);
+  //console.log(formValues.value);
   console.log(fields);
+
   schema.value = createValidationSchema(fields);
   console.log(schema.value);
 }
+
 async function extractPayloadsNamesToArray(payloads) {
   return payloads.map((p) => p.module_name);
 }
@@ -342,7 +452,7 @@ let payloadData = reactive({});
 
   /*
   const loader = $loading.show();
-  console.log(moduleData);
+  console.log(selectedModuleData);
 
   options.PAYLOAD = selectedPayload.value;
   console.log(options);
@@ -427,5 +537,41 @@ const createValidationSchema = (fields = []) => {
 
   return Yup.object().shape({ ...ObjectSchema });
 };
+
+const boolTypeBasicOptions = computed(() => {
+  return basicModuleOptions.filter((o) => {
+    if (o.type === "bool") return o;
+  });
+});
+
+const stringTypeBasicOptions = computed(() => {
+  return basicModuleOptions.filter((o) => {
+    if (o.type != "bool" && o.type != "enum") return o;
+  });
+});
+
+const enumTypeBasicOptions = computed(() => {
+  return basicModuleOptions.filter((o) => {
+    if (o.type === "enum") return o;
+  });
+});
+
+const boolTypeAdvancedOptions = computed(() => {
+  return advancedModuleOptions.filter((o) => {
+    if (o.type === "bool") return o;
+  });
+});
+
+const stringTypeAdvancedOptions = computed(() => {
+  return advancedModuleOptions.filter((o) => {
+    if (o.type != "bool" && o.type != "enum") return o;
+  });
+});
+
+const enumTypeAdvancedOptions = computed(() => {
+  return advancedModuleOptions.filter((o) => {
+    if (o.type === "enum") return o;
+  });
+});
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
