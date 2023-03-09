@@ -188,6 +188,7 @@ import { useMsfModules } from "../stores/useMsfModules";
 import { useCurrentMsfRpcConnection } from "../stores/useCurrentMsfRpcConnection";
 import * as yup from "yup";
 import ConsoleDataService from "../services/ConsoleDataService";
+import { useMsfConsoles } from "../stores/useMsfConsoles";
 
 const isHttpEnabled = ref(false);
 const router = useRouter();
@@ -276,6 +277,7 @@ async function setMsfConnection(credentials, loader) {
     .then((connectionSettings) => {
       console.log(connectionSettings);
       useCurrentMetasploitRpcConnection.setCurrentRpcConnection(connectionSettings);
+      useMsfConsoles.createCurrentConnectionConsolesDataArray;
       loginToMsfRpc(credentials, loader);
     });
 }

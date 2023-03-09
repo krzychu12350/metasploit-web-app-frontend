@@ -6,7 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   plugins: [
     vue(),
-    /*
+    
     VitePWA({
       devOptions: {
         enabled: true
@@ -32,6 +32,6 @@ export default defineConfig({
         ]
       }
     })
-    */
+    
   ]
 })

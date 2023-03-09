@@ -14,10 +14,15 @@ import ConsoleDataService from "../services/ConsoleDataService";
 import { ref, reactive, onBeforeMount, onMounted, onUnmounted, watch } from "vue";
 import useEventsBus from "../composables/eventBus";
 import { useMsfConsoles } from "../stores/useMsfConsoles";
+import { useCurrentMsfRpcConnection } from "../stores/useCurrentMsfRpcConnection";
 
 const { bus, emit } = useEventsBus();
 const currentTerminal = ref(0);
 const useConsoles = useMsfConsoles();
+const useCurrentMetasploitRpcConnection = useCurrentMsfRpcConnection();
+const currentRpcConnectionId = ref(
+  useCurrentMetasploitRpcConnection.getCurrentRpcConnection.id
+);
 
 const send_to_terminal = ref("");
 const banner = reactive({
@@ -192,7 +197,7 @@ async function readDataFromConsole(id) {
       //console.log(send_to_terminal.value);
       const terminalDiv = document.getElementById("terminal").innerHTML;
       //console.log(terminalDiv);
-      useConsoles.storeConsoleData(id, res.data.data.data);
+      useConsoles.storeConsoleData(id, res.data.data.data, currentRpcConnectionId.value);
       banner.sign = res.data.data.prompt;
       setTimeout(() => {
         if (res.data.data.busy === true) readDataFromConsole(id);
@@ -257,7 +262,7 @@ onBeforeMount(async () => {
   console.log(currentTerminal.value);
   await readDataFromConsole(currentTerminal.value);
   //this.createConsole();
-  // emit("changeCurrentConsole", { console_id: currentTerminal.value });
+  emit("changeCurrentConsole", { console_id: currentTerminal.value });
   let data = { console_id: currentTerminal.value, input_command: "version" };
   //writeDataToConsole(data);
   setPrompt("ifconfig");
@@ -267,7 +272,8 @@ watch(
   () => bus.value.get("changeCurrentConsole"),
   (data) => {
     //send_to_terminal.value = "<br /><br />";
-    alert(data[0].console_id);
+    //display current terminal id
+    //alert(data[0].console_id);
     //console.log(commands[3].get());
     currentTerminal.value = data[0].console_id;
     //send_to_terminal.value = `\n\n`;
@@ -281,7 +287,11 @@ watch(
     );
     console.log(isConsoleIdAlreadyExist);
     if (isConsoleIdAlreadyExist == false)
-      useConsoles.storeConsoleData(currentTerminal.value, "");
+      useConsoles.storeConsoleData(
+        currentTerminal.value,
+        "",
+        currentRpcConnectionId.value
+      );
 
     const currentTerminalData = consoles.find(
       (c) => c.console_id == currentTerminal.value
