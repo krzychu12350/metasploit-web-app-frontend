@@ -199,6 +199,11 @@ const showPassword = ref(false);
 
 const useMetasploitModules = useMsfModules();
 const useCurrentMetasploitRpcConnection = useCurrentMsfRpcConnection();
+const useConsoles = useMsfConsoles();
+
+const currentRpcConnectionId = ref(
+  useCurrentMetasploitRpcConnection.getCurrentRpcConnection.id
+);
 
 const togglePasswordVisibity = () => {
   showPassword.value = !showPassword.value;
@@ -256,9 +261,25 @@ function onInvalidSubmit({ values, errors, results }) {
   console.log(results); // a detailed map of field names and their validation results
 }
 
-onUnmounted(() => {
+async function createFirstConsole() {
+  return ConsoleDataService.create()
+    .then((res) => {
+      console.log(res.data.data.id);
+      return res.data.data.id;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+onUnmounted(async () => {
   //alert("create console");
-  ConsoleDataService.create();
+  let firstConsoleId = await createFirstConsole();
+  //alert(firstConsoleId);
+  await useConsoles.storeConsoleData(
+    parseInt(firstConsoleId),
+    "",
+    currentRpcConnectionId.value
+  );
 });
 
 // too many attempts

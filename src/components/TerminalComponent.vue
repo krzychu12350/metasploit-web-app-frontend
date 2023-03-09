@@ -251,18 +251,30 @@ const allConsoles = ref([]);
 onMounted(() => {});
 onUnmounted(() => {});
 
-onBeforeMount(async () => {
+async function storeAllConsoleData() {
+  allConsoles.value.forEach(async (c) => {
+    console.log(parseInt(c.id));
+    await useConsoles.storeConsoleData(parseInt(c.id), "", currentRpcConnectionId.value);
+  });
+}
+
+onMounted(async () => {
   allConsoles.value = await getConsoleList();
+
+  await storeAllConsoleData();
+  emit("refreshTabs");
   currentTerminal.value = await Math.min.apply(
     Math,
     allConsoles.value.map(function (c) {
       return c.id;
     })
   );
+
   console.log(currentTerminal.value);
+  emit("changeCurrentConsole", { console_id: currentTerminal.value });
   await readDataFromConsole(currentTerminal.value);
   //this.createConsole();
-  emit("changeCurrentConsole", { console_id: currentTerminal.value });
+  //emit("changeCurrentConsole", { console_id: currentTerminal.value });
   let data = { console_id: currentTerminal.value, input_command: "version" };
   //writeDataToConsole(data);
   setPrompt("ifconfig");
@@ -281,12 +293,13 @@ watch(
     //console.log(cmdline);
     //cmdline[cmdline.length - 1].value = "clear";
     //clear current console data
-    const consoles = useConsoles.getMsfConsoles;
-    const isConsoleIdAlreadyExist = consoles.some(
-      (console) => console.console_id == currentTerminal.value
-    );
+    const consoles = useConsoles.getMsfConsoles(currentRpcConnectionId.value);
+    console.log(consoles);
+    const isConsoleIdAlreadyExist = consoles.some((console) => {
+      console.console_id == currentTerminal.value;
+    });
     console.log(isConsoleIdAlreadyExist);
-    if (isConsoleIdAlreadyExist == false)
+    if (isConsoleIdAlreadyExist === false)
       useConsoles.storeConsoleData(
         currentTerminal.value,
         "",
@@ -294,7 +307,7 @@ watch(
       );
 
     const currentTerminalData = consoles.find(
-      (c) => c.console_id == currentTerminal.value
+      (c) => parseInt(c.console_id) === parseInt(currentTerminal.value)
     ).console_data;
     console.log(currentTerminalData);
 

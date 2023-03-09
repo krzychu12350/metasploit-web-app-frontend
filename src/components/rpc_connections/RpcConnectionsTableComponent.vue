@@ -223,16 +223,22 @@ import useMsfRpcConnection from "../../composables/msfRpcConnection";
 import { useMsfAuth } from "../../stores/useMsfAuth";
 import { useMsfModules } from "../../stores/useMsfModules";
 import { useRouter } from "vue-router";
+import { useMsfConsoles } from "../../stores/useMsfConsoles";
+import ConsoleDataService from "../../services/ConsoleDataService";
 
 const useCurrentMetasploitRpcConnection = useCurrentMsfRpcConnection();
 let currentRpcConnectionSettings = reactive({});
 const useMetasploitModules = useMsfModules();
+const useConsoles = useMsfConsoles();
 let rpcConnections = ref([]);
 const { bus, emit } = useEventsBus();
 const $loading = inject("$loading");
 const fullPage = ref(true);
 const router = useRouter();
 
+const currentRpcConnectionId = ref(
+  useCurrentMetasploitRpcConnection.getCurrentRpcConnection.id
+);
 const { result, next, prev, currentPage, lastPage } = useArrayPagination(rpcConnections, {
   pageSize: 5,
 });
@@ -276,6 +282,7 @@ watch(
 async function switchRpcConnection(connectionSettings) {
   const loader = $loading.show();
   //await useMsfRpcConnection.setMsfConnection(connectionSettings, loader);
+  useMetasploitModules.clearAllMsfModules();
   await setMsfConnection(connectionSettings, loader);
   console.log(connectionSettings);
 }
@@ -294,6 +301,11 @@ async function loginToMsfRpc(credentials, loader) {
   useMsfAuth()
     .login(credentials)
     .then(async () => {
+      let allConsoleList = await getConsoleList();
+      if (allConsoleList.length === 0) {
+        createAndStoreNewConsole();
+      }
+
       await useMetasploitModules.fetchAllModules();
       router.push("/");
       loader.hide();
@@ -306,6 +318,37 @@ async function loginToMsfRpc(credentials, loader) {
         "error"
       );
     });
+}
+
+async function createFirstConsole() {
+  return ConsoleDataService.create()
+    .then((res) => {
+      console.log(res.data.data.id);
+      return res.data.data.id;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+async function createAndStoreNewConsole() {
+  //alert("create console");
+  let firstConsoleId = await createFirstConsole();
+  //alert(firstConsoleId);
+  await useConsoles.storeConsoleData(
+    parseInt(firstConsoleId),
+    "",
+    currentRpcConnectionId.value
+  );
+}
+
+function getConsoleList() {
+  return ConsoleDataService.list()
+    .then((res) => {
+      console.log(res.data.data.consoles);
+      return res.data.data.consoles;
+    })
+    .catch((err) => console.log(err));
 }
 </script>
 <style scoped></style>

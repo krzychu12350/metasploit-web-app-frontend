@@ -5,17 +5,15 @@ export const useMsfConsoles = defineStore("consoles", {
     consoles: [],
   }),
   getters: {
-    getMsfConsoles() {
-      return this.consoles;
-    },
+
   },
   actions: {
     storeConsoleData(consoleId, consoleData, currentRpcConnectionId) {
       const isConsoleIdAlreadyExist = this.consoles.some(console => console.console_id == consoleId);
-      console.log(consoleId);
+      //console.log(consoleId);
       if (isConsoleIdAlreadyExist) {
         const exsistingConsole = this.consoles.find(item => item.console_id == consoleId);
-        console.log(exsistingConsole);
+        //console.log(exsistingConsole);
         console.log(consoleData);
        // console.log(exsistingConsole.console_data);
         //if(consoleData == "clear") exsistingConsole.console_data = "";
@@ -28,6 +26,14 @@ export const useMsfConsoles = defineStore("consoles", {
     },
     clearMsfConsolesData() {
       this.consoles.splice(0);
+    },
+    getMsfConsoles(currentRpcConnectionId) {
+      const currentConnectionConsoles = this.consoles.filter(function (c) {
+        return parseInt(c.connection_id) === parseInt(currentRpcConnectionId);
+    });
+    console.log(currentConnectionConsoles, currentRpcConnectionId);
+    
+    return this.consoles;
     },
   },
   persist: {
