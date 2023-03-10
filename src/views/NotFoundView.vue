@@ -5,8 +5,8 @@
     >
       <div class="flex-shrink-0 flex justify-center">
         <a href="/" class="inline-flex">
-          <span class="sr-only">Workflow</span>
-          <img class="h-12 w-auto" src="../assets/metasploit-framework-logo.svg" alt="" />
+          <span class="sr-only">Metasploit</span>
+          <img class="h-12 w-auto" src="/logo.svg" alt="" />
         </a>
       </div>
       <div class="py-16">

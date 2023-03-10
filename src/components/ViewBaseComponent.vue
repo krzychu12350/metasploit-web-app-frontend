@@ -27,7 +27,7 @@
         <!-- <BreadcrumbComponent subpageName="Analysis" />-->
       </div>
       <main>
-        <div class="max-w-8xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto py-6 sm:px-6 lg:px-8 p-4">
           <!--<ScannedHostsComponent></ScannedHostsComponent>-->
           <slot name="subpage-content"></slot>
         </div>

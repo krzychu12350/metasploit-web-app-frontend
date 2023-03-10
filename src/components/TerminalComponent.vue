@@ -11,10 +11,11 @@
 
 <script setup>
 import ConsoleDataService from "../services/ConsoleDataService";
-import { ref, reactive, onBeforeMount, onMounted, onUnmounted, watch } from "vue";
+import { ref, reactive, onBeforeMount, onMounted, onUnmounted, watch, inject } from "vue";
 import useEventsBus from "../composables/eventBus";
 import { useMsfConsoles } from "../stores/useMsfConsoles";
 import { useCurrentMsfRpcConnection } from "../stores/useCurrentMsfRpcConnection";
+import ToastService from "../services/ToastService";
 
 const { bus, emit } = useEventsBus();
 const currentTerminal = ref(0);
@@ -23,7 +24,7 @@ const useCurrentMetasploitRpcConnection = useCurrentMsfRpcConnection();
 const currentRpcConnectionId = ref(
   useCurrentMetasploitRpcConnection.getCurrentRpcConnection.id
 );
-
+const $loading = inject("$loading");
 const send_to_terminal = ref("");
 const banner = reactive({
   header: "Metasploit Shell",
@@ -394,6 +395,88 @@ watch(
     emit("completeModuleRunningProcess", { module_name: moduleDetails.fullname });
     const test = readDataFromConsole(currentTerminal.value);
     console.log(test);
+  }
+);
+
+async function getDataFromConsole(consoleId) {
+  return ConsoleDataService.read({ console_id: consoleId })
+    .then((res) => {
+      console.log(res.data.data);
+      return res.data.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+async function manageHost(hostIpAddress, operationType) {
+  const loader = $loading.show();
+  let commandParametr = "";
+  const createdConsole = await createConsole();
+  emit("refreshTabs");
+  //console.log(createdConsole);
+  currentTerminal.value = createdConsole.id;
+  console.log(currentTerminal.value);
+  readDataFromConsole(currentTerminal.value);
+
+  if (operationType === "add") commandParametr = "-a";
+  else if (operationType === "delete") commandParametr = "-d";
+
+  writeDataToConsole({
+    console_id: createdConsole.id,
+    input_command: "hosts " + commandParametr + " " + hostIpAddress,
+  });
+
+  const dataReadFromConsole = await getDataFromConsole(createdConsole.id);
+  console.log(dataReadFromConsole);
+  if (operationType === "add") {
+    if (dataReadFromConsole.data.includes("Host: host="))
+      ToastService.showToast("Added host " + hostIpAddress);
+    else ToastService.showToast(dataReadFromConsole.data, "error");
+  } else if (operationType === "delete") {
+    //alert("del");
+    if (dataReadFromConsole.data.includes("[*] Deleted 1 hosts"))
+      ToastService.showToast("Deleted host " + hostIpAddress);
+    else ToastService.showToast(dataReadFromConsole.data, "error");
+  }
+  emit("refreshHosts");
+  loader.hide();
+}
+
+watch(
+  () => bus.value.get("addNewHost"),
+  async (data) => {
+    const hostIpAddress = data[0].host_ip_address;
+    console.log(hostIpAddress);
+    await manageHost(hostIpAddress, "add");
+  }
+);
+
+watch(
+  () => bus.value.get("deleteHost"),
+  async (data) => {
+    const hostIpAddress = data[0].host.address;
+    console.log(hostIpAddress);
+    await manageHost(hostIpAddress, "delete");
+  }
+);
+
+watch(
+  () => bus.value.get("exportDatabase"),
+  async () => {
+    let input = document.createElement("input");
+    input.type = "file";
+    console.log(input.mozFullPath);
+
+    input.onchange = (_) => {
+      // you can use this method to get file and perform respective operations
+      let files = Array.from(input.files);
+      console.log(files);
+      var path = (window.URL || window.webkitURL).createObjectURL(files[0]);
+      console.log("path", path);
+    };
+
+    input.click();
   }
 );
 </script>

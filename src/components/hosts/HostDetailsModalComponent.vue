@@ -117,7 +117,7 @@ watch(
     toggleModal();
     //alert("testt");
     //console.log(val[0].host_id);
-    getHostDetails(val[0].host_id);
+    getHostDetails(val[0].host.id);
   }
 );
 </script>
