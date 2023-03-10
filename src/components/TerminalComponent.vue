@@ -24,6 +24,8 @@ const useCurrentMetasploitRpcConnection = useCurrentMsfRpcConnection();
 const currentRpcConnectionId = ref(
   useCurrentMetasploitRpcConnection.getCurrentRpcConnection.id
 );
+const isNmapScanRunning = ref(false);
+
 const $loading = inject("$loading");
 const send_to_terminal = ref("");
 const banner = reactive({
@@ -183,13 +185,38 @@ async function writeDataToConsole(data) {
     //this.send_to_terminal = `<p>` + res.data.data + `</p>`;
   });
 }
+
+function getNmapResult(nmapResultData) {
+  const splicedNmapResultArray = nmapResultData.split("\n");
+  const noEmptyStrings = splicedNmapResultArray.filter((str) => str !== "");
+  console.log(noEmptyStrings.slice(-1)[0].slice(4));
+  return noEmptyStrings.slice(-1)[0].slice(4);
+}
+
 async function readDataFromConsole(id) {
   //commands = "clear \n";
   let data = { console_id: id };
-  ConsoleDataService.read(data).then((res) => {
+  return ConsoleDataService.read(data).then((res) => {
     console.log(res.data.data);
+    const responseData = res.data.data;
+    console.log(isNmapScanRunning.value);
+    if (
+      isNmapScanRunning.value === true &&
+      responseData.data.includes("Nmap: Nmap done")
+    ) {
+      //alert(responseData.data);
+      /*
+      let splicedNmapResultArray = responseData.data.split("\n");
+      const noEmptyStrings = splicedNmapResultArray.filter((str) => str !== "");
+      console.log(noEmptyStrings.slice(-1)[0].slice(4));
+      */
+      let nmapResultMessage = getNmapResult(responseData.data);
+      emit("refreshHosts");
+      ToastService.showToast(nmapResultMessage);
+      isNmapScanRunning.value = false;
+    }
     setTimeout(() => {
-      send_to_terminal.value = "<p>" + res.data.data.data + "</p>";
+      send_to_terminal.value = "<p>" + responseData.data + "</p>";
       //const test = "dddd";
       //banner.sign = "dddd >";
       //console.log("`" + String(res.data.data.prompt) + "`");
@@ -198,15 +225,16 @@ async function readDataFromConsole(id) {
       //console.log(send_to_terminal.value);
       const terminalDiv = document.getElementById("terminal").innerHTML;
       //console.log(terminalDiv);
-      useConsoles.storeConsoleData(id, res.data.data.data, currentRpcConnectionId.value);
-      banner.sign = res.data.data.prompt;
+      useConsoles.storeConsoleData(id, responseData.data, currentRpcConnectionId.value);
+      banner.sign = responseData.prompt;
       setTimeout(() => {
-        if (res.data.data.busy === true) readDataFromConsole(id);
+        if (responseData.busy === true) readDataFromConsole(id);
       }, 1000);
       //console.log(banner);
-      return res.data.data.data;
+      return responseData.data;
       //console.log(res.data.data.busy);
     }, 200);
+    return responseData.data;
   });
 }
 
@@ -323,19 +351,25 @@ watch(
 
 watch(
   () => bus.value.get("runNmapScan"),
-  async () => {
+  async (data) => {
+    isNmapScanRunning.value = true;
+    const loader = $loading.show();
     //alert("nmap scan");
-
+    const nmapCommand = data[0].nmap_command;
     const createdConsoleData = await createConsole();
     currentTerminal.value = createdConsoleData.id;
     emit("refreshTabs");
     //alert(createdConsoleData.id);
     let dataa = {
       console_id: currentTerminal.value,
-      input_command: "db_nmap -v -sF -Pn -O 192.168.0.0/24",
+      //input_command: "db_nmap -v -sF -Pn -O 192.168.1.0/24",
+      input_command: nmapCommand,
     };
     writeDataToConsole(dataa);
-    readDataFromConsole(currentTerminal.value);
+    await readDataFromConsole(currentTerminal.value);
+
+    ToastService.showToast("Nmap scan started successfully");
+    loader.hide();
   }
 );
 
@@ -353,12 +387,12 @@ function setOptions(options) {
 
 watch(
   () => bus.value.get("runModule"),
-  async (val) => {
+  async (data) => {
     let runningModuleCommand = "";
-    console.log(val);
-    const moduleDetails = val[0].module_details;
-    const moduleOptions = val[0].module_options;
-    const payloadOptions = val[0].payload_options;
+    console.log(data);
+    const moduleDetails = data[0].module_details;
+    const moduleOptions = data[0].module_options;
+    const payloadOptions = data[0].payload_options;
     console.log(moduleDetails.fullname);
     console.log(moduleOptions, payloadOptions);
 
@@ -461,22 +495,80 @@ watch(
   }
 );
 
+function replaceAllBackslashes(string, replacement) {
+  return string.replaceAll("\\", replacement);
+}
+
+async function manageWorkspaceData(operationSettings) {
+  let fileExtenstion = "";
+  let operationCommand = "";
+
+  if (operationSettings.file_type === "xml") fileExtenstion = "xml";
+  else if (operationSettings.file_type === "pwdump") fileExtenstion = "txt";
+
+  if (operationSettings.operation_type === "export") {
+    operationCommand =
+      "db_export -f " +
+      operationSettings.file_type +
+      " -a " +
+      replaceAllBackslashes(operationSettings.file_dir, "/") +
+      "/" +
+      operationSettings.file_name +
+      "." +
+      fileExtenstion;
+  } else if (operationSettings.operation_type === "import") {
+    operationCommand =
+      "db_import " +
+      replaceAllBackslashes(operationSettings.file_dir, "/") +
+      "/" +
+      operationSettings.file_name +
+      "." +
+      fileExtenstion;
+  }
+
+  console.log(operationCommand);
+
+  const loader = $loading.show();
+  let commandParametr = "";
+  const createdConsole = await createConsole();
+  emit("refreshTabs");
+  currentTerminal.value = createdConsole.id;
+  console.log(currentTerminal.value);
+  readDataFromConsole(currentTerminal.value);
+
+  writeDataToConsole({
+    console_id: createdConsole.id,
+    input_command: operationCommand,
+  });
+  let dataReadFromConsole = await getDataFromConsole(createdConsole.id);
+  if (operationSettings.operation_type === "export") {
+    if (dataReadFromConsole.data.includes("Starting export of workspace default to"))
+      ToastService.showToast("Exporting data...");
+    else ToastService.showToast(dataReadFromConsole.data, "error");
+  } else if (operationSettings.operation_type === "import") {
+    if (dataReadFromConsole.data.includes("Importing 'Metasploit XML'"))
+      ToastService.showToast("Importing data...");
+    else ToastService.showToast(dataReadFromConsole.data.slice(4), "error");
+  }
+
+  loader.hide();
+}
+
 watch(
-  () => bus.value.get("exportDatabase"),
-  async () => {
-    let input = document.createElement("input");
-    input.type = "file";
-    console.log(input.mozFullPath);
+  () => bus.value.get("exportDataFromWorkspace"),
+  async (data) => {
+    const exportingSettings = data[0].exporting_settings;
+    exportingSettings.operation_type = "export";
+    await manageWorkspaceData(exportingSettings);
+  }
+);
 
-    input.onchange = (_) => {
-      // you can use this method to get file and perform respective operations
-      let files = Array.from(input.files);
-      console.log(files);
-      var path = (window.URL || window.webkitURL).createObjectURL(files[0]);
-      console.log("path", path);
-    };
-
-    input.click();
+watch(
+  () => bus.value.get("importDataIntoWorkspace"),
+  async (data) => {
+    const importingSettings = data[0].importing_settings;
+    importingSettings.operation_type = "import";
+    await manageWorkspaceData(importingSettings);
   }
 );
 </script>
