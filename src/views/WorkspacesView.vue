@@ -13,7 +13,9 @@
   -->
 
   <ViewBaseComponent>
-    <template v-slot:subpage-header> <BreadcrumbComponent subpageName="Jobs" /></template>
+    <template v-slot:subpage-header>
+      <BreadcrumbComponent subpageName="Workspaces"
+    /></template>
     <template v-slot:subpage-content>
       <WorkspacesTableComponent></WorkspacesTableComponent>
       <WorkspaceDeletingModal></WorkspaceDeletingModal>

@@ -29,6 +29,9 @@ class CoreService {
     stop() {
         return http.post(METHOD_TYPE + "/stop");
     }
+    version() {
+        return http.post(METHOD_TYPE + "/version");
+    }
 }
 
 export default new CoreService();

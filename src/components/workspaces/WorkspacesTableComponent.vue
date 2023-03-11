@@ -107,7 +107,8 @@
                     <div class="flex">
                       <ArrowsRightLeftIcon
                         class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
-                        v-tooltip.top="'Connect'"
+                        v-if="workspace.name !== currentWorkspaceName"
+                        v-tooltip.top="'Change workspace'"
                         @click="
                           emit('changeWorkspace', { workspace_name: workspace.name })
                         "
@@ -115,6 +116,7 @@
                       />
                       <XMarkIcon
                         class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
+                        v-tooltip.top="'Delete workspace'"
                         @click="
                           emit('showWorkspaceDeletingModal', {
                             workspace_name: workspace.name,
@@ -185,7 +187,7 @@ let currentWorkspaceName = ref("");
 const $loading = inject("$loading");
 
 const { result, next, prev, currentPage, lastPage } = useArrayPagination(workspaces, {
-  pageSize: 1,
+  pageSize: 5,
 });
 
 async function getAllWorkspaces() {

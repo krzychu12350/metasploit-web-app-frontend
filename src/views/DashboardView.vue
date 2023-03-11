@@ -4,6 +4,7 @@
       <BreadcrumbComponent subpageName="Dashboard"
     /></template>
     <template v-slot:subpage-content>
+      <CoreStatsComponent class="mb-4"></CoreStatsComponent>
       <ModuleStatsComponent />
     </template>
   </ViewBaseComponent>
@@ -29,6 +30,7 @@ import ModulesSearchEngineComponent from "../components/modules/ModulesSearchEng
 import NavbarComponent from "../components/NavbarComponent.vue";
 import ConsoleDataService from "../services/ConsoleDataService";
 import ModuleStatsComponent from "../components/ModuleStatsComponent.vue";
+import CoreStatsComponent from "../components/CoreStatsComponent.vue";
 import AuthService from "../services/AuthDataService";
 import ToastService from "../services/ToastService";
 import AlgoliaInstantSearch from "../components/modules/AlgoliaInstantSearch.vue";
