@@ -12,6 +12,7 @@ import ModulesView from "../views/ModulesView.vue";
 import SessionInteractWorkspaceView from '../views/SessionInteractWorkspaceView.vue'
 import RpcConnectionsView from '../views/RpcConnectionsView.vue'
 import HostsView from '../views/HostsView.vue'
+import WorkspacesView from '../views/WorkspacesView.vue'
 import { useMsfAuth } from '../stores/useMsfAuth';
 
 const routes = [
@@ -69,6 +70,11 @@ const routes = [
         path: "/setup",
         name: "Setup",
         component: SetupView,
+    },
+    {
+        path: "/workspaces",
+        name: "Workspaces",
+        component: WorkspacesView,
     },
     {
         path: "/sessions/:id",

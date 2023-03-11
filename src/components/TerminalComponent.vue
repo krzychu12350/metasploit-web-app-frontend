@@ -178,6 +178,7 @@ async function createConsole() {
     })
     .catch((err) => console.log(err));
 }
+
 async function writeDataToConsole(data) {
   ConsoleDataService.write(data).then((res) => {
     console.log(res.data.data);

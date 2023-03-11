@@ -11,6 +11,9 @@ class DatabaseDataService {
     getHostDetails(hostId) {
         return http.post(METHOD_TYPE + `/hosts/${hostId}`);
     }
+    getWorkspaces() {
+        return http.post(METHOD_TYPE + "/workspaces");
+    }
 
 }
 
