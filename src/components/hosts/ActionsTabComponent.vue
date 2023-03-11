@@ -84,10 +84,10 @@
             </MenuItem>
             <MenuItem class="hover:bg-gray-100 text-left">
               <button
-                @click="emit('showNmapScanSettingsModal', { scan_type: 'complex' })"
+                @click="emit('showNmapScanSettingsModal', { scan_type: 'aggressive' })"
                 class="text-gray-700 block px-4 py-2 text-sm w-full"
               >
-                Complex scan
+                Aggressive scan
               </button>
             </MenuItem>
             <MenuItem class="hover:bg-gray-100 text-left">

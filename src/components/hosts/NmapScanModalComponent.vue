@@ -142,9 +142,9 @@ const onSubmit = async (nmapScanningSettings) => {
     emit("runNmapScan", {
       nmap_command: "db_nmap -sn " + nmapScanningSettings.ip_range,
     });
-  else if (scanType.value === "complex")
+  else if (scanType.value === "aggressive")
     emit("runNmapScan", {
-      nmap_command: "db_nmap -sn -Pn " + nmapScanningSettings.ip_range,
+      nmap_command: "db_nmap -sV -A " + nmapScanningSettings.ip_range,
     });
   else if (scanType.value === "os detection")
     emit("runNmapScan", {
