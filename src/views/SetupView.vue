@@ -189,6 +189,7 @@ import { useCurrentMsfRpcConnection } from "../stores/useCurrentMsfRpcConnection
 import * as yup from "yup";
 import ConsoleDataService from "../services/ConsoleDataService";
 import { useMsfConsoles } from "../stores/useMsfConsoles";
+import useEventsBus from "../composables/eventBus";
 
 const isHttpEnabled = ref(false);
 const router = useRouter();
@@ -196,7 +197,7 @@ const router = useRouter();
 const $loading = inject("$loading");
 const fullPage = ref(true);
 const showPassword = ref(false);
-
+const { emit } = useEventsBus();
 const useMetasploitModules = useMsfModules();
 const useCurrentMetasploitRpcConnection = useCurrentMsfRpcConnection();
 const useConsoles = useMsfConsoles();
@@ -300,6 +301,7 @@ async function setMsfConnection(credentials, loader) {
       useCurrentMetasploitRpcConnection.setCurrentRpcConnection(connectionSettings);
       useMsfConsoles.createCurrentConnectionConsolesDataArray;
       loginToMsfRpc(credentials, loader);
+      emit("fetchCurrentWorkspace");
     });
 }
 
@@ -308,16 +310,22 @@ async function loginToMsfRpc(credentials, loader) {
     .login(credentials)
     .then(async () => {
       await useMetasploitModules.fetchAllModules();
+      //emit("fetchCurrentWorkspace");
       router.push("/");
       loader.hide();
     })
     .catch((err) => {
-      loader.hide();
-      //console.log(err.response);
+      //console.log(err.response.data.message);
+      /*
       ToastService.showToast(
         "Invalid credentials, check your MSF RPC Server Configuration",
         "error"
       );
+      */
+      if (err) {
+        loader.hide();
+        ToastService.showToast(err.response.data.message, "error");
+      }
     });
 }
 

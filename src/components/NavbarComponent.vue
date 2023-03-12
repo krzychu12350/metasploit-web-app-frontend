@@ -41,6 +41,11 @@
                 >Modules</RouterLink
               >
               <RouterLink
+                to="/scripts"
+                class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >Scripts</RouterLink
+              >
+              <RouterLink
                 to="/rpc-connections"
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >RPC Connections</RouterLink
@@ -57,6 +62,7 @@
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >Workspaces</RouterLink
               >
+
               <!--
                         <DisclosureButton
           as="a"
@@ -225,7 +231,7 @@
         >
         <DisclosureButton
           as="a"
-          href="/"
+          href="/sessions"
           class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
           >Sessions</DisclosureButton
         >
@@ -243,6 +249,12 @@
         >
         <DisclosureButton
           as="a"
+          href="/workspaces"
+          class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+          >Scripts</DisclosureButton
+        >
+        <DisclosureButton
+          as="a"
           href="/rpc-connections"
           class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
           >RPC Connections</DisclosureButton
@@ -253,6 +265,7 @@
           class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
           >Workspaces</DisclosureButton
         >
+
         <!--
         <DisclosureButton
           as="a"

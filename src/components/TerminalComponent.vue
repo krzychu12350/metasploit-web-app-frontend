@@ -572,6 +572,26 @@ watch(
     await manageWorkspaceData(importingSettings);
   }
 );
+
+watch(
+  () => bus.value.get("runConsoleScript"),
+  async (data) => {
+    const scriptData = data[0].script_data;
+    //alert(scriptData.file_abs_path);
+    const loader = $loading.show();
+    const createdConsoleData = await createConsole();
+    currentTerminal.value = createdConsoleData.id;
+    emit("refreshTabs");
+    await writeDataToConsole({
+      console_id: currentTerminal.value,
+      input_command: "resource " + scriptData.file_abs_path,
+    });
+    await readDataFromConsole(currentTerminal.value);
+
+    ToastService.showToast("The " + scriptData.name + " has been started successfully");
+    loader.hide();
+  }
+);
 </script>
 <style>
 /*

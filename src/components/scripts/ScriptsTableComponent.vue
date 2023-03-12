@@ -3,15 +3,16 @@
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto flex justify-between">
         <div>
-          <h1 class="text-xl font-semibold text-gray-900">Workspaces</h1>
-          <p class="mt-2 text-sm text-gray-700">A list of workspaces</p>
+          <h1 class="text-xl font-semibold text-gray-900">Scripts</h1>
+          <p class="mt-2 text-sm text-gray-700">A list of metasploit resource scripts</p>
         </div>
         <div>
           <button
-            @click="emit('showCreatingNewWorkspaceModal')"
+            v-tooltip.top="'Add a new script'"
+            @click="emit('showCreatingNewScriptModal')"
             class="cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
           >
-            Add a new workspace
+            Add a new script
           </button>
         </div>
       </div>
@@ -41,16 +42,35 @@
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
+                    File absolute path
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Type
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
                     Created at
                   </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Updated at
+                  </th>
 
+                  <!--
                   <th
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
                     Current
                   </th>
-                  <!--
+                 
                   <th
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -74,63 +94,77 @@
               </thead>
               <tbody class="bg-white">
                 <tr
-                  v-for="(workspace, workspaceIdx) in result"
-                  :key="workspace"
-                  :class="workspaceIdx % 2 === 0 ? undefined : 'bg-gray-50'"
+                  v-for="(script, scriptIdx) in result"
+                  :key="script"
+                  :class="scriptIdx % 2 === 0 ? undefined : 'bg-gray-50'"
                 >
                   <td
                     class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
                   >
-                    {{ workspace.id }}
+                    {{ script.id }}
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ workspace.name }}
+                    {{ script.name }}
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ workspace.created_at }}
+                    {{ script.file_abs_path }}
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    {{ script.type }}
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    {{ moment(script.created_at).format("LLL") }}
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    {{ moment(script.updated_at).format("LLL") }}
                   </td>
 
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <span v-if="workspace.name === currentWorkspaceName">X</span>
-                  </td>
                   <!--
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ workspace.name }}
+                    {{ script.name }}
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ workspace.name }}
+                    {{ script.name }}
                   </td>
                   -->
                   <td
                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                   >
                     <div class="flex">
-                      <ArrowsRightLeftIcon
+                      <EyeIcon
                         class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
-                        v-if="workspace.name !== currentWorkspaceName"
-                        v-tooltip.top="'Change workspace'"
+                        v-tooltip.top="'See script details'"
+                        @click="emit('showScriptDetailsModal', { script_data: script })"
+                        aria-hidden="true"
+                      />
+                      <PlayIcon
+                        class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
+                        v-if="script.type !== 'meterpreter'"
+                        v-tooltip.top="'Run script'"
                         @click="
-                          emit('changeWorkspace', { workspace_name: workspace.name })
+                          emit('runConsoleScript', {
+                            script_data: script,
+                          })
                         "
                         aria-hidden="true"
                       />
 
                       <PencilIcon
                         class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
-                        v-tooltip.top="'Edit workspace'"
+                        v-tooltip.top="'Edit script'"
                         @click="
-                          emit('showWorkspaceEditingModal', {
-                            workspace_current_name: workspace.name,
+                          emit('showEditingScriptModal', {
+                            script_data: script,
                           })
                         "
                         aria-hidden="true"
                       />
                       <XMarkIcon
                         class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
-                        v-tooltip.top="'Delete workspace'"
+                        v-tooltip.top="'Delete script'"
                         @click="
-                          emit('showWorkspaceDeletingModal', {
-                            workspace_name: workspace.name,
+                          emit('showScriptDeletingModal', {
+                            script_id: script.id,
                           })
                         "
                         aria-hidden="true"
@@ -180,40 +214,42 @@
 <script setup>
 import { ref, reactive, watch, onBeforeMount, onMounted, inject } from "vue";
 import DatabaseDataService from "../../services/DatabaseDataService";
+import ScriptsDataService from "../../services/ScriptsDataService";
 import ConsoleDataService from "../../services/ConsoleDataService";
 import moment from "moment";
 import ToastService from "../../services/ToastService";
-import { useMsfCurrentWorkspace } from "../../stores/useMsfCurrentWorkspace";
+
 import {
   PencilIcon,
   XMarkIcon,
-  CalculatorIcon,
+  EyeIcon,
+  PlayIcon,
   ArrowsRightLeftIcon,
 } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
 import { useArrayPagination } from "vue-composable";
 
 const { bus, emit } = useEventsBus();
-const useMsfWorkspace = useMsfCurrentWorkspace();
-let workspaces = ref([]);
-let currentWorkspaceName = ref("");
+///const useMsfScript = useMsfCurrentScript();
+let scripts = ref([]);
+let currentScriptName = ref("");
 const $loading = inject("$loading");
 
-const { result, next, prev, currentPage, lastPage } = useArrayPagination(workspaces, {
-  pageSize: 5,
+const { result, next, prev, currentPage, lastPage } = useArrayPagination(scripts, {
+  pageSize: 3,
 });
 
-async function getAllWorkspaces() {
-  return DatabaseDataService.getWorkspaces()
+async function getAllScripts() {
+  return ScriptsDataService.getAllMsfScripts()
     .then((res) => {
-      //console.log(res.data.workspaces);
-      workspaces.value = res.data.workspaces;
+      //console.log(res.data.scripts);
+      scripts.value = res.data.scripts;
     })
     .catch((err) => {
       console.log(err);
     });
 }
-
+/*
 async function createConsole() {
   return ConsoleDataService.create()
     .then((res) => {
@@ -257,7 +293,7 @@ async function destroyConsole(consoleId) {
     });
 }
 
-async function manageWorkspace(operationCommand) {
+async function manageScript(operationCommand) {
   const loader = $loading.show();
   let readedDataFromConsole = {};
   let createdConsole = await createConsole();
@@ -268,98 +304,94 @@ async function manageWorkspace(operationCommand) {
   readedDataFromConsole = await readDataFromConsole(createdConsoleId);
 
   console.log(readedDataFromConsole);
-  //currentWorkspaceName.value = "default";
+  //currentScriptName.value = "default";
   await destroyConsole(createdConsoleId);
   loader.hide();
   return readedDataFromConsole;
 }
 
-async function getCurrentWorkspace() {
-  let workspacesAsString = await manageWorkspace("workspace");
-  console.log(workspacesAsString);
-  const splicedWorkspacesArray = workspacesAsString.data.split("\n");
-  console.log(splicedWorkspacesArray);
-  const currentWorkspace = splicedWorkspacesArray.find((el) => el.includes("*"));
-  currentWorkspaceName.value = currentWorkspace.slice(2);
-  useMsfWorkspace.setCurrentRpcConnection(currentWorkspaceName.value);
+async function getCurrentScript() {
+  let scriptsAsString = await manageScript("script");
+  console.log(scriptsAsString);
+  const splicedScriptsArray = scriptsAsString.data.split("\n");
+  console.log(splicedScriptsArray);
+  const currentScript = splicedScriptsArray.find((el) => el.includes("*"));
+  currentScriptName.value = currentScript.slice(2);
+  useMsfScript.setCurrentRpcConnection(currentScriptName.value);
 }
-
-onMounted(() => {});
+*/
 
 onBeforeMount(async () => {
-  currentWorkspaceName.value = await useMsfWorkspace.getCurrentRpcConnection;
-  //alert(currentWorkspaceName.value);
-  emit("refreshWorkspacesTable");
+  emit("refreshScriptsTable");
   prev();
 });
 
 watch(
-  () => bus.value.get("fetchCurrentWorkspace"),
+  () => bus.value.get("refreshScriptsTable"),
   async () => {
-    await getCurrentWorkspace();
+    //await getCurrentScript();
+    //console.log(currentScriptName.value);
+    await getAllScripts();
   }
 );
 
+/*
 watch(
-  () => bus.value.get("refreshWorkspacesTable"),
+  () => bus.value.get("fetchCurrentScript"),
   async () => {
-    //await getCurrentWorkspace();
-    console.log(currentWorkspaceName.value);
-    await getAllWorkspaces();
+    await getCurrentScript();
   }
 );
 
 watch(
-  () => bus.value.get("deleteWorkspace"),
+  () => bus.value.get("deleteScript"),
   async (data) => {
-    const workspaceName = data[0].workspace_name;
-    let operationResult = await manageWorkspace("workspace -d " + workspaceName);
+    const scriptName = data[0].script_name;
+    let operationResult = await manageScript("script -d " + scriptName);
     ToastService.showToast(operationResult.data);
-    emit("refreshWorkspacesTable");
+    emit("refreshScriptsTable");
   }
 );
 
 watch(
-  () => bus.value.get("createNewWorkspace"),
+  () => bus.value.get("createNewScript"),
   async (data) => {
-    const workspaceName = data[0].workspace_name;
-    let operationResult = await manageWorkspace("workspace -a " + workspaceName);
+    const scriptName = data[0].script_name;
+    let operationResult = await manageScript("script -a " + scriptName);
     ToastService.showToast(operationResult.data);
-    emit("refreshWorkspacesTable");
+    emit("refreshScriptsTable");
   }
 );
 
 watch(
-  () => bus.value.get("changeWorkspace"),
+  () => bus.value.get("changeScript"),
   async (data) => {
-    const workspaceName = data[0].workspace_name;
-    let operationResult = await manageWorkspace("workspace " + workspaceName);
-    useMsfWorkspace.setCurrentRpcConnection(workspaceName);
-    currentWorkspaceName.value = await useMsfWorkspace.getCurrentRpcConnection;
+    const scriptName = data[0].script_name;
+    let operationResult = await manageScript("script " + scriptName);
+    useMsfScript.setCurrentRpcConnection(scriptName);
+    currentScriptName.value = await useMsfScript.getCurrentRpcConnection;
     ToastService.showToast(operationResult.data);
-    emit("setCurrentWorkspace");
-    emit("refreshWorkspacesTable");
+    emit("setCurrentScript");
+    emit("refreshScriptsTable");
   }
 );
 
 watch(
-  () => bus.value.get("editWorkspaceName"),
+  () => bus.value.get("editScriptName"),
   async (data) => {
-    // const workspaceName = data[0].workspace_name;
-    const workspaceOldName = data[0].workspace_old_name;
-    const workspaceNewName = data[0].workspace_new_name;
+    // const scriptName = data[0].script_name;
+    const scriptOldName = data[0].script_old_name;
+    const scriptNewName = data[0].script_new_name;
 
-    let operationResult = await manageWorkspace(
-      "workspace -r " + workspaceOldName + " " + workspaceNewName
+    let operationResult = await manageScript(
+      "script -r " + scriptOldName + " " + scriptNewName
     );
-    //useMsfWorkspace.setCurrentRpcConnection(workspaceNewName);
-    currentWorkspaceName.value = await useMsfWorkspace.getCurrentRpcConnection;
-    if (operationResult.data.includes("Renamed workspace"))
-      ToastService.showToast(operationResult.data);
-    else ToastService.showToast(operationResult.data, "error");
-
-    //emit("setCurrentWorkspace");
-    emit("refreshWorkspacesTable");
+    useMsfScript.setCurrentRpcConnection(scriptNewName);
+    currentScriptName.value = await useMsfScript.getCurrentRpcConnection;
+    ToastService.showToast(operationResult.data);
+    //emit("setCurrentScript");
+    emit("refreshScriptsTable");
   }
 );
+*/
 </script>
