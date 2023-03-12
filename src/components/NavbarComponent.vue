@@ -30,11 +30,13 @@
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >Sessions</RouterLink
               >
+              <!--
               <RouterLink
                 to="/analysis"
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >Analysis</RouterLink
               >
+              -->
               <RouterLink
                 to="/modules"
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
@@ -241,15 +243,17 @@
           class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
           >Analysis</DisclosureButton
         >
+        <!--
         <DisclosureButton
           as="a"
           href="/modules"
           class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
           >Modules</DisclosureButton
         >
+        -->
         <DisclosureButton
           as="a"
-          href="/workspaces"
+          href="/scripts"
           class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
           >Scripts</DisclosureButton
         >

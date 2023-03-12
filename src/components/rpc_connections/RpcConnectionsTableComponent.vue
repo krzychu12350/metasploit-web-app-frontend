@@ -292,12 +292,12 @@ async function setMsfConnection(credentials, loader) {
     .setConnection(credentials)
     .then(async (connectionSettings) => {
       console.log(connectionSettings);
-      useCurrentMetasploitRpcConnection.setCurrentRpcConnection(connectionSettings);
-      await loginToMsfRpc(credentials, loader);
+
+      await loginToMsfRpc(credentials, loader, connectionSettings);
     });
 }
 
-async function loginToMsfRpc(credentials, loader) {
+async function loginToMsfRpc(credentials, loader, connectionSettings) {
   useMsfAuth()
     .login(credentials)
     .then(async () => {
@@ -307,16 +307,14 @@ async function loginToMsfRpc(credentials, loader) {
       }
 
       await useMetasploitModules.fetchAllModules();
+      useCurrentMetasploitRpcConnection.setCurrentRpcConnection(connectionSettings);
       router.push("/");
       loader.hide();
     })
     .catch((err) => {
       loader.hide();
-      console.log(err);
-      ToastService.showToast(
-        "Invalid credentials, check your MSF RPC Server Configuration",
-        "error"
-      );
+      //console.log(err);
+      if (err) ToastService.showToast(err.response.data.message, "error");
     });
 }
 

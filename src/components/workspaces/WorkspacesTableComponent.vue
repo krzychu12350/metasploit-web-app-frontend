@@ -87,7 +87,7 @@
                     {{ workspace.name }}
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ workspace.created_at }}
+                    {{ moment(workspace.created_at).format("LLL") }}
                   </td>
 
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">

@@ -547,7 +547,7 @@ async function manageWorkspaceData(operationSettings) {
       ToastService.showToast("Exporting data...");
     else ToastService.showToast(dataReadFromConsole.data, "error");
   } else if (operationSettings.operation_type === "import") {
-    if (dataReadFromConsole.data.includes("Importing 'Metasploit XML'"))
+    if (dataReadFromConsole.data.includes("Importing host"))
       ToastService.showToast("Importing data...");
     else ToastService.showToast(dataReadFromConsole.data.slice(4), "error");
   }
@@ -588,7 +588,9 @@ watch(
     });
     await readDataFromConsole(currentTerminal.value);
 
-    ToastService.showToast("The " + scriptData.name + " has been started successfully");
+    ToastService.showToast(
+      "The " + scriptData.name + " script has been started successfully"
+    );
     loader.hide();
   }
 );

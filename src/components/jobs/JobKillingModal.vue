@@ -134,21 +134,6 @@ async function killSpecificJob(jobId) {
   emit("refreshJobTable");
 }
 
-/*
-const deleteApplication = async (id) => {
-  toggleModal();
-  const loader = $loading.show();
-  ApplicationDataService.delete(id)
-    .then((res) => {
-      ToastService.showToast("Application was deleted successfully");
-      emit("refreshApplicationTable");
-      loader.hide();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
-*/
 watch(
   () => bus.value.get("showJobKillingModal"),
   (val) => {
