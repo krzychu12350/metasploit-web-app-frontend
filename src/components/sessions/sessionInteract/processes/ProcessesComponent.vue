@@ -221,6 +221,7 @@ async function getAllProcess() {
       });
 
       console.log(processes.value);
+      processes.value.shift();
       next();
       /*
       const processs = response.split("\n");

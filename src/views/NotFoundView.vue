@@ -32,6 +32,7 @@
         </div>
       </div>
     </main>
+    <!--
     <footer class="flex-shrink-0 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
       <nav class="flex justify-center space-x-4">
         <a href="#" class="text-sm font-medium text-gray-500 hover:text-gray-600"
@@ -41,16 +42,10 @@
         <a href="#" class="text-sm font-medium text-gray-500 hover:text-gray-600">Help</a>
       </nav>
     </footer>
+    -->
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup>
 import { RouterLink } from "vue-router";
-
-export default defineComponent({
-  name: "NotFoundView",
-});
 </script>
-
-<style scoped></style>

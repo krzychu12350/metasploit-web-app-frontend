@@ -12,21 +12,25 @@
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
               <RouterLink
                 to="/"
-                class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
+                active-class="bg-gray-900"
+                class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >Dashboard</RouterLink
               >
               <RouterLink
                 to="/hosts"
+                active-class="bg-gray-900"
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >Hosts</RouterLink
               >
               <RouterLink
                 to="/jobs"
+                active-class="bg-gray-900"
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >Jobs</RouterLink
               >
               <RouterLink
                 to="/sessions"
+                active-class="bg-gray-900"
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >Sessions</RouterLink
               >
@@ -39,16 +43,19 @@
               -->
               <RouterLink
                 to="/modules"
+                active-class="bg-gray-900"
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >Modules</RouterLink
               >
               <RouterLink
                 to="/scripts"
+                active-class="bg-gray-900"
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >Scripts</RouterLink
               >
               <RouterLink
                 to="/rpc-connections"
+                active-class="bg-gray-900"
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >RPC Connections</RouterLink
               >
@@ -216,18 +223,21 @@
         <DisclosureButton
           as="a"
           href="/"
+          active-class="bg-gray-900"
           class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
           >Dashboard</DisclosureButton
         >
         <DisclosureButton
           as="a"
           href="/hosts"
+          active-class="bg-gray-900"
           class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
           >Hosts</DisclosureButton
         >
         <DisclosureButton
           as="a"
           href="/jobs"
+          active-class="bg-gray-900"
           class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
           >Jobs</DisclosureButton
         >

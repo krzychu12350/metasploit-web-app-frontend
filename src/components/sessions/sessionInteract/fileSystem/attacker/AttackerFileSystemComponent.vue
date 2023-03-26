@@ -320,7 +320,9 @@ async function uploadSelectedFiles() {
       props.victimPwdPath.replace(/\\/g, "/")
   );
   console.log(response);
-  setTimeout(async () => await readFileSystemData(), 2000);
+  // setTimeout(async () => await readFileSystemData(), 4000);
+  //await readFileSystemData();
+  emit("readVictimFileSystem");
   emit("hideAttackerFilesUploadModal");
   ToastService.showToast("Files was uploaded successfully");
 }

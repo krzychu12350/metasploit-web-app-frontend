@@ -110,7 +110,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, onBeforeMount, onMounted } from "vue";
+import { inject, ref, reactive, watch, onBeforeMount, onMounted } from "vue";
 import JobDataService from "../../services/JobDataService";
 import moment from "moment";
 import ToastService from "../../services/ToastService";
@@ -120,15 +120,19 @@ import useEventsBus from "../../composables/eventBus";
 const { bus, emit } = useEventsBus();
 const jobs = ref([]);
 const jobsDetails = ref([]);
+const $loading = inject("$loading");
 
 async function getAllJobs() {
+  const loader = $loading.show();
   return JobDataService.list().then((res) => {
     //console.log(res.data);
+    loader.hide();
     return res.data.data;
   });
 }
 
 async function getJobsDetails() {
+  const loader = $loading.show();
   //console.log(Object.keys(jobs.value));
   const jobsIds = Object.keys(jobs.value);
   //let test = [];
@@ -147,6 +151,7 @@ async function getJobsDetails() {
       .catch((err) => {
         console.log(err);
       });
+    loader.hide();
     //jobs.value[id] = fetchedJobDetails;
     //console.log(jobs.value[id]);
     //console.log(fetchedJobDetails);

@@ -174,20 +174,6 @@ watch(
   }
 );
 
-async function fetchScanningModuleDetails() {
-  return ModuleDataService.info({
-    module_name: "auxiliary/scanner/portscan/tcp",
-    module_type: "auxiliary",
-  })
-    .then((res) => {
-      console.log(res.data);
-      return res.data;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-
 const onSubmit = async (importingSettings) => {
   console.log(importingSettings);
   emit("importDataIntoWorkspace", { importing_settings: importingSettings });

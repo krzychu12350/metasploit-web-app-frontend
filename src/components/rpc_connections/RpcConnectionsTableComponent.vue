@@ -244,12 +244,15 @@ const { result, next, prev, currentPage, lastPage } = useArrayPagination(rpcConn
 });
 
 async function fetchAllRpcConnections() {
+  const loader = $loading.show();
   MsfRpcServerConnectionService.getConnections()
     .then((res) => {
       console.log(res.data.connections);
       rpcConnections.value = res.data.connections;
+      loader.hide();
     })
     .catch((err) => {
+      loader.hide();
       console.log(err);
     });
 }

@@ -5,12 +5,12 @@ export const useMsfCurrentWorkspace = defineStore("currentWorkspace", {
     currentWorkspace: "",
   }),
   getters: {
-    getCurrentRpcConnection() {
+    getCurrentWorkspace() {
       return this.currentWorkspace;
     },
   },
   actions: {
-    async setCurrentRpcConnection(workspaceName) {
+    async setCurrentWorkspace(workspaceName) {
       this.currentWorkspace = workspaceName;
     },
   },

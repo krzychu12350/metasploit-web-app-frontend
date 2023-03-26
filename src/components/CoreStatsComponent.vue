@@ -19,15 +19,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import { inject, ref, onMounted, reactive } from "vue";
 import CoreService from "../services/CoreDataService";
 
 onMounted(() => {
   getMsfCoreVersionStats();
 });
 let moduleStats = ref([]);
+const $loading = inject("$loading");
 
 async function getMsfCoreVersionStats() {
+  const loader = $loading.show();
   CoreService.version()
     .then((response) => {
       const data = response.data.data;
@@ -37,10 +39,12 @@ async function getMsfCoreVersionStats() {
 
         const singleStat = { name: key, number: val };
         allStats.push(singleStat);
+        loader.hide();
       });
       moduleStats.value = allStats;
     })
     .catch((err) => {
+      loader.hide();
       console.log(err.response.data);
     });
 }

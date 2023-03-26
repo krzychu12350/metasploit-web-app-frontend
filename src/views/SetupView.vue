@@ -158,7 +158,7 @@
                   type="submit"
                   class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                 >
-                  Connect
+                  Login
                 </button>
               </div>
             </Form>
@@ -166,10 +166,10 @@
         </div>
       </div>
     </div>
-    <div class="hidden lg:block relative w-0 flex-1">
+    <div class="hidden lg:block relative w-0 flex-1 bg-blend-darken">
       <img
         class="absolute inset-0 h-full w-full object-cover"
-        src="../assets/anonymous.jpg"
+        src="../assets/msf_wallpaper2.jpg"
         alt=""
       />
     </div>
@@ -353,7 +353,7 @@ function isDigitOrDot(e) {
 
 <style>
 .setup-container {
-  background-image: url("../assets/anonymous.jpg");
+  background-image: url("../assets/msf_wallpaper.jpg");
   background-repeat: no-repeat;
   background-size: cover;
 }

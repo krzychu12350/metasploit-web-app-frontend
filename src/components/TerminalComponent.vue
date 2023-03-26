@@ -15,24 +15,26 @@ import { ref, reactive, onBeforeMount, onMounted, onUnmounted, watch, inject } f
 import useEventsBus from "../composables/eventBus";
 import { useMsfConsoles } from "../stores/useMsfConsoles";
 import { useCurrentMsfRpcConnection } from "../stores/useCurrentMsfRpcConnection";
+import { useCurrentConsole } from "../stores/useCurrentConsole";
 import ToastService from "../services/ToastService";
+import { useRouter } from "vue-router";
 
 const { bus, emit } = useEventsBus();
 const currentTerminal = ref(0);
 const useConsoles = useMsfConsoles();
 const useCurrentMetasploitRpcConnection = useCurrentMsfRpcConnection();
+const useCurrentConsoleId = useCurrentConsole();
 const currentRpcConnectionId = ref(
   useCurrentMetasploitRpcConnection.getCurrentRpcConnection.id
 );
 const isNmapScanRunning = ref(false);
-
+const router = useRouter();
 const $loading = inject("$loading");
 const send_to_terminal = ref("");
 const banner = reactive({
   header: "Metasploit Shell",
   subHeader: "Metasploit Shell is pure power just enjoy 🔥",
-  helpHeader: 'Enter "help" for more information.',
-
+  helpHeader: 'Enter "?" for more information.',
   emoji: {
     first: "☠️",
     second: "💀",
@@ -41,7 +43,8 @@ const banner = reactive({
   sign: `msf >`,
   img: {
     align: "left",
-    link: "https://www.nicepng.com/png/full/24-249625_metasploit-logo.png",
+    //link: "https://www.nicepng.com/png/full/24-249625_metasploit-logo.png",
+    link: "/logo.svg",
     width: 100,
     height: 100,
   },
@@ -293,13 +296,8 @@ onMounted(async () => {
 
   await storeAllConsoleData();
   emit("refreshTabs");
-  currentTerminal.value = await Math.min.apply(
-    Math,
-    allConsoles.value.map(function (c) {
-      return c.id;
-    })
-  );
-
+  emit("setMaxConsoleId");
+  useCurrentConsoleId.setCurrentConsoleId(currentTerminal.value);
   console.log(currentTerminal.value);
   emit("changeCurrentConsole", { console_id: currentTerminal.value });
   await readDataFromConsole(currentTerminal.value);
@@ -311,6 +309,20 @@ onMounted(async () => {
 });
 
 watch(
+  () => bus.value.get("setMaxConsoleId"),
+  async () => {
+    allConsoles.value = await getConsoleList();
+    currentTerminal.value = await Math.max.apply(
+      Math,
+      allConsoles.value.map(function (c) {
+        return c.id;
+      })
+    );
+    emit("changeCurrentConsole", { console_id: currentTerminal.value });
+  }
+);
+
+watch(
   () => bus.value.get("changeCurrentConsole"),
   (data) => {
     //send_to_terminal.value = "<br /><br />";
@@ -318,6 +330,7 @@ watch(
     //alert(data[0].console_id);
     //console.log(commands[3].get());
     currentTerminal.value = data[0].console_id;
+    useCurrentConsoleId.setCurrentConsoleId(currentTerminal.value);
     //send_to_terminal.value = `\n\n`;
     //const cmdline = document.getElementsByClassName("cmdline");
     //console.log(cmdline);
@@ -359,6 +372,7 @@ watch(
     const nmapCommand = data[0].nmap_command;
     const createdConsoleData = await createConsole();
     currentTerminal.value = createdConsoleData.id;
+    useCurrentConsoleId.setCurrentConsoleId(currentTerminal.value);
     emit("refreshTabs");
     //alert(createdConsoleData.id);
     let dataa = {
@@ -400,7 +414,7 @@ watch(
     const createdConsoleData = await createConsole();
     emit("refreshTabs");
     currentTerminal.value = createdConsoleData.id;
-
+    useCurrentConsoleId.setCurrentConsoleId(currentTerminal.value);
     writeDataToConsole({
       console_id: currentTerminal.value,
       input_command: "use " + moduleDetails.fullname,
@@ -411,9 +425,12 @@ watch(
       //alert("jest payload");
       setOptions(payloadOptions);
       runningModuleCommand = "run -j";
+      router.push("/jobs");
     } else {
       runningModuleCommand = "run";
+      router.push("/");
     }
+    /*
     writeDataToConsole({
       console_id: currentTerminal.value,
       input_command: "options",
@@ -422,6 +439,7 @@ watch(
       console_id: currentTerminal.value,
       input_command: "advanced",
     });
+    */
     writeDataToConsole({
       console_id: currentTerminal.value,
       input_command: runningModuleCommand,
@@ -451,6 +469,7 @@ async function manageHost(hostIpAddress, operationType) {
   emit("refreshTabs");
   //console.log(createdConsole);
   currentTerminal.value = createdConsole.id;
+  useCurrentConsoleId.setCurrentConsoleId(currentTerminal.value);
   console.log(currentTerminal.value);
   readDataFromConsole(currentTerminal.value);
 
@@ -465,7 +484,11 @@ async function manageHost(hostIpAddress, operationType) {
   const dataReadFromConsole = await getDataFromConsole(createdConsole.id);
   console.log(dataReadFromConsole);
   if (operationType === "add") {
-    if (dataReadFromConsole.data.includes("Host: host="))
+    if (
+      dataReadFromConsole.data.includes(
+        "address  mac  name  os_name  os_flavor  os_sp  purpose  info  comments"
+      )
+    )
       ToastService.showToast("Added host " + hostIpAddress);
     else ToastService.showToast(dataReadFromConsole.data, "error");
   } else if (operationType === "delete") {
@@ -534,6 +557,7 @@ async function manageWorkspaceData(operationSettings) {
   const createdConsole = await createConsole();
   emit("refreshTabs");
   currentTerminal.value = createdConsole.id;
+  useCurrentConsoleId.setCurrentConsoleId(currentTerminal.value);
   console.log(currentTerminal.value);
   readDataFromConsole(currentTerminal.value);
 
@@ -570,6 +594,7 @@ watch(
     const importingSettings = data[0].importing_settings;
     importingSettings.operation_type = "import";
     await manageWorkspaceData(importingSettings);
+    emit("refreshHosts");
   }
 );
 
@@ -581,6 +606,7 @@ watch(
     const loader = $loading.show();
     const createdConsoleData = await createConsole();
     currentTerminal.value = createdConsoleData.id;
+    useCurrentConsoleId.setCurrentConsoleId(currentTerminal.value);
     emit("refreshTabs");
     await writeDataToConsole({
       console_id: currentTerminal.value,

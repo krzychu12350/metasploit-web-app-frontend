@@ -2,17 +2,17 @@ import http from "./http-common";
 const METHOD_TYPE = "database";
 
 class DatabaseDataService {
-    getAllScannedHosts() {
-        return http.post(METHOD_TYPE + "/hosts");
+    getAllScannedHosts(workspaceId) {
+        return http.get(METHOD_TYPE + `/workspaces/${workspaceId}/hosts`);
     }
     getHostServices(hostId) {
-        return http.post(METHOD_TYPE + `/services/${hostId}`);
+        return http.get(METHOD_TYPE + `/services/${hostId}`);
     }
     getHostDetails(hostId) {
-        return http.post(METHOD_TYPE + `/hosts/${hostId}`);
+        return http.get(METHOD_TYPE + `/hosts/${hostId}`);
     }
     getWorkspaces() {
-        return http.post(METHOD_TYPE + "/workspaces");
+        return http.get(METHOD_TYPE + "/workspaces");
     }
 
 }

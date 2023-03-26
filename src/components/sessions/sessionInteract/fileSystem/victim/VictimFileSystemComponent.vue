@@ -277,7 +277,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onBeforeMount, inject, watch, computed } from "vue";
+import { ref, reactive, onBeforeMount, onMounted, inject, watch, computed } from "vue";
 import SessionDataService from "../../../../../services/SessionDataService";
 import { useRoute } from "vue-router";
 import meterpreterCommands from "../../../../../constants/MeterpreterCommands";
@@ -306,7 +306,8 @@ let search = ref("");
 let isFileNameInputDisabled = ref(true);
 const { bus, emit } = useEventsBus();
 
-onBeforeMount(async () => {
+onMounted(async () => {
+  emit("readVictimFileSystem");
   /*
    const responseAsArray = response.split("\n").splice(5);
       console.log(responseAsArray);
@@ -323,8 +324,6 @@ onBeforeMount(async () => {
       console.log(rows);
   */
   //console.log(meterpreterCommands.SystemCommands.SYSINFO);
-
-  readFileSystemData();
 });
 
 async function changeClickedFile(row) {
@@ -333,14 +332,17 @@ async function changeClickedFile(row) {
 
 async function readFileSystemData() {
   rows.splice(0);
+
   const fileSystemData = await writeToMeterpreterSession(
     meterpreterCommands.FileSystemCommands.LS
   );
+
   console.log(fileSystemData);
-  await processFileSystemData(fileSystemData);
   victimLwd.value = await writeToMeterpreterSession(
     meterpreterCommands.FileSystemCommands.GETWD
   );
+  await processFileSystemData(fileSystemData);
+
   console.log(victimLwd.value);
 }
 
@@ -455,7 +457,7 @@ watch(
     }
     //alert(clickedFile.value[4]);
     writeToMeterpreterSession(command + " '" + clickedFile.value[4] + "'");
-
+    emit("readVictimFileSystem");
     ToastService.showToast(clickedFile.value[4] + " was deleted successfully");
   }
 );
@@ -473,6 +475,13 @@ watch(
         "error"
       );
     else ToastService.showToast("Created " + dirName + " directory");
+  }
+);
+
+watch(
+  () => bus.value.get("readVictimFileSystem"),
+  async (val) => {
+    await readFileSystemData();
   }
 );
 

@@ -240,86 +240,18 @@ const { result, next, prev, currentPage, lastPage } = useArrayPagination(scripts
 });
 
 async function getAllScripts() {
+  const loader = $loading.show();
   return ScriptsDataService.getAllMsfScripts()
     .then((res) => {
       //console.log(res.data.scripts);
       scripts.value = res.data.scripts;
+      loader.hide();
     })
     .catch((err) => {
+      loader.hide();
       console.log(err);
     });
 }
-/*
-async function createConsole() {
-  return ConsoleDataService.create()
-    .then((res) => {
-      console.log(res.data);
-      return res.data.data;
-    })
-    .catch((err) => console.log(err));
-}
-
-async function writeDataIntoConsole(consoleId, inputCommand) {
-  ConsoleDataService.write({ console_id: consoleId, input_command: inputCommand })
-    .then((res) => {
-      console.log(res.data.data);
-      //const test = "dddd";
-      //this.send_to_terminal = `<p>` + res.data.data + `</p>`;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-
-async function readDataFromConsole(consoleId) {
-  return ConsoleDataService.read({ console_id: consoleId })
-    .then((res) => {
-      console.log(res.data.data);
-      return res.data.data;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-
-async function destroyConsole(consoleId) {
-  return ConsoleDataService.destroy({ console_id: consoleId })
-    .then((res) => {
-      console.log(res.data.data);
-      return res.data.data;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-
-async function manageScript(operationCommand) {
-  const loader = $loading.show();
-  let readedDataFromConsole = {};
-  let createdConsole = await createConsole();
-  const createdConsoleId = createdConsole.id;
-  await readDataFromConsole(createdConsoleId);
-  await writeDataIntoConsole(createdConsoleId, operationCommand);
-
-  readedDataFromConsole = await readDataFromConsole(createdConsoleId);
-
-  console.log(readedDataFromConsole);
-  //currentScriptName.value = "default";
-  await destroyConsole(createdConsoleId);
-  loader.hide();
-  return readedDataFromConsole;
-}
-
-async function getCurrentScript() {
-  let scriptsAsString = await manageScript("script");
-  console.log(scriptsAsString);
-  const splicedScriptsArray = scriptsAsString.data.split("\n");
-  console.log(splicedScriptsArray);
-  const currentScript = splicedScriptsArray.find((el) => el.includes("*"));
-  currentScriptName.value = currentScript.slice(2);
-  useMsfScript.setCurrentRpcConnection(currentScriptName.value);
-}
-*/
 
 onBeforeMount(async () => {
   emit("refreshScriptsTable");

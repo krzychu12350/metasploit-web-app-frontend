@@ -3,13 +3,21 @@
     <h1 class="text-xl font-semibold text-gray-900">Modules</h1>
     <p class="mt-2 text-sm text-gray-700">A list of modules you can run</p>
   </div>
-  <input
-    type="text"
-    class="h-12 w-full border-0 pl-11 pr-4 text-sm text-gray-800 placeholder-gray-400 focus:ring-0 mb-4"
-    placeholder="Search..."
-    v-model="search"
-    @input="onInput"
-  />
+
+  <div class="relative text-gray-600 focus-within:text-gray-400 mb-4">
+    <span class="absolute inset-y-0 left-0 flex items-center">
+      <button type="submit" class="p-1 focus:outline-none focus:shadow-outline">
+        <MagnifyingGlassIcon class="flex-shrink-0 h-5 w-5 mr-2 text-gray-400 ml-2" />
+      </button>
+    </span>
+    <input
+      type="text"
+      class="h-12 w-full border-0 pl-11 pr-4 text-sm text-gray-800 placeholder-gray-400 focus:ring-0"
+      placeholder="Search..."
+      v-model="search"
+      @input="onInput"
+    />
+  </div>
 
   <p v-if="noResults">Sorry, no results for {{ search }}</p>
   <!--
@@ -179,7 +187,11 @@ import ModuleDetailsModalComponent from "./ModuleDetailsModalComponent.vue";
 import RunModuleModalComponent from "./RunModuleModalComponent.vue";
 import PayloadConfigurationModalComponent from "./PayloadConfigurationModalComponent.vue";
 import { useArrayPagination } from "vue-composable";
-import { EyeIcon, ChevronDoubleRightIcon } from "@heroicons/vue/24/solid";
+import {
+  MagnifyingGlassIcon,
+  EyeIcon,
+  ChevronDoubleRightIcon,
+} from "@heroicons/vue/24/solid";
 import { useVueFuse } from "vue-fuse";
 import { useMsfModules } from "../../stores/useMsfModules";
 import useEventsBus from "../../composables/eventBus";

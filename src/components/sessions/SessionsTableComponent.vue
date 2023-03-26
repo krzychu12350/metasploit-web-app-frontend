@@ -108,40 +108,35 @@
 <script setup>
 import { HomeIcon, ArrowRightOnRectangleIcon } from "@heroicons/vue/24/solid";
 import SessionDataService from "../../services/SessionDataService";
-import { watch, ref, reactive, onBeforeMount, onMounted } from "vue";
+import { inject, watch, ref, reactive, onBeforeMount, onMounted } from "vue";
 import { PencilIcon, XMarkIcon, CalculatorIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 const { bus, emit } = useEventsBus();
-
-const sessions2 = [
-  {
-    sessionId: "Session 1",
-    os: "Windows 10",
-    type: "Meterpreter",
-    attackModule: "windows/meterpreter/reverse_tcp",
-  },
-];
+const $loading = inject("$loading");
 
 let sessions = ref([]);
 
 async function getAllSessions() {
+  const loader = $loading.show();
   return SessionDataService.list()
     .then((res) => {
+      loader.hide();
       return res.data.data;
       console.log(sessions);
     })
     .catch((err) => {
+      loader.hide();
       console.log(err);
     });
 }
-onMounted(() => {});
 
 async function fetchSessions() {
   sessions.value = await getAllSessions();
 }
+
 onBeforeMount(async () => {
   fetchSessions();
 });

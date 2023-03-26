@@ -76,7 +76,7 @@ onBeforeMount(async () => {
 watch(
   () => bus.value.get("setCurrentWorkspace"),
   async () => {
-    currentWorkspace.value = useMsfWorkspace.getCurrentRpcConnection;
+    currentWorkspace.value = useMsfWorkspace.getCurrentWorkspace;
   }
 );
 

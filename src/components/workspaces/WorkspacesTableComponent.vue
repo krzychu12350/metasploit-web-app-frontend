@@ -204,12 +204,16 @@ const { result, next, prev, currentPage, lastPage } = useArrayPagination(workspa
 });
 
 async function getAllWorkspaces() {
+  // const loader = $loading.show();
   return DatabaseDataService.getWorkspaces()
     .then((res) => {
       //console.log(res.data.workspaces);
+      //loader.hide();
       workspaces.value = res.data.workspaces;
+      ////
     })
     .catch((err) => {
+      // loader.hide();
       console.log(err);
     });
 }
@@ -281,13 +285,13 @@ async function getCurrentWorkspace() {
   console.log(splicedWorkspacesArray);
   const currentWorkspace = splicedWorkspacesArray.find((el) => el.includes("*"));
   currentWorkspaceName.value = currentWorkspace.slice(2);
-  useMsfWorkspace.setCurrentRpcConnection(currentWorkspaceName.value);
+  useMsfWorkspace.setCurrentWorkspace(currentWorkspaceName.value);
 }
 
 onMounted(() => {});
 
 onBeforeMount(async () => {
-  currentWorkspaceName.value = await useMsfWorkspace.getCurrentRpcConnection;
+  currentWorkspaceName.value = await useMsfWorkspace.getCurrentWorkspace;
   //alert(currentWorkspaceName.value);
   emit("refreshWorkspacesTable");
   prev();
@@ -305,6 +309,7 @@ watch(
   async () => {
     //await getCurrentWorkspace();
     console.log(currentWorkspaceName.value);
+
     await getAllWorkspaces();
   }
 );
@@ -334,8 +339,8 @@ watch(
   async (data) => {
     const workspaceName = data[0].workspace_name;
     let operationResult = await manageWorkspace("workspace " + workspaceName);
-    useMsfWorkspace.setCurrentRpcConnection(workspaceName);
-    currentWorkspaceName.value = await useMsfWorkspace.getCurrentRpcConnection;
+    useMsfWorkspace.setCurrentWorkspace(workspaceName);
+    currentWorkspaceName.value = await useMsfWorkspace.getCurrentWorkspace;
     ToastService.showToast(operationResult.data);
     emit("setCurrentWorkspace");
     emit("refreshWorkspacesTable");
@@ -352,8 +357,8 @@ watch(
     let operationResult = await manageWorkspace(
       "workspace -r " + workspaceOldName + " " + workspaceNewName
     );
-    //useMsfWorkspace.setCurrentRpcConnection(workspaceNewName);
-    currentWorkspaceName.value = await useMsfWorkspace.getCurrentRpcConnection;
+    //useMsfWorkspace.setCurrentWorkspace(workspaceNewName);
+    currentWorkspaceName.value = await useMsfWorkspace.getCurrentWorkspace;
     if (operationResult.data.includes("Renamed workspace"))
       ToastService.showToast(operationResult.data);
     else ToastService.showToast(operationResult.data, "error");

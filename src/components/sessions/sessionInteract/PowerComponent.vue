@@ -58,12 +58,14 @@ async function shutdownVictimMachine() {
   await requestShutdownVictimMachine();
   const response = await victimMachineShutdowningResult();
   console.log(response.data);
+  route.push("/sessions");
   ToastService.showToast(response.data.data);
 }
 
 async function rebootVictimMachine() {
   await requestRebootVictimMachine();
   const response = await victimMachineRebootingResult();
+  route.push("/sessions");
   console.log(response.data);
   ToastService.showToast(response.data.data);
 }
