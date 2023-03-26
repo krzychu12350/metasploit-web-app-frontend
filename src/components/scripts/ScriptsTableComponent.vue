@@ -236,7 +236,7 @@ let currentScriptName = ref("");
 const $loading = inject("$loading");
 
 const { result, next, prev, currentPage, lastPage } = useArrayPagination(scripts, {
-  pageSize: 3,
+  pageSize: 5,
 });
 
 async function getAllScripts() {

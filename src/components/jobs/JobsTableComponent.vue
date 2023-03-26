@@ -60,13 +60,19 @@
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
+                    ExitOnSession
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody class="bg-white">
                 <tr
-                  v-for="(job, jobIdx) in jobs"
+                  v-for="(job, jobIdx) in result"
                   :key="job"
                   :class="jobIdx % 2 === 0 ? undefined : 'bg-gray-50'"
                 >
@@ -90,6 +96,9 @@
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     {{ job.datastore.LPORT }}
                   </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    {{ job.datastore.ExitOnSession }}
+                  </td>
                   <td
                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                   >
@@ -102,6 +111,37 @@
                 </tr>
               </tbody>
             </table>
+
+            <nav
+              class="bg-white px-4 py-3 flex items-center justify-between sm:px-6"
+              aria-label="Pagination"
+            >
+              <div class="hidden sm:block">
+                <p class="text-sm text-gray-700">
+                  Page
+                  {{ " " }}
+                  <span class="font-medium">{{ currentPage }}</span>
+                  {{ " " }}
+                  of
+                  {{ " " }}
+                  <span class="font-medium">{{ lastPage }}</span>
+                </p>
+              </div>
+              <div class="flex-1 flex justify-between sm:justify-end">
+                <button
+                  @click="prev"
+                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  Previous
+                </button>
+                <button
+                  @click="next()"
+                  class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  Next
+                </button>
+              </div>
+            </nav>
           </div>
         </div>
       </div>
@@ -116,11 +156,18 @@ import moment from "moment";
 import ToastService from "../../services/ToastService";
 import { PencilIcon, XMarkIcon, CalculatorIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
+import { useArrayPagination } from "vue-composable";
 
 const { bus, emit } = useEventsBus();
-const jobs = ref([]);
+let jobs = ref([]);
 const jobsDetails = ref([]);
+let jobsList = ref([]);
+
 const $loading = inject("$loading");
+
+const { result, next, prev, currentPage, lastPage } = useArrayPagination(jobsList, {
+  pageSize: 5,
+});
 
 async function getAllJobs() {
   const loader = $loading.show();
@@ -136,6 +183,7 @@ async function getJobsDetails() {
   //console.log(Object.keys(jobs.value));
   const jobsIds = Object.keys(jobs.value);
   //let test = [];
+  jobsList.value = [];
   jobsIds.forEach(async (id) => {
     console.log(id);
     const jobData = { job_id: id };
@@ -146,12 +194,13 @@ async function getJobsDetails() {
     jobs.value[id] = await JobDataService.info(jobData)
       .then((res) => {
         console.log(res.data.data);
+        jobsList.value.push(res.data.data);
         return res.data.data;
       })
       .catch((err) => {
         console.log(err);
       });
-    loader.hide();
+
     //jobs.value[id] = fetchedJobDetails;
     //console.log(jobs.value[id]);
     //console.log(fetchedJobDetails);
@@ -160,13 +209,22 @@ async function getJobsDetails() {
     //await jobsDetails.push(fetchedJobDetails);
   });
   //return test;
+  loader.hide();
 }
 
 async function fetchJobs(jobsDetails) {
   jobs.value = await getAllJobs();
   await getJobsDetails();
-
-  console.log(jobs.value);
+  /*
+  const jobss = jobsList.value;
+  const test = Object.keys(jobss).map((key) => {
+    jobss[key].id = parseInt(key);
+    return jobss[key];
+  });
+  console.log(jobsList.value);
+  */
+  console.log(jobsList.value);
+  prev();
 }
 onMounted(() => {});
 

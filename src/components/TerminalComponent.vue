@@ -325,6 +325,21 @@ watch(
 watch(
   () => bus.value.get("changeCurrentConsole"),
   (data) => {
+    const input = document.getElementsByClassName("cmdline");
+    //input.click();
+    // input.value = "clear";
+    input[0].click();
+
+    input[0].click();
+    input[0].click();
+    input[0].click();
+    input[0].click();
+    input[0].click();
+
+    input[0].click();
+    input[0].click();
+    console.log(input[0]);
+    //input.click();
     //send_to_terminal.value = "<br /><br />";
     //display current terminal id
     //alert(data[0].console_id);
@@ -355,11 +370,7 @@ watch(
     console.log(currentTerminalData);
 
     send_to_terminal.value = `<p>` + currentTerminalData + `</p>`;
-    /*
-    readDataFromConsole(currentTerminal.value);
-    let dataa = { console_id: currentTerminal.value, input_command: "help" };
-    writeDataToConsole(dataa);
-    */
+    //ToastService.showToast("Changed current console to Console " + currentTerminal.value);
   }
 );
 
@@ -403,6 +414,7 @@ function setOptions(options) {
 watch(
   () => bus.value.get("runModule"),
   async (data) => {
+    const loader = $loading.show();
     let runningModuleCommand = "";
     console.log(data);
     const moduleDetails = data[0].module_details;
@@ -448,6 +460,7 @@ watch(
     emit("completeModuleRunningProcess", { module_name: moduleDetails.fullname });
     const test = readDataFromConsole(currentTerminal.value);
     console.log(test);
+    loader.hide();
   }
 );
 
@@ -641,5 +654,11 @@ watch(
 }
 #terminal {
   overflow: unset !important;
+}
+#banner > h2:nth-child(2) {
+  letter-spacing: 1px !important;
+}
+.prompt {
+  color: #265ab1 !important;
 }
 </style>

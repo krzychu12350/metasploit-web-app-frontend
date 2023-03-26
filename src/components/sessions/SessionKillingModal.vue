@@ -120,6 +120,7 @@ function toggleModal() {
 }
 
 async function killSpecificSession(sessionId) {
+  const loader = $loading.show();
   const sessionData = { session_id: sessionId };
   SessionDataService.stop(sessionData)
     .then((res) => {
@@ -129,30 +130,17 @@ async function killSpecificSession(sessionId) {
           "Session with ID " + sessionId + " was killed successfully"
         );
         toggleModal();
+        loader.hide();
       }
     })
     .catch((err) => {
       toggleModal();
+      loader.hide();
       console.log(err);
     });
   emit("refreshSessionsTable");
 }
 
-/*
-const deleteApplication = async (id) => {
-  toggleModal();
-  const loader = $loading.show();
-  ApplicationDataService.delete(id)
-    .then((res) => {
-      ToastService.showToast("Application was deleted successfully");
-      emit("refreshApplicationTable");
-      loader.hide();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
-*/
 watch(
   () => bus.value.get("showSessionKillingModal"),
   (val) => {

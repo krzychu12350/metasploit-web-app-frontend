@@ -22,7 +22,15 @@ const requestHandler = request => {
 
 
 const responseHandler = response => {
-    if (response.status === 401) {
+    if (response.status === 401 || response.data.message == "Invalid Authentication Token") {
+        window.location = '/setup';
+    }
+
+    return response;
+};
+
+const wrongTokenResponseHandler = response => {
+    if (response.data.message == "Invalid Authentication Token") {
         window.location = '/setup';
     }
 

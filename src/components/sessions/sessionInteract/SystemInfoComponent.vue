@@ -94,14 +94,15 @@ async function readSystemInfo() {
 }
 
 onMounted(async () => {
-  const loader = $loading.show();
+  // const loader = $loading.show();
 
   await requestSystemInfo();
   await readSystemInfo();
+
   //await requestLocalDataTime();
   //await readLocalDataTime();
 
   //victimLocalDatetime.value = localDateTimeResponse.data.data;
-  loader.hide();
+  // loader.hide();
 });
 </script>

@@ -4,7 +4,7 @@
     <p class="mt-2 text-sm text-gray-700">A list of modules you can run</p>
   </div>
 
-  <div class="relative text-gray-600 focus-within:text-gray-400 mb-4">
+  <div class="relative text-gray-600 focus-within:text-gray-400 mb-4 md:rounded-lg">
     <span class="absolute inset-y-0 left-0 flex items-center">
       <button type="submit" class="p-1 focus:outline-none focus:shadow-outline">
         <MagnifyingGlassIcon class="flex-shrink-0 h-5 w-5 mr-2 text-gray-400 ml-2" />
@@ -12,14 +12,16 @@
     </span>
     <input
       type="text"
-      class="h-12 w-full border-0 pl-11 pr-4 text-sm text-gray-800 placeholder-gray-400 focus:ring-0"
-      placeholder="Search..."
+      class="h-12 w-full border-0 pl-11 pr-4 text-sm text-gray-800 placeholder-gray-400 focus:ring-0 md:rounded-lg"
+      placeholder="Search module..."
       v-model="search"
       @input="onInput"
     />
   </div>
 
-  <p v-if="noResults">Sorry, no results for {{ search }}</p>
+  <p v-if="noResults" class="mt-2 text-sm text-gray-700 mb-4 text-red-600 font-semibold">
+    Sorry, no results for {{ search }}
+  </p>
   <!--
   {{ filteredItems.length }}
   {{ result }}
@@ -28,55 +30,49 @@
     <div class="flex flex-col">
       <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <div class="overflow-hidden border-b border-gray-200">
+          <div class="overflow-hidden border-b border-gray-200 md:rounded-lg">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
                   <th
                     scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
                     Type
                   </th>
                   <th
                     scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
                     Full name
                   </th>
                   <th
                     scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
                     Rank
                   </th>
                   <th
                     scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Arch
+                    License
                   </th>
                   <th
                     scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
                     Stance
                   </th>
                   <th
                     scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    User
+                    Name
                   </th>
                   <th
                     scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Path
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
                     Actions
                   </th>
@@ -99,17 +95,15 @@
                     {{ module.rank }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ module.arch }}
+                    {{ module.license }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {{ module.stance }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ module[5] }}
+                    {{ module.name }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ module[6] }}
-                  </td>
+
                   <td
                     class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex"
                   >
@@ -220,7 +214,7 @@ const filteredItems = computed(() => {
 });
 
 const { result, next, prev, currentPage, lastPage } = useArrayPagination(filteredItems, {
-  pageSize: 8,
+  pageSize: 5,
 });
 
 const searchedModules = ref(results);

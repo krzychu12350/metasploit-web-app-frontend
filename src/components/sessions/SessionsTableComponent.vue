@@ -30,6 +30,12 @@
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
+                    Type
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
                     Session host
                   </th>
                   <th
@@ -60,14 +66,17 @@
               </thead>
               <tbody class="bg-white">
                 <tr
-                  v-for="(session, key, sessionIdx) in sessions"
+                  v-for="(session, key, sessionIdx) in result"
                   :key="session.type"
                   :class="sessionIdx % 2 === 0 ? undefined : 'bg-gray-50'"
                 >
                   <td
                     class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
                   >
-                    {{ session.uuid }} {{ key }}
+                    {{ session.uuid }}
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    {{ session.type }}
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     {{ session.session_host }}
@@ -86,18 +95,51 @@
                   >
                     <ArrowRightOnRectangleIcon
                       class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
-                      @click="router.push('/sessions/' + key)"
+                      @click="router.push('/sessions/' + session.id)"
+                      v-tooltip.top="'Interact'"
                       aria-hidden="true"
                     />
                     <XMarkIcon
                       class="flex-shrink-0 h-5 w-5 mr-2 text-gray-700 hover:text-gray-900 cursor-pointer"
-                      @click="emit('showSessionKillingModal', { sessionId: key })"
+                      @click="emit('showSessionKillingModal', { sessionId: session.id })"
+                      v-tooltip.top="'Destroy session'"
                       aria-hidden="true"
                     />
                   </td>
                 </tr>
               </tbody>
             </table>
+
+            <nav
+              class="bg-white px-4 py-3 flex items-center justify-between sm:px-6"
+              aria-label="Pagination"
+            >
+              <div class="hidden sm:block">
+                <p class="text-sm text-gray-700">
+                  Page
+                  {{ " " }}
+                  <span class="font-medium">{{ currentPage }}</span>
+                  {{ " " }}
+                  of
+                  {{ " " }}
+                  <span class="font-medium">{{ lastPage }}</span>
+                </p>
+              </div>
+              <div class="flex-1 flex justify-between sm:justify-end">
+                <button
+                  @click="prev"
+                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  Previous
+                </button>
+                <button
+                  @click="next()"
+                  class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  Next
+                </button>
+              </div>
+            </nav>
           </div>
         </div>
       </div>
@@ -112,6 +154,7 @@ import { inject, watch, ref, reactive, onBeforeMount, onMounted } from "vue";
 import { PencilIcon, XMarkIcon, CalculatorIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
 import { useRouter } from "vue-router";
+import { useArrayPagination } from "vue-composable";
 
 const router = useRouter();
 const { bus, emit } = useEventsBus();
@@ -119,13 +162,16 @@ const $loading = inject("$loading");
 
 let sessions = ref([]);
 
+const { result, next, prev, currentPage, lastPage } = useArrayPagination(sessions, {
+  pageSize: 5,
+});
+
 async function getAllSessions() {
   const loader = $loading.show();
   return SessionDataService.list()
     .then((res) => {
       loader.hide();
       return res.data.data;
-      console.log(sessions);
     })
     .catch((err) => {
       loader.hide();
@@ -134,7 +180,12 @@ async function getAllSessions() {
 }
 
 async function fetchSessions() {
-  sessions.value = await getAllSessions();
+  let sessionObjects = await getAllSessions();
+  sessions.value = Object.keys(sessionObjects).map((key) => {
+    sessionObjects[key].id = parseInt(key);
+    return sessionObjects[key];
+  });
+  prev();
 }
 
 onBeforeMount(async () => {
@@ -148,4 +199,3 @@ watch(
   }
 );
 </script>
-<style scoped></style>

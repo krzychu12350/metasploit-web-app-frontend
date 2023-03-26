@@ -10,7 +10,7 @@
       >
         <XMarkIcon
           @click="killConsole(console.id)"
-          class="w-5 h-5 cursor-pointer hover:bg-gray-200"
+          class="w-5 h-fu cursor-pointer hover:bg-gray-200 bg-white"
         ></XMarkIcon>
         <option
           v-for="console in consoles"
@@ -26,14 +26,15 @@
       <nav class="flex flex-wrap" aria-label="Tabs">
         <div
           v-for="(console, index) in consoles"
-          class="flex items-center justify-between cursor-pointer group min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center focus:z-10"
+          class="border-solid border-l-2 border-r-2 border-gray-300 flex items-center flex-wrap justify-between cursor-pointer group min-w-0 flex-1 overflow-hidden bg-white py-2 px-2 text-sm font-medium text-center focus:z-10"
           :class="[
             console.id == useCurrentConsoleId.getCurrentConsoleId
               ? 'bg-gray-200'
               : 'text-gray-500 hover:text-gray-700',
           ]"
         >
-          <div class="w-5/6">
+          <div></div>
+          <div v-tooltip.top="'Switch to this console'">
             <a
               :key="console.id"
               :href="console.href"
@@ -50,23 +51,23 @@
             >
           </div>
 
-          <div class="h-full w-1/6">
+          <div class="">
             <XMarkIcon
               @click="killConsole(console.id)"
-              class="w-5 h-5 cursor-pointer hover:bg-gray-200"
+              class="w-5 h-5 cursor-pointer hover:bg-gray-200 bg-white"
+              v-tooltip.top="'Kill console'"
             ></XMarkIcon>
           </div>
         </div>
         <div
-          class="flex items-center justify-between cursor-pointer group min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
+          class="border-solid border-l-2 border-gray-300 flex justify-center items-center cursor-pointer group min-w-0 flex-1 overflow-hidden bg-white py-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
           @click="createNewConsole()"
+          v-tooltip.top="'Add a new console'"
         >
-          <div class="w-5/6">
-            <a class="flex items-center justify-center">
-              <PlusIcon class="w-5 h-5 mr-2"></PlusIcon>
-              <span>Add a new console </span>
-              <!-- {{ useCurrentConsoleId.getCurrentConsoleId }}-->
-            </a>
+          <div class="flex">
+            <PlusIcon class="w-5 h-5 mr-2 text-gray-500 hover:text-gray-700"></PlusIcon>
+            <span class="text-gray-500 hover:text-gray-700"> Add a new console </span>
+            <!-- {{ useCurrentConsoleId.getCurrentConsoleId }}-->
           </div>
         </div>
       </nav>

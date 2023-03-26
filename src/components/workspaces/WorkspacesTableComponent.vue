@@ -204,16 +204,17 @@ const { result, next, prev, currentPage, lastPage } = useArrayPagination(workspa
 });
 
 async function getAllWorkspaces() {
-  // const loader = $loading.show();
+  const loader = $loading.show();
   return DatabaseDataService.getWorkspaces()
     .then((res) => {
       //console.log(res.data.workspaces);
-      //loader.hide();
+
       workspaces.value = res.data.workspaces;
+      loader.hide();
       ////
     })
     .catch((err) => {
-      // loader.hide();
+      loader.hide();
       console.log(err);
     });
 }

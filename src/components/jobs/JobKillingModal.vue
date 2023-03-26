@@ -118,6 +118,7 @@ function toggleModal() {
 }
 
 async function killSpecificJob(jobId) {
+  const loader = $loading.show();
   const jobData = { job_id: jobId };
   JobDataService.stop(jobData)
     .then((res) => {
@@ -125,10 +126,12 @@ async function killSpecificJob(jobId) {
       if (res.data.data.result === "success") {
         ToastService.showToast("Job with ID " + jobId + " was killed successfully");
         toggleModal();
+        loader.hide();
       }
     })
     .catch((err) => {
       toggleModal();
+      loader.hide();
       console.log(err);
     });
   emit("refreshJobTable");
