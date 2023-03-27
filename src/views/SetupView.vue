@@ -241,7 +241,6 @@ const schema = yup.object({
 
 const onSubmit = (credentials) => {
   credentials.ssl = isHttpEnabled.value;
-  console.log(credentials);
   connectWithMsf(credentials);
 };
 
@@ -254,7 +253,6 @@ function onInvalidSubmit({ values, errors, results }) {
 async function createFirstConsole() {
   return ConsoleDataService.create()
     .then((res) => {
-      console.log(res.data.data.id);
       return res.data.data.id;
     })
     .catch((err) => {
@@ -283,7 +281,6 @@ async function setMsfConnection(credentials, loader) {
   useMsfAuth()
     .setConnection(credentials)
     .then((connectionSettings) => {
-      console.log(connectionSettings);
       useCurrentMetasploitRpcConnection.setCurrentRpcConnection(connectionSettings);
       useMsfConsoles.createCurrentConnectionConsolesDataArray;
       loginToMsfRpc(credentials, loader);

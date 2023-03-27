@@ -20,7 +20,7 @@ export const useMsfAuth = defineStore("auth", {
       this.msfAccessToken = msfAccessToken;
     },
     async setConnection(connectionSettings) {
-    console.log('setting conn');
+  
      return MsfRpcServerConnectionService.setConnection(connectionSettings)
      .then((res)=> {
       return res.data.connection_details;

@@ -77,7 +77,7 @@ export const useMsfModules = defineStore("modules", {
           response.forEach(function (exploit, index) {
             response[index] = { module_name: exploit, module_type: "post" };
           });
-          console.log(response);
+          
           return response;
         })
         .catch((error) => {
