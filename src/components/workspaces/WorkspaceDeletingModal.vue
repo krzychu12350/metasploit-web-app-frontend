@@ -94,7 +94,7 @@
 </template>
 
 <script setup>
-import { ref, watch, inject } from "vue";
+import { ref, watch } from "vue";
 import {
   Dialog,
   DialogOverlay,
@@ -104,10 +104,6 @@ import {
 } from "@headlessui/vue";
 import { ExclamationTriangleIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
-import JobDataService from "../../services/JobDataService";
-import ToastService from "../../services/ToastService";
-const $loading = inject("$loading");
-const fullPage = ref(true);
 let open = ref(false);
 const workspaceName = ref("");
 

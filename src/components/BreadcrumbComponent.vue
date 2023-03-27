@@ -57,10 +57,6 @@ import { useMsfCurrentWorkspace } from "../stores/useMsfCurrentWorkspace";
 import useEventsBus from "../composables/eventBus";
 
 const useMsfWorkspace = useMsfCurrentWorkspace();
-const pages = [
-  { name: "Sessions", href: "#", current: false },
-  { name: "Session 1", href: "#", current: true },
-];
 
 const props = defineProps({
   subpageName: String,
@@ -85,5 +81,3 @@ const toPascalCase = (str) =>
     .map((w) => `${w.charAt(0).toUpperCase()}${w.slice(1)}`)
     .join("");
 </script>
-
-<style scoped></style>

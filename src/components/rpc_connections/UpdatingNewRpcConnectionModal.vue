@@ -271,29 +271,6 @@ const togglePasswordVisibity = () => {
   showPassword.value = !showPassword.value;
 };
 
-/*
-const initialUpdatingFormValues = ref({
-  id: currentConnectionSettings.id,
-  user_name: currentConnectionSettings.user_name,
-  user_password: currentConnectionSettings.user_password,
-  ip: currentConnectionSettings.ip,
-  port: currentConnectionSettings.port,
-  web_server_uri: currentConnectionSettings.web_server_uri,
-});
-*/
-//  ssl: false,
-/*
-function deleteIdPropertyFromArrayConnection(array) {
-  let connections = [];
-  array.forEach(function (connection) {
-    //console.log(connection);
-    delete connection.id;
-    connections.push(connection);
-  });
-  return connections;
-}
-*/
-
 watch(
   () => bus.value.get("showRpcConnectionEditingModal"),
   (data) => {
@@ -308,9 +285,6 @@ watch(
       web_server_uri: currentConnectionSettings.web_server_uri,
     };
     isHttpEnabled.value = currentConnectionSettings.ssl;
-    console.log(currentConnectionSettings, connections);
-    //connections = deleteIdPropertyFromArrayConnection(allContections);
-    //console.log(connections);
     toggleModal();
   }
 );
@@ -333,7 +307,6 @@ async function updateRpcConnection(connectionSettings) {
 
 async function checkIfConnectionAlreadyExist(connectionSettings) {
   return connections.some((connection) => {
-    //console.log(connection);
     if (
       connection.user_name === connectionSettings.user_name &&
       connection.user_password === connectionSettings.user_password &&
@@ -361,8 +334,6 @@ const onSubmit = async (newConnectionSettings) => {
     );
     toggleModal();
   } else updateRpcConnection(newConnectionSettings);
-
-  //createNewRpcConnection(newConnectionSettings);
 };
 
 const schema = yup.object({

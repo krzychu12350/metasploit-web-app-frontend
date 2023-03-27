@@ -152,22 +152,19 @@ async function getKillingProcessResult(loader) {
       console.log(err);
     });
 }
-async function killProcess(processPid) {
-  //emit("deleteSpecficFile", { file: filePropsData });
-  const loader = $loading.show();
-  //alert(processPid);
 
+async function killProcess(processPid) {
+  const loader = $loading.show();
   await requestKillingProcess(processPid);
   await getKillingProcessResult(loader);
-
   emit("refreshProcessesList");
   toggleModal();
 }
+
 watch(
   () => bus.value.get("showProcessKillingModal"),
   (val) => {
     toggleModal();
-    //killProcess(val[0].process_pid);
     processPid.value = val[0].process_pid;
   }
 );

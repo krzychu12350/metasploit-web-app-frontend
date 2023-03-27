@@ -122,7 +122,6 @@ async function killSpecificJob(jobId) {
   const jobData = { job_id: jobId };
   JobDataService.stop(jobData)
     .then((res) => {
-      //console.log(res.data.result === "success");
       if (res.data.data.result === "success") {
         ToastService.showToast("Job with ID " + jobId + " was killed successfully");
         toggleModal();

@@ -102,18 +102,6 @@
       </div>
     </div>
   </div>
-  <!--
-  <div>
-    <p>page {{ currentPage }} of {{ lastPage }}</p>
-    <p>
-      <button @click="prev">prev</button>
-      <button @click="next">next</button>
-    </p>
-    <ul>
-      <li v-for="n in processPagination" :key="n">{{ n }}</li>
-    </ul>
-  </div>
--->
   <nav
     class="bg-white px-4 py-3 flex items-center justify-between sm:px-6"
     aria-label="Pagination"
@@ -189,9 +177,7 @@ async function requestAllProcess() {
     session_id: currentSessionId.value,
     ps: meterpreterCommands.SystemCommands.PS,
   })
-    .then((res) => {
-      console.log(res.data);
-    })
+    .then((res) => {})
     .catch((err) => {
       console.log(err);
     });
@@ -205,11 +191,8 @@ async function getAllProcess() {
   })
     .then((res) => {
       const response = res.data.data.data;
-      console.log(response);
 
       const splicedProcessesArray = response.split("\n").splice(6);
-
-      console.log(splicedProcessesArray);
 
       splicedProcessesArray.forEach((process) => {
         let processDetails = process.split(/\s+/).filter((e) => e);
@@ -222,7 +205,6 @@ async function getAllProcess() {
         }
       });
 
-      console.log(processes.value);
       processes.value.shift();
       next();
       loader.hide();

@@ -158,42 +158,26 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount, reactive } from "vue";
-import {
-  Dialog,
-  DialogOverlay,
-  DialogTitle,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
-import { ExclamationTriangleIcon, XMarkIcon } from "@heroicons/vue/24/outline";
+import { ref, watch, reactive } from "vue";
+import { Dialog, DialogOverlay, TransitionChild, TransitionRoot } from "@headlessui/vue";
+import { XMarkIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
-import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 import ToastService from "../../services/ToastService";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import MsfRpcServerConnectionService from "../../services/MsfRpcServerConnectionService";
 import * as yup from "yup";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/20/solid";
 import ScriptsDataService from "../../services/ScriptsDataService";
 import { codeEditor } from "@wcfdehao/code-editor";
 
 let scriptCode = ref("");
 let initialUpdatingFormValues = ref();
 let currentScriptData = reactive({});
-let value = ref();
 let open = ref(false);
-const isHttpEnabled = ref(false);
 const { bus, emit } = useEventsBus();
-let connections = reactive([]);
 const showPassword = ref(false);
 let selected = ref("");
 function toggleModal() {
   open.value = !open.value;
 }
-
-const togglePasswordVisibity = () => {
-  showPassword.value = !showPassword.value;
-};
 
 watch(
   () => bus.value.get("showEditingScriptModal"),

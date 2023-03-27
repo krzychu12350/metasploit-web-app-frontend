@@ -55,29 +55,22 @@ let meterpreterData = ref();
 let sysinfo = reactive([]);
 
 onBeforeMount(() => {
-  //console.log(meterpreterCommands.SystemCommands.SYSINFO);
   writeToMeterpreterSession("ARP");
 });
 
 function writeToMeterpreterSession(command) {
-  console.log(formContainer.value);
   const loader = $loading.show({
-    // Optional parameters
-
     isFullPage: fullPage.value,
     container: formContainer.value,
   });
-  //alert(command);
-  //console.log(command);
+
   const data = {
     session_id: currentSessionId.value,
     ps: meterpreterCommands.NetworkingCommands[command],
   };
-  console.log(data);
+
   SessionDataService.meterpreterWrite(data)
-    .then((res) => {
-      console.log(res.data);
-    })
+    .then((res) => {})
     .catch((err) => {
       loader.hide();
       console.log(err);
@@ -91,19 +84,7 @@ function readFromMeterpreterSession(loader) {
     session_id: currentSessionId.value,
   })
     .then((res) => {
-      console.log(res.data);
       const response = res.data.data.data;
-      console.log(response);
-      /*
-      const rows = response.split("\n");
-      console.log(rows);
-
-      rows.forEach((info) => {
-        let divider = info.split(":");
-        sysinfo.push(divider);
-      });
-      console.log(sysinfo);
-      */
       meterpreterData.value = response;
       loader.hide();
     })
@@ -112,5 +93,4 @@ function readFromMeterpreterSession(loader) {
       loader.hide();
     });
 }
-//alert(meterpreterCommands.SystemCommands.SYSINFO);
 </script>

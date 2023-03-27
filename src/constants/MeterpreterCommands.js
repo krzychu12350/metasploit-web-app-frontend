@@ -56,18 +56,6 @@ const CoreCommands = {
     IDLETIME: "idletime",
 };
 
- const WebcamCommands = {
-  
-};
-
- const AudioOutputCommands = {
-  
-};
-
- const ElevateCommands = {
-  
-};
-
  const PasswordDatabaseCommands = {
     HASHDUMP: "hashdump",
 };
@@ -82,9 +70,6 @@ export default {
     NetworkingCommands: NetworkingCommands,
     SystemCommands: SystemCommands,
     UserInterfaceCommands: UserInterfaceCommands,
-    WebcamCommands: WebcamCommands,
-    AudioOutputCommands: AudioOutputCommands,
-    ElevateCommands: ElevateCommands,
     PasswordDatabaseCommands: PasswordDatabaseCommands,
     TimestompCommands: TimestompCommands,
 }

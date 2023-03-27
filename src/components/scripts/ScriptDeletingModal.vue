@@ -104,11 +104,9 @@ import {
 } from "@headlessui/vue";
 import { ExclamationTriangleIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
-import MsfRpcServerConnectionService from "../../services/MsfRpcServerConnectionService";
 import ScriptsDataService from "../../services/ScriptsDataService";
 import ToastService from "../../services/ToastService";
 const $loading = inject("$loading");
-const fullPage = ref(true);
 let open = ref(false);
 const scriptId = ref(0);
 

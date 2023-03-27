@@ -8,7 +8,6 @@ export default function useMeterpreterSession(){
             ps: meterpreterCommand,
           })
             .then((res) => {
-              console.log(res.data);
               return res.data;
             })
             .catch((err) => {
@@ -22,7 +21,6 @@ export default function useMeterpreterSession(){
             session_id: sessionId
           })
             .then((res) => {
-              console.log(res.data);
               return res.data;
             })
             .catch((err) => {
@@ -34,8 +32,6 @@ export default function useMeterpreterSession(){
     function processTextDataToArray(data) {
         let subArray = [];
         const rows = data.data.data.split("\n");
-        console.log(rows);
-      
         rows.forEach((info) => {
           let divider = info.split(":");
           subArray.push(divider);

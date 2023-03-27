@@ -156,7 +156,6 @@ import { XMarkIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
-import ModuleDataService from "../../services/ModuleDataService";
 
 let open = ref(false);
 const { bus, emit } = useEventsBus();
@@ -178,8 +177,6 @@ const onSubmit = async (importingSettings) => {
   console.log(importingSettings);
   emit("importDataIntoWorkspace", { importing_settings: importingSettings });
   toggleModal();
-  //db_export -f xml -a /path/to/export-name.xml
-  // toggleModal();
 };
 
 const schema = yup.object({

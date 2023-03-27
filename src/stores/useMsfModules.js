@@ -24,23 +24,18 @@ export const useMsfModules = defineStore("modules", {
       const payloads = await this.getAllPayloads();
       const auxiliaries = await this.getAllAuxiliaries();
       const posts = await this.getAllPosts();
-      //nops
-      //encoders
       this.payloads = payloads;
       this.modules = this.modules.concat(exploits, payloads, auxiliaries, posts);
     },
     async getAllPayloads() {
       return ModuleDataService.payloads()
         .then((res) => {
-          //setTimeout(() => (modules.value = res.data.data.modules), 2000);
-          //modules.value = res.data.data.modules;
           const response = res.data.data.modules;
           response.forEach(function (payload, index) {
             response[index] = { module_name: payload, module_type: "payload" };
           });
-          console.log(response);
+
           return response;
-          //modules.value.push("testtttttttt");
         })
         .catch((error) => {
           console.log(error);
@@ -54,7 +49,6 @@ export const useMsfModules = defineStore("modules", {
           response.forEach(function (exploit, index) {
             response[index] = { module_name: exploit, module_type: "exploit" };
           });
-          console.log(response);
           return response;
         })
         .catch((error) => {
@@ -69,7 +63,6 @@ export const useMsfModules = defineStore("modules", {
           response.forEach(function (exploit, index) {
             response[index] = { module_name: exploit, module_type: "auxiliary" };
           });
-          console.log(response);
           return response;
         })
         .catch((error) => {

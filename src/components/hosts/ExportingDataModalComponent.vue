@@ -156,7 +156,6 @@ import { XMarkIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
-import ModuleDataService from "../../services/ModuleDataService";
 
 let open = ref(false);
 const { bus, emit } = useEventsBus();
@@ -174,26 +173,10 @@ watch(
   }
 );
 
-async function fetchScanningModuleDetails() {
-  return ModuleDataService.info({
-    module_name: "auxiliary/scanner/portscan/tcp",
-    module_type: "auxiliary",
-  })
-    .then((res) => {
-      console.log(res.data);
-      return res.data;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-
 const onSubmit = async (exportingSettings) => {
   console.log(exportingSettings);
   emit("exportDataFromWorkspace", { exporting_settings: exportingSettings });
   toggleModal();
-  //db_export -f xml -a /path/to/export-name.xml
-  // toggleModal();
 };
 
 const schema = yup.object({

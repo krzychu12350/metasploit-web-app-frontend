@@ -2,7 +2,6 @@
   <div class="min-w-full">
     <div class="sm:hidden">
       <label for="consoles" class="sr-only">Select a console</label>
-      <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
       <select
         id="consoles"
         name="consoles"
@@ -42,8 +41,6 @@
               class="flex items-center justify-center"
               :class="[
                 console.current ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700',
-                tabIdx === 0 ? 'rounded-l-lg' : '',
-                tabIdx === tabs.length - 1 ? 'rounded-r-lg' : '',
               ]"
               :aria-current="console.current ? 'page' : undefined"
             >
@@ -95,11 +92,8 @@ const tabs = ref([
 const consoles = ref();
 const useCurrentConsoleId = useCurrentConsole();
 
-let curentConsoleId = ref();
-
 onBeforeMount(async () => {
   await getAllConsoles();
-  //emit("setMaxConsoleId");
   emit("changeCurrentConsole", { console_id: useCurrentConsoleId.getCurrentConsoleId });
 });
 
@@ -111,7 +105,6 @@ async function changeCurrentConsole(consoleId) {
 async function getAllConsoles() {
   ConsoleDataService.list()
     .then((res) => {
-      console.log(res.data.data.consoles);
       consoles.value = res.data.data.consoles;
     })
     .catch((error) => {
@@ -122,7 +115,6 @@ async function getAllConsoles() {
 async function createNewConsole() {
   ConsoleDataService.create()
     .then((res) => {
-      console.log(res.data);
       if (res.data.status === true) {
         ToastService.showToast(
           "Console " + res.data.data.id + " was created successfully"
@@ -139,7 +131,6 @@ async function createNewConsole() {
 async function killConsole(consoleId) {
   ConsoleDataService.destroy({ console_id: consoleId })
     .then(async (res) => {
-      //console.log(res.data.data);
       if (res.data.data.result == "success") {
         emit("setMaxConsoleId");
         await getAllConsoles();

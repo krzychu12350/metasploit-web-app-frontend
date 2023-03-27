@@ -43,7 +43,6 @@ const banner = reactive({
   sign: `msf >`,
   img: {
     align: "left",
-    //link: "https://www.nicepng.com/png/full/24-249625_metasploit-logo.png",
     link: "/logo.svg",
     width: 100,
     height: 100,
@@ -66,154 +65,39 @@ const commands = reactive([
     },
   },
   {
-    name: "help",
-    get() {
-      console.log("dziala");
-      return "test1234";
-    },
-  },
-  {
     name: "clearTerminal",
     get() {
-      console.log("dziala");
       return `clear \n`;
     },
   },
 ]);
 
-/*
-export default {
-  name: "App",
-  data() {
-    return {
-      send_to_terminal: "",
-      banner: {
-        header: "Metasploit Shell",
-        subHeader: "Metasploit Shell is pure power just enjoy 🔥",
-        helpHeader: 'Enter "help" for more information.',
-        /*
-        emoji: {
-          first: "☠️",
-          second: "💀",
-          time: 750,
-        },
-        sign: `msf >`,
-        img: {
-          align: "left",
-          link: "https://www.nicepng.com/png/full/24-249625_metasploit-logo.png",
-          width: 100,
-          height: 100,
-        },
-      },
-      commands: [
-        {
-          name: "info",
-          get() {
-            return `<p>Shell to interacte with metasploit.</p>`;
-          },
-        },
-        {
-          name: "uname",
-          get() {
-            return navigator.appVersion;
-          },
-        },
-      ],
-    };
-  },
-  methods: {
-    prompt(value) {
-      if (value.trim() === "ifconfig") {
-        this.send_to_terminal = `\n\n`;
-
-        this.send_to_terminal = `
-    Wi-Fi wireless network card:
-
-    Local link IPv6 address. . . : fe80 :: 340f: 6f02: 41e9: 477b% 24
-    IPv4 address. . . . . . . . .: 192.168.1.2
-    Subnet mask. . . . . . . . . : 255.255.255.0
-    Default Gateway. . . . . . . : 192.168.1.1`;
-
-      } else if (value.trim() === "test") {
-        this.send_to_terminal = `dddddddddddddddddd`;
-      } else {
-        this.send_to_terminal = `'${value}' is not recognized as an internal command or external,
-an executable program or a batch file`;
-      }
-    },
-    createConsole() {
-      ConsoleDataService.create().then((res) => {
-        console.log(res.data);
-      });
-    },
-    writeDataToConsole(data) {
-      ConsoleDataService.write(data).then((res) => {
-        console.log(res.data.data);
-        //const test = "dddd";
-        //this.send_to_terminal = `<p>` + res.data.data + `</p>`;
-      });
-    },
-    async readDataFromConsole(id) {
-      let data = { console_id: id };
-      await ConsoleDataService.read(data).then((res) => {
-        console.log(res.data.data);
-        //const test = "dddd";
-        this.send_to_terminal = `<p>` + res.data.data.data + `</p>`;
-      });
-    },
-  },
-  mounted() {
-    //this.createConsole();
-    let data = { console_id: 60, input_command: "version" };
-    this.writeDataToConsole(data);
-    //this.readDataFromConsole(51);
-    //this.send_to_terminal = `<p>Shell to interacte with metasploit.</p>`;
-    //this.shell_output = `<p>Initailize</p>`;
-    this.prompt("ifconfig");
-  },
-};
-*/
 async function createConsole() {
   return ConsoleDataService.create()
     .then((res) => {
-      console.log(res.data);
       return res.data.data;
     })
     .catch((err) => console.log(err));
 }
 
 async function writeDataToConsole(data) {
-  ConsoleDataService.write(data).then((res) => {
-    console.log(res.data.data);
-    //const test = "dddd";
-    //this.send_to_terminal = `<p>` + res.data.data + `</p>`;
-  });
+  ConsoleDataService.write(data).then((res) => {});
 }
 
 function getNmapResult(nmapResultData) {
   const splicedNmapResultArray = nmapResultData.split("\n");
   const noEmptyStrings = splicedNmapResultArray.filter((str) => str !== "");
-  console.log(noEmptyStrings.slice(-1)[0].slice(4));
   return noEmptyStrings.slice(-1)[0].slice(4);
 }
 
 async function readDataFromConsole(id) {
-  //commands = "clear \n";
   let data = { console_id: id };
   return ConsoleDataService.read(data).then((res) => {
-    console.log(res.data.data);
     const responseData = res.data.data;
-    console.log(isNmapScanRunning.value);
     if (
       isNmapScanRunning.value === true &&
       responseData.data.includes("Nmap: Nmap done")
     ) {
-      //alert(responseData.data);
-      /*
-      let splicedNmapResultArray = responseData.data.split("\n");
-      const noEmptyStrings = splicedNmapResultArray.filter((str) => str !== "");
-      console.log(noEmptyStrings.slice(-1)[0].slice(4));
-      */
       let nmapResultMessage = getNmapResult(responseData.data);
       emit("refreshHosts");
       ToastService.showToast(nmapResultMessage);
@@ -221,22 +105,12 @@ async function readDataFromConsole(id) {
     }
     setTimeout(() => {
       send_to_terminal.value = "<p>" + responseData.data + "</p>";
-      //const test = "dddd";
-      //banner.sign = "dddd >";
-      //console.log("`" + String(res.data.data.prompt) + "`");
-
-      //banner.value.sing = "`" + res.data.data.prompt + "`";
-      //console.log(send_to_terminal.value);
-      const terminalDiv = document.getElementById("terminal").innerHTML;
-      //console.log(terminalDiv);
       useConsoles.storeConsoleData(id, responseData.data, currentRpcConnectionId.value);
       banner.sign = responseData.prompt;
       setTimeout(() => {
         if (responseData.busy === true) readDataFromConsole(id);
       }, 1000);
-      //console.log(banner);
       return responseData.data;
-      //console.log(res.data.data.busy);
     }, 200);
     return responseData.data;
   });
@@ -245,7 +119,6 @@ async function readDataFromConsole(id) {
 function getConsoleList() {
   return ConsoleDataService.list()
     .then((res) => {
-      console.log(res.data.data.consoles);
       return res.data.data.consoles;
     })
     .catch((err) => console.log(err));
@@ -254,30 +127,13 @@ function getConsoleList() {
 async function setPrompt(value) {
   if (value.trim() === "ifconfig") {
     send_to_terminal.value = `\n\n`;
-    /*
-    this.send_to_terminal = `
-    Wi-Fi wireless network card:
-
-    Local link IPv6 address. . . : fe80 :: 340f: 6f02: 41e9: 477b% 24
-    IPv4 address. . . . . . . . .: 192.168.1.2
-    Subnet mask. . . . . . . . . : 255.255.255.0
-    Default Gateway. . . . . . . : 192.168.1.1`;
-    */
   } else if (value.trim() === "help") {
     send_to_terminal.value = `dddddddddddddddddd`;
   } else {
     let dataa = { console_id: currentTerminal.value, input_command: value };
-    console.log(dataa.console_id);
     writeDataToConsole(dataa);
-    //currentTerminal.value = dataa.console_id;
-    //currentTerminal.value = 1;
     await readDataFromConsole(currentTerminal.value);
-
     send_to_terminal.value = ``;
-    /*
-    send_to_terminal.value = `'${value}' is not recognized as an internal command or external,
-an executable program or a batch file`;
-*/
   }
 }
 const allConsoles = ref([]);
@@ -286,7 +142,6 @@ onUnmounted(() => {});
 
 async function storeAllConsoleData() {
   allConsoles.value.forEach(async (c) => {
-    console.log(parseInt(c.id));
     await useConsoles.storeConsoleData(parseInt(c.id), "", currentRpcConnectionId.value);
   });
 }
@@ -298,13 +153,9 @@ onMounted(async () => {
   emit("refreshTabs");
   emit("setMaxConsoleId");
   useCurrentConsoleId.setCurrentConsoleId(currentTerminal.value);
-  console.log(currentTerminal.value);
   emit("changeCurrentConsole", { console_id: currentTerminal.value });
   await readDataFromConsole(currentTerminal.value);
-  //this.createConsole();
-  //emit("changeCurrentConsole", { console_id: currentTerminal.value });
   let data = { console_id: currentTerminal.value, input_command: "version" };
-  //writeDataToConsole(data);
   setPrompt("ifconfig");
 });
 
@@ -325,38 +176,12 @@ watch(
 watch(
   () => bus.value.get("changeCurrentConsole"),
   (data) => {
-    const input = document.getElementsByClassName("cmdline");
-    //input.click();
-    // input.value = "clear";
-    input[0].click();
-
-    input[0].click();
-    input[0].click();
-    input[0].click();
-    input[0].click();
-    input[0].click();
-
-    input[0].click();
-    input[0].click();
-    console.log(input[0]);
-    //input.click();
-    //send_to_terminal.value = "<br /><br />";
-    //display current terminal id
-    //alert(data[0].console_id);
-    //console.log(commands[3].get());
     currentTerminal.value = data[0].console_id;
     useCurrentConsoleId.setCurrentConsoleId(currentTerminal.value);
-    //send_to_terminal.value = `\n\n`;
-    //const cmdline = document.getElementsByClassName("cmdline");
-    //console.log(cmdline);
-    //cmdline[cmdline.length - 1].value = "clear";
-    //clear current console data
     const consoles = useConsoles.getMsfConsoles(currentRpcConnectionId.value);
-    console.log(consoles);
     const isConsoleIdAlreadyExist = consoles.some((console) => {
       console.console_id == currentTerminal.value;
     });
-    console.log(isConsoleIdAlreadyExist);
     if (isConsoleIdAlreadyExist === false)
       useConsoles.storeConsoleData(
         currentTerminal.value,
@@ -367,10 +192,8 @@ watch(
     const currentTerminalData = consoles.find(
       (c) => parseInt(c.console_id) === parseInt(currentTerminal.value)
     ).console_data;
-    console.log(currentTerminalData);
 
     send_to_terminal.value = `<p>` + currentTerminalData + `</p>`;
-    //ToastService.showToast("Changed current console to Console " + currentTerminal.value);
   }
 );
 
@@ -379,16 +202,13 @@ watch(
   async (data) => {
     isNmapScanRunning.value = true;
     const loader = $loading.show();
-    //alert("nmap scan");
     const nmapCommand = data[0].nmap_command;
     const createdConsoleData = await createConsole();
     currentTerminal.value = createdConsoleData.id;
     useCurrentConsoleId.setCurrentConsoleId(currentTerminal.value);
     emit("refreshTabs");
-    //alert(createdConsoleData.id);
     let dataa = {
       console_id: currentTerminal.value,
-      //input_command: "db_nmap -v -sF -Pn -O 192.168.1.0/24",
       input_command: nmapCommand,
     };
     writeDataToConsole(dataa);
@@ -402,7 +222,6 @@ watch(
 function setOptions(options) {
   Object.keys(options).forEach((key) => {
     if (options[key]) {
-      console.log(key, options[key]);
       writeDataToConsole({
         console_id: currentTerminal.value,
         input_command: "set " + key + " " + options[key],
@@ -416,12 +235,9 @@ watch(
   async (data) => {
     const loader = $loading.show();
     let runningModuleCommand = "";
-    console.log(data);
     const moduleDetails = data[0].module_details;
     const moduleOptions = data[0].module_options;
     const payloadOptions = data[0].payload_options;
-    console.log(moduleDetails.fullname);
-    console.log(moduleOptions, payloadOptions);
 
     const createdConsoleData = await createConsole();
     emit("refreshTabs");
@@ -434,7 +250,6 @@ watch(
     setOptions(moduleOptions);
     readDataFromConsole(currentTerminal.value);
     if (moduleOptions.PAYLOAD) {
-      //alert("jest payload");
       setOptions(payloadOptions);
       runningModuleCommand = "run -j";
       router.push("/jobs");
@@ -442,16 +257,6 @@ watch(
       runningModuleCommand = "run";
       router.push("/");
     }
-    /*
-    writeDataToConsole({
-      console_id: currentTerminal.value,
-      input_command: "options",
-    });
-    writeDataToConsole({
-      console_id: currentTerminal.value,
-      input_command: "advanced",
-    });
-    */
     writeDataToConsole({
       console_id: currentTerminal.value,
       input_command: runningModuleCommand,
@@ -459,7 +264,6 @@ watch(
 
     emit("completeModuleRunningProcess", { module_name: moduleDetails.fullname });
     const test = readDataFromConsole(currentTerminal.value);
-    console.log(test);
     loader.hide();
   }
 );
@@ -467,7 +271,6 @@ watch(
 async function getDataFromConsole(consoleId) {
   return ConsoleDataService.read({ console_id: consoleId })
     .then((res) => {
-      console.log(res.data.data);
       return res.data.data;
     })
     .catch((err) => {
@@ -480,10 +283,8 @@ async function manageHost(hostIpAddress, operationType) {
   let commandParametr = "";
   const createdConsole = await createConsole();
   emit("refreshTabs");
-  //console.log(createdConsole);
   currentTerminal.value = createdConsole.id;
   useCurrentConsoleId.setCurrentConsoleId(currentTerminal.value);
-  console.log(currentTerminal.value);
   readDataFromConsole(currentTerminal.value);
 
   if (operationType === "add") commandParametr = "-a";
@@ -495,7 +296,6 @@ async function manageHost(hostIpAddress, operationType) {
   });
 
   const dataReadFromConsole = await getDataFromConsole(createdConsole.id);
-  console.log(dataReadFromConsole);
   if (operationType === "add") {
     if (
       dataReadFromConsole.data.includes(
@@ -505,7 +305,6 @@ async function manageHost(hostIpAddress, operationType) {
       ToastService.showToast("Added host " + hostIpAddress);
     else ToastService.showToast(dataReadFromConsole.data, "error");
   } else if (operationType === "delete") {
-    //alert("del");
     if (dataReadFromConsole.data.includes("[*] Deleted 1 hosts"))
       ToastService.showToast("Deleted host " + hostIpAddress);
     else ToastService.showToast(dataReadFromConsole.data, "error");
@@ -518,7 +317,6 @@ watch(
   () => bus.value.get("addNewHost"),
   async (data) => {
     const hostIpAddress = data[0].host_ip_address;
-    console.log(hostIpAddress);
     await manageHost(hostIpAddress, "add");
   }
 );
@@ -527,7 +325,6 @@ watch(
   () => bus.value.get("deleteHost"),
   async (data) => {
     const hostIpAddress = data[0].host.address;
-    console.log(hostIpAddress);
     await manageHost(hostIpAddress, "delete");
   }
 );
@@ -563,15 +360,12 @@ async function manageWorkspaceData(operationSettings) {
       fileExtenstion;
   }
 
-  console.log(operationCommand);
-
   const loader = $loading.show();
   let commandParametr = "";
   const createdConsole = await createConsole();
   emit("refreshTabs");
   currentTerminal.value = createdConsole.id;
   useCurrentConsoleId.setCurrentConsoleId(currentTerminal.value);
-  console.log(currentTerminal.value);
   readDataFromConsole(currentTerminal.value);
 
   writeDataToConsole({
@@ -615,7 +409,6 @@ watch(
   () => bus.value.get("runConsoleScript"),
   async (data) => {
     const scriptData = data[0].script_data;
-    //alert(scriptData.file_abs_path);
     const loader = $loading.show();
     const createdConsoleData = await createConsole();
     currentTerminal.value = createdConsoleData.id;
@@ -634,16 +427,8 @@ watch(
   }
 );
 </script>
-<style>
-/*
-#container {
-  height: 100px;
-}
 
-#container {
-  height: 100vh !important;
-}
-*/
+<style>
 .cmdline {
   min-width: 500px !important;
   width: fit-content !important;

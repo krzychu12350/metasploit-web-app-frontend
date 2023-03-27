@@ -18,7 +18,6 @@
           />
         </TransitionChild>
 
-        <!-- This element is to trick the browser into centering the modal contents. -->
         <span
           class="hidden sm:inline-block sm:align-middle sm:h-screen"
           aria-hidden="true"
@@ -78,16 +77,6 @@
                         <ErrorMessage name="directory_name" />
                       </div>
                     </div>
-
-                    <!--
-                  <p class="text-sm text-gray-500">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur
-                    amet labore.
-                  </p>
-                  
-                  {{ filePropsData }}
-           
-                -->
                   </div>
                 </div>
               </div>
@@ -108,7 +97,7 @@
 </template>
 
 <script setup>
-import { ref, watch, reactive, onMounted } from "vue";
+import { ref, watch, reactive } from "vue";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import {
@@ -131,9 +120,6 @@ function toggleModal() {
   open.value = !open.value;
 }
 
-onMounted(() => {
-  console.log("Mounted");
-});
 const schema = yup.object({
   directory_name: yup
     .string()
@@ -157,7 +143,6 @@ watch(
   () => bus.value.get("showCreateNewDirectoryModal"),
   () => {
     toggleModal();
-    //emit("createNewDirectory");
   }
 );
 </script>

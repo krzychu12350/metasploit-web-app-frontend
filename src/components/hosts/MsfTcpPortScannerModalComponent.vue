@@ -164,12 +164,6 @@ async function fetchScanningModuleDetails() {
 }
 
 const onSubmit = async (scanningSettings) => {
-  console.log(scanningSettings);
-  //emit("addNewHost", { host_ip_address: host.ip });
-  //module_options;
-  //module_details
-  //auxiliary/scanner/portscan/tcp
-  //let moduleDetails = await fetchScanningModuleDetails();
   emit("runModule", {
     module_details: { fullname: "auxiliary/scanner/portscan/tcp" },
     module_options: scanningSettings,

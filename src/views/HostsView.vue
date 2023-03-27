@@ -1,17 +1,4 @@
 <template>
-  <!--
-  <NavbarComponent />
-  <BreadcrumbComponent />
-
-  <JobsTableComponent></JobsTableComponent>
-  <JobKillingModal></JobKillingModal>
-
-  <h1>Jobs view</h1>
-  <div v-for="job in jobs">
-    <p>{{ job }}</p>
-  </div>
-  -->
-
   <ViewBaseComponent>
     <template v-slot:subpage-header>
       <BreadcrumbComponent subpageName="Hosts" />
@@ -47,5 +34,3 @@ import ExportingDataModalComponent from "../components/hosts/ExportingDataModalC
 import NmapScanModalComponent from "../components/hosts/NmapScanModalComponent.vue";
 import HostServciesModalComponent from "../components/hosts/HostServciesModalComponent.vue";
 </script>
-
-<style scoped></style>

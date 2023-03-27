@@ -18,14 +18,9 @@
       @input="onInput"
     />
   </div>
-
   <p v-if="noResults" class="mt-2 text-sm text-gray-700 mb-4 text-red-600 font-semibold">
     Sorry, no results for {{ search }}
   </p>
-  <!--
-  {{ filteredItems.length }}
-  {{ result }}
-  -->
   <div class="shadow sm:rounded-lg">
     <div class="flex flex-col">
       <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -155,20 +150,6 @@
       </div>
     </div>
   </div>
-  <!--
-  <div>
-    <p>page {{ currentPage }} of {{ lastPage }}</p>
-    <p>
-      <button @click="prev">prev</button>
-      <button @click="next">next</button>
-    </p>
-    <ul>
-      <li v-for="n in result" :key="n">
-        {{ n.module_name }}
-      </li>
-    </ul>
-  </div>
-  -->
   <ModuleDetailsModalComponent></ModuleDetailsModalComponent>
   <run-module-modal-component></run-module-modal-component>
   <payload-configuration-modal-component></payload-configuration-modal-component>
@@ -218,93 +199,35 @@ const { result, next, prev, currentPage, lastPage } = useArrayPagination(filtere
 });
 
 const searchedModules = ref(results);
-/*
-async function getModuleDetails2(module) {
-  const test = await ModuleDataService.info(module)
-    .then((res) => {
-      //activeModuleDetails = res.data.data;
-      return res.data.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  console.log(test);
-  activeModuleDetails.value = test;
-  return test;
-}
-*/
 
 onBeforeMount(async () => {
-  /*
-  const exploits = await getAllExploits();
-  const payloads = await getAllPayloads();
-  const auxiliaries = await getAllAuxiliaries();
-  const posts = await getAllPosts();
-
-  modules.value = modules.value.concat(exploits, payloads, auxiliaries, posts);
-  console.log(modules.value);
-
-  prev();
-
-  console.log(modulesDetails.value);
-  */
-  //alert("test");
-  //await msfModules.fetchAllModules();
-
   modules.value = await useMetasploitModules.getMsfModules;
-  //console.log(modules.value);
-
-  //console.log(result.value);
   goToPrevPage();
-  //
-  // await getCurrentPaginateModulesDetails(modules.value);
 });
 
 async function getModuleDetails(module) {
-  //console.log(module);
-  /*
-  const data = {
-    module_type: "payload",
-    module_name: moduleName,
-  };
-*/
   const loader = $loading.show();
   return await ModuleDataService.info(module)
     .then((res) => {
-      //activeModuleDetails = res.data.data;
-      //console.log(res.data.data);
       loader.hide();
       return res.data.data;
     })
     .catch((error) => {
       console.log(error);
     });
-  //loader.hide();
 }
 
 async function getCurrentPaginateModulesDetails(currentModules) {
-  //console.log(currentModules);
-
   modulesDetails.value.splice(0);
   currentModules.forEach(async (module, i) => {
     let moduleWithDetails = await getModuleDetails(module);
-
-    //result.value[i] = moduleWithDetails;
     modulesDetails.value.push(moduleWithDetails);
   });
 
   return modulesDetails.value;
 }
-/*
-watch(result, async (currentModules, oldModules) => {
-  //console.log(currentModules);
-  //console.log(oldModules);
-  //setTimeout(async () => await getCurrentPaginateModulesDetails(currentModules), 800);
-});
-*/
+
 const onInput = debounce(() => {
-  console.log("debug");
-  console.log(result.value);
   getCurrentPaginateModulesDetails(result.value);
 }, 1000);
 
@@ -317,27 +240,4 @@ function goToNextPage() {
   next();
   onInput();
 }
-
-/*
-watch(
-  result,
-  debounce((currentModules, oldModules) => {
-    //console.log(currentModules);
-    console.log("Send API request");
-    console.log(result.value);
-
-    //await getCurrentPaginateModulesDetails(result.value);
-    // await getCurrentPaginateModulesDetails(result.value);
-  }),
-  2000
-);
-*/
-/*
-watch(results, async (currentModules, oldModules) => {
-  console.log(currentModules);
-  //modules.value = currentModules;
-  //console.log(oldModules);
-  //if (currentModules.length > 0) modules.value = currentModules;
-});
-*/
 </script>

@@ -17,8 +17,6 @@
             class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
           />
         </TransitionChild>
-
-        <!-- This element is to trick the browser into centering the modal contents. -->
         <span
           class="hidden sm:inline-block sm:align-middle sm:h-screen"
           aria-hidden="true"
@@ -47,7 +45,7 @@
 </template>
 
 <script setup>
-import { ref, watch, reactive, onMounted } from "vue";
+import { ref, watch } from "vue";
 import {
   Dialog,
   DialogOverlay,
@@ -68,17 +66,10 @@ function toggleModal() {
   open.value = !open.value;
 }
 
-onMounted(() => {
-  console.log("Mounted");
-});
-
 watch(
   () => bus.value.get("showAttackerFilesUploadModal"),
   (val) => {
     toggleModal();
-    //alert("testt");
-    //console.log(val[0].host_id);
-    //fileContent = val[0].file_content;
     victimLwd.value = val[0].victim_lwd;
   }
 );

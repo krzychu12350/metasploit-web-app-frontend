@@ -5,11 +5,6 @@
         <h1 class="text-xl font-semibold text-gray-900">Active jobs</h1>
         <p class="mt-2 text-sm text-gray-700">A list of active jobs</p>
       </div>
-      <!--
-            <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                <button type="button" class="inline-flex items-center justify-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 sm:w-auto">Add session</button>
-            </div>
-            -->
     </div>
     <div class="mt-8 flex flex-col">
       <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -150,11 +145,10 @@
 </template>
 
 <script setup>
-import { inject, ref, reactive, watch, onBeforeMount, onMounted } from "vue";
+import { inject, ref, watch, onBeforeMount } from "vue";
 import JobDataService from "../../services/JobDataService";
 import moment from "moment";
-import ToastService from "../../services/ToastService";
-import { PencilIcon, XMarkIcon, CalculatorIcon } from "@heroicons/vue/24/outline";
+import { XMarkIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
 import { useArrayPagination } from "vue-composable";
 
@@ -172,7 +166,6 @@ const { result, next, prev, currentPage, lastPage } = useArrayPagination(jobsLis
 async function getAllJobs() {
   const loader = $loading.show();
   return JobDataService.list().then((res) => {
-    //console.log(res.data);
     loader.hide();
     return res.data.data;
   });
@@ -180,53 +173,28 @@ async function getAllJobs() {
 
 async function getJobsDetails() {
   const loader = $loading.show();
-  //console.log(Object.keys(jobs.value));
   const jobsIds = Object.keys(jobs.value);
-  //let test = [];
   jobsList.value = [];
   jobsIds.forEach(async (id) => {
-    console.log(id);
     const jobData = { job_id: id };
-    //console.log(jobData);
-    //const obj = Object.entries(jobs.value).find((key) => key === id);
-    //console.log(obj);
     delete jobs.value[id];
     jobs.value[id] = await JobDataService.info(jobData)
       .then((res) => {
-        console.log(res.data.data);
         jobsList.value.push(res.data.data);
         return res.data.data;
       })
       .catch((err) => {
         console.log(err);
       });
-
-    //jobs.value[id] = fetchedJobDetails;
-    //console.log(jobs.value[id]);
-    //console.log(fetchedJobDetails);
-    //console.log(fetchedJobDetails);
-    //test.push(fetchedJobDetails);
-    //await jobsDetails.push(fetchedJobDetails);
   });
-  //return test;
   loader.hide();
 }
 
 async function fetchJobs(jobsDetails) {
   jobs.value = await getAllJobs();
   await getJobsDetails();
-  /*
-  const jobss = jobsList.value;
-  const test = Object.keys(jobss).map((key) => {
-    jobss[key].id = parseInt(key);
-    return jobss[key];
-  });
-  console.log(jobsList.value);
-  */
-  console.log(jobsList.value);
   prev();
 }
-onMounted(() => {});
 
 onBeforeMount(async () => {
   fetchJobs();
@@ -239,4 +207,3 @@ watch(
   }
 );
 </script>
-<style scoped></style>

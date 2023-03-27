@@ -49,16 +49,7 @@
 
                 <div class="flex flex-col mt-2">
                   <span>{{ fileChecksum }}</span>
-
-                  <!--
-                  <p class="text-sm text-gray-500">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur
-                    amet labore.
-                  </p>
-                  
-                  {{ filePropsData }}
-           
-                --></div>
+                </div>
               </div>
             </div>
             <div class="mt-5 sm:mt-6">
@@ -99,16 +90,10 @@ function toggleModal() {
   open.value = !open.value;
 }
 
-onMounted(() => {
-  console.log("Mounted");
-});
-
 watch(
   () => bus.value.get("showFileChecksumModal"),
   (val) => {
     toggleModal();
-    //alert("testt");
-    //console.log(val[0].host_id);
     fileChecksum = val[0].file_checksum;
   }
 );

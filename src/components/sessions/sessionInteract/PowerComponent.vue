@@ -19,8 +19,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onBeforeMount } from "vue";
-import SessionDataService from "../../../services/SessionDataService";
+import { ref } from "vue";
 import { useRoute } from "vue-router";
 import meterpreterCommands from "../../../constants/MeterpreterCommands";
 import ButtonComponent from "../../ButtonComponent.vue";
@@ -31,8 +30,6 @@ const { writeToMeterpreter, readFromMeterpreter } = useMeterpreterSession();
 
 const route = useRoute();
 const currentSessionId = ref(route.params.id);
-let meterpreterData = ref({});
-let sysinfo = reactive([]);
 
 async function requestShutdownVictimMachine() {
   return writeToMeterpreter(
@@ -71,8 +68,4 @@ async function rebootVictimMachine() {
   console.log(response.data);
   ToastService.showToast(response.data.data);
 }
-
-onBeforeMount(async () => {});
-
-//alert(meterpreterCommands.SystemCommands.SYSINFO);
 </script>

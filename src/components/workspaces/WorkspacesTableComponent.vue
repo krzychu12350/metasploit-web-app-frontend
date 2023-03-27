@@ -50,20 +50,7 @@
                   >
                     Current
                   </th>
-                  <!--
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    LHOST
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    LPORT
-                  </th>
-                  -->
+
                   <th
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -93,14 +80,6 @@
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     <span v-if="workspace.name === currentWorkspaceName">X</span>
                   </td>
-                  <!--
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ workspace.name }}
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ workspace.name }}
-                  </td>
-                  -->
                   <td
                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                   >
@@ -178,18 +157,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, onBeforeMount, onMounted, inject } from "vue";
+import { ref, watch, onBeforeMount, onMounted, inject } from "vue";
 import DatabaseDataService from "../../services/DatabaseDataService";
 import ConsoleDataService from "../../services/ConsoleDataService";
 import moment from "moment";
 import ToastService from "../../services/ToastService";
 import { useMsfCurrentWorkspace } from "../../stores/useMsfCurrentWorkspace";
-import {
-  PencilIcon,
-  XMarkIcon,
-  CalculatorIcon,
-  ArrowsRightLeftIcon,
-} from "@heroicons/vue/24/outline";
+import { PencilIcon, XMarkIcon, ArrowsRightLeftIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
 import { useArrayPagination } from "vue-composable";
 
@@ -207,11 +181,8 @@ async function getAllWorkspaces() {
   const loader = $loading.show();
   return DatabaseDataService.getWorkspaces()
     .then((res) => {
-      //console.log(res.data.workspaces);
-
       workspaces.value = res.data.workspaces;
       loader.hide();
-      ////
     })
     .catch((err) => {
       loader.hide();
@@ -222,7 +193,6 @@ async function getAllWorkspaces() {
 async function createConsole() {
   return ConsoleDataService.create()
     .then((res) => {
-      console.log(res.data);
       return res.data.data;
     })
     .catch((err) => console.log(err));
@@ -230,11 +200,7 @@ async function createConsole() {
 
 async function writeDataIntoConsole(consoleId, inputCommand) {
   ConsoleDataService.write({ console_id: consoleId, input_command: inputCommand })
-    .then((res) => {
-      console.log(res.data.data);
-      //const test = "dddd";
-      //this.send_to_terminal = `<p>` + res.data.data + `</p>`;
-    })
+    .then((res) => {})
     .catch((err) => {
       console.log(err);
     });
@@ -243,7 +209,6 @@ async function writeDataIntoConsole(consoleId, inputCommand) {
 async function readDataFromConsole(consoleId) {
   return ConsoleDataService.read({ console_id: consoleId })
     .then((res) => {
-      console.log(res.data.data);
       return res.data.data;
     })
     .catch((err) => {
@@ -254,7 +219,6 @@ async function readDataFromConsole(consoleId) {
 async function destroyConsole(consoleId) {
   return ConsoleDataService.destroy({ console_id: consoleId })
     .then((res) => {
-      console.log(res.data.data);
       return res.data.data;
     })
     .catch((err) => {
@@ -271,9 +235,6 @@ async function manageWorkspace(operationCommand) {
   await writeDataIntoConsole(createdConsoleId, operationCommand);
 
   readedDataFromConsole = await readDataFromConsole(createdConsoleId);
-
-  console.log(readedDataFromConsole);
-  //currentWorkspaceName.value = "default";
   await destroyConsole(createdConsoleId);
   loader.hide();
   return readedDataFromConsole;
@@ -281,19 +242,14 @@ async function manageWorkspace(operationCommand) {
 
 async function getCurrentWorkspace() {
   let workspacesAsString = await manageWorkspace("workspace");
-  console.log(workspacesAsString);
   const splicedWorkspacesArray = workspacesAsString.data.split("\n");
-  console.log(splicedWorkspacesArray);
   const currentWorkspace = splicedWorkspacesArray.find((el) => el.includes("*"));
   currentWorkspaceName.value = currentWorkspace.slice(2);
   useMsfWorkspace.setCurrentWorkspace(currentWorkspaceName.value);
 }
 
-onMounted(() => {});
-
 onBeforeMount(async () => {
   currentWorkspaceName.value = await useMsfWorkspace.getCurrentWorkspace;
-  //alert(currentWorkspaceName.value);
   emit("refreshWorkspacesTable");
   prev();
 });
@@ -308,9 +264,6 @@ watch(
 watch(
   () => bus.value.get("refreshWorkspacesTable"),
   async () => {
-    //await getCurrentWorkspace();
-    console.log(currentWorkspaceName.value);
-
     await getAllWorkspaces();
   }
 );
@@ -351,20 +304,16 @@ watch(
 watch(
   () => bus.value.get("editWorkspaceName"),
   async (data) => {
-    // const workspaceName = data[0].workspace_name;
     const workspaceOldName = data[0].workspace_old_name;
     const workspaceNewName = data[0].workspace_new_name;
 
     let operationResult = await manageWorkspace(
       "workspace -r " + workspaceOldName + " " + workspaceNewName
     );
-    //useMsfWorkspace.setCurrentWorkspace(workspaceNewName);
     currentWorkspaceName.value = await useMsfWorkspace.getCurrentWorkspace;
     if (operationResult.data.includes("Renamed workspace"))
       ToastService.showToast(operationResult.data);
     else ToastService.showToast(operationResult.data, "error");
-
-    //emit("setCurrentWorkspace");
     emit("refreshWorkspacesTable");
   }
 );

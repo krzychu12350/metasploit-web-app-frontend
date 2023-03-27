@@ -23,9 +23,6 @@
           />
         </div>
         <div>
-          <label for="email" class="sr-only block text-sm font-medium text-gray-700"
-            >Email</label
-          >
           <div class="relative rounded-md shadow-sm">
             <div
               class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
@@ -42,21 +39,6 @@
             />
           </div>
         </div>
-        <!--
-        <div class="ml-2 flex items-center">
-          <font-awesome-icon
-            @click="emit('showCreateNewDirectoryModal')"
-            icon="fa-solid fa-folder-plus"
-            class="w-8 h-8 text-indigo-500 cursor-pointer"
-            v-tooltip.top="'Make new directory'"
-          />
-          <font-awesome-icon
-            class="w-9 h-9 text-indigo-500 cursor-pointer ml-2"
-            icon="fa-solid fa-cloud-arrow-up"
-            v-tooltip.top="'Upload a file'"
-          />
-        </div>
-        -->
       </div>
 
       <div class="grid grid-cols-6">
@@ -95,34 +77,6 @@
       </div>
       <v-contextmenu ref="contextmenu">
         <v-contextmenu-item @click="openFile()">Open</v-contextmenu-item>
-        <!--
-        <v-contextmenu-item v-if="clickedFile[2] == 'fil'" @click="downloadSpecificFile()"
-          >Download</v-contextmenu-item
-        >
-        <v-contextmenu-item>Copy</v-contextmenu-item>
-        <v-contextmenu-item @click="renameFile(clickedFile)">Rename</v-contextmenu-item>
-        <v-contextmenu-item
-          @click="
-            emit('showFileDeletingModal', {
-              clicked_file: clickedFile,
-            })
-          "
-          >Delete</v-contextmenu-item
-        >
-        <v-contextmenu-item
-          @click="
-            emit('showFileOrDirDetailsModal', {
-              clicked_file: clickedFile,
-            })
-          "
-          >Properties</v-contextmenu-item
-        >
-
-        <v-contextmenu-submenu title="Checksum">
-          <v-contextmenu-item @click="getFileCheckSum('md5')">MD5</v-contextmenu-item>
-          <v-contextmenu-item @click="getFileCheckSum('sha1')">SHA 1</v-contextmenu-item>
-        </v-contextmenu-submenu>
-        -->
       </v-contextmenu>
       <div class="mt-5 sm:mt-6">
         <button
@@ -142,7 +96,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onBeforeMount, inject, watch, computed } from "vue";
+import { ref, reactive, onBeforeMount, inject, computed } from "vue";
 import SessionDataService from "../../../../../services/SessionDataService";
 import { useRoute } from "vue-router";
 import meterpreterCommands from "../../../../../constants/MeterpreterCommands";
@@ -152,7 +106,6 @@ import FileDeletingModal from "../victim/components/FileDeletingModal.vue";
 import FileContentModal from "../victim/components/FileContentModal.vue";
 import CreateNewDirectoryModal from "../victim/components/CreateNewDirectoryModal.vue";
 import FileChecksumModal from "../victim/components/FileChecksumModal.vue";
-/*arrow-small-up*/
 import { ArrowSmallUpIcon, MagnifyingGlassIcon } from "@heroicons/vue/20/solid";
 import ToastService from "../../../../../services/ToastService";
 
@@ -162,7 +115,6 @@ const fullPage = ref(true);
 
 const route = useRoute();
 const currentSessionId = ref(route.params.id);
-let meterpreterData = ref();
 let rows = reactive([]);
 let attackerLwd = ref();
 let clickedFile = ref();
@@ -176,8 +128,7 @@ const props = defineProps({
   },
 });
 
-let isFileNameInputDisabled = ref(true);
-const { bus, emit } = useEventsBus();
+const { emit } = useEventsBus();
 
 onBeforeMount(async () => {
   readFileSystemData();
@@ -201,7 +152,6 @@ async function readFileSystemData() {
 }
 
 async function processFileSystemData(data) {
-  //rows.splice(0);
   const splicedArray = data.split("\n").splice(5);
   console.log(splicedArray);
 
@@ -216,16 +166,14 @@ async function processFileSystemData(data) {
   });
   console.log(rows);
 }
+
 async function writeToMeterpreterSession(command) {
   console.log(formContainer.value);
   const loader = $loading.show({
-    // Optional parameters
-
     isFullPage: fullPage.value,
     container: formContainer.value,
   });
-  //alert(command);
-  //console.log(command);
+
   const data = {
     session_id: currentSessionId.value,
     ps: command,
@@ -253,18 +201,6 @@ async function readFromMeterpreterSession(loader) {
       console.log(response);
       loader.hide();
       return response;
-      /*
-      const rows = response.split("\n");
-      console.log(rows);
-
-      rows.forEach((info) => {
-        let divider = info.split(":");
-        sysinfo.push(divider);
-      });
-      console.log(sysinfo);
-      */
-      //meterpreterData.value = response;
-      loader.hide();
     })
     .catch((err) => {
       console.log(err);
@@ -284,8 +220,6 @@ async function goToParentDir() {
 }
 
 async function changeCurrentDirectory() {
-  //const test = await attackerLwd.value.replace(/\\/g, "/");
-  //alert(test);
   alert(attackerLwd.value.replace(/\\/g, "/"));
   await writeToMeterpreterSession(
     meterpreterCommands.FileSystemCommands.LCD +
@@ -300,16 +234,6 @@ async function uploadSelectedFiles() {
   console.log(props.victimPwdPath.replace(/\\/g, "/"));
   console.log(selectedFiles.value.join(" "));
 
-  const response = await writeToMeterpreterSession(
-    meterpreterCommands.FileSystemCommands.UPLOAD +
-      " " +
-      selectedFiles.value.join(" ") +
-      " " +
-      props.victimPwdPath.replace(/\\/g, "/")
-  );
-  console.log(response);
-  // setTimeout(async () => await readFileSystemData(), 4000);
-  //await readFileSystemData();
   emit("readVictimFileSystem");
   emit("hideAttackerFilesUploadModal");
   ToastService.showToast("Files was uploaded successfully");

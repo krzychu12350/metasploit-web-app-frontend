@@ -19,11 +19,6 @@
           </button>
         </div>
       </div>
-      <!--
-            <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                <button type="button" class="inline-flex items-center justify-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 sm:w-auto">Add session</button>
-            </div>
-            -->
     </div>
     <div class="mt-8 flex flex-col">
       <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -246,7 +241,6 @@ async function fetchAllRpcConnections() {
   const loader = $loading.show();
   MsfRpcServerConnectionService.getConnections()
     .then((res) => {
-      console.log(res.data.connections);
       rpcConnections.value = res.data.connections;
       loader.hide();
     })
@@ -271,7 +265,6 @@ onBeforeMount(async () => {
   prev();
   currentRpcConnectionSettings =
     useCurrentMetasploitRpcConnection.getCurrentRpcConnection;
-  console.log(currentRpcConnectionSettings);
 });
 
 watch(
@@ -283,18 +276,14 @@ watch(
 
 async function switchRpcConnection(connectionSettings) {
   const loader = $loading.show();
-  //await useMsfRpcConnection.setMsfConnection(connectionSettings, loader);
   useMetasploitModules.clearAllMsfModules();
   await setMsfConnection(connectionSettings, loader);
-  console.log(connectionSettings);
 }
 
 async function setMsfConnection(credentials, loader) {
   useMsfAuth()
     .setConnection(credentials)
     .then(async (connectionSettings) => {
-      console.log(connectionSettings);
-
       await loginToMsfRpc(credentials, loader, connectionSettings);
     });
 }
@@ -315,7 +304,6 @@ async function loginToMsfRpc(credentials, loader, connectionSettings) {
     })
     .catch((err) => {
       loader.hide();
-      //console.log(err);
       if (err) ToastService.showToast(err.response.data.message, "error");
     });
 }
@@ -323,7 +311,6 @@ async function loginToMsfRpc(credentials, loader, connectionSettings) {
 async function createFirstConsole() {
   return ConsoleDataService.create()
     .then((res) => {
-      console.log(res.data.data.id);
       return res.data.data.id;
     })
     .catch((err) => {
@@ -332,9 +319,7 @@ async function createFirstConsole() {
 }
 
 async function createAndStoreNewConsole() {
-  //alert("create console");
   let firstConsoleId = await createFirstConsole();
-  //alert(firstConsoleId);
   await useConsoles.storeConsoleData(
     parseInt(firstConsoleId),
     "",
@@ -345,10 +330,8 @@ async function createAndStoreNewConsole() {
 function getConsoleList() {
   return ConsoleDataService.list()
     .then((res) => {
-      console.log(res.data.data.consoles);
       return res.data.data.consoles;
     })
     .catch((err) => console.log(err));
 }
 </script>
-<style scoped></style>

@@ -1,4 +1,3 @@
-// @ts-ignore
 import {useToast} from "vue-toast-notification";
 
 class ToastService {

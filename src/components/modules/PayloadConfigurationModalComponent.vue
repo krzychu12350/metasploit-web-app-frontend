@@ -127,8 +127,6 @@
                   </div>
                 </div>
               </div>
-
-              <!--{{ enumTypeBasicOptions }}-->
               <!-- start enum select -->
               <div class="flex flex-wrap mt-2">
                 <div v-for="enumOption in enumTypeBasicOptions" class="mt-4 p-2 w-1/2">
@@ -185,7 +183,6 @@
                         v-for="(option, key) in stringTypeAdvancedOptions"
                         class="sm:col-span-3"
                       >
-                        <!--{{ option }}-->
                         <label
                           :for="option.name.toLowerCase()"
                           class="block text-sm font-medium"
@@ -301,27 +298,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, inject, computed, onMounted, onBeforeMount } from "vue";
+import { ref, reactive, watch, computed, onMounted } from "vue";
 import { Dialog, DialogOverlay, TransitionChild, TransitionRoot } from "@headlessui/vue";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
 import * as Yup from "yup";
-import ToastService from "../../services/ToastService";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import ConsoleDataService from "../../services/ConsoleDataService";
-import Multiselect from "@vueform/multiselect";
-import { useMsfModules } from "../../stores/useMsfModules";
 import ModuleDataService from "../../services/ModuleDataService";
-
-const useMetasploitModules = useMsfModules();
-const selectedPayload = ref("");
-
-const options = ref(["Batman", "Robin", "Joker"]);
-let payloads = ref([]);
-
-function nameWithLang({ name, language }) {
-  return `${name} — [${language}]`;
-}
 
 let open = ref(false);
 let selectedModuleData = reactive({});
@@ -334,8 +317,6 @@ const showAdvancedOptions = ref(false);
 let basicModuleOptions = reactive([]);
 let advancedModuleOptions = reactive([]);
 const schema = ref();
-
-let selectedOpt = ref("none");
 
 // Initial values
 let formValues = ref({});
@@ -362,7 +343,6 @@ async function getPayloadData(payloadName) {
     module_name: "payload/" + payloadName,
   })
     .then((res) => {
-      console.log(res.data.data);
       return res.data.data;
     })
     .catch((err) => {
@@ -376,7 +356,6 @@ function processModuleOptions() {
   advancedModuleOptions.splice(0);
   Object.keys(payloadData.options).forEach(function (key) {
     payloadData.options[key].name = key;
-    console.log(key, payloadData.options[key]);
     if (payloadData.options[key].advanced === false) {
       formValues.value[key] = payloadData.options[key].default;
 
@@ -388,7 +367,6 @@ function processModuleOptions() {
           newField.validations = ["string", "required"];
         else newField.validations = ["string"];
 
-        //newField.validations = ["string", "required"];
         newField.params = {
           required: payloadData.options[key].name + " is required",
         };
@@ -400,76 +378,34 @@ function processModuleOptions() {
       advancedModuleOptions.push(payloadData.options[key]);
     }
   });
-  console.log(basicModuleOptions);
-  console.log(advancedModuleOptions);
-  //console.log(formValues.value);
-  console.log(fields);
 
   schema.value = createValidationSchema(fields);
-  console.log(schema.value);
-}
-
-async function extractPayloadsNamesToArray(payloads) {
-  return payloads.map((p) => p.module_name);
 }
 
 watch(
   () => bus.value.get("showPayloadConfigurationModal"),
   async (val) => {
-    // console.log(val[0].module_data);
-
     selectedModuleData = val[0].module_data;
     selectedModuleSetOptions = val[0].module_options;
-    console.log(selectedModuleData, selectedModuleSetOptions);
+
     payloadData = await getPayloadData(selectedModuleSetOptions.PAYLOAD);
-    console.log(payloadData);
     processModuleOptions();
     toggleModal();
-    /*
-    processModuleOptions();
-    console.log(payloadOptions);
-
-    payloads.value = await useMetasploitModules.getMsfPayloads;
-    payloads.value = await extractPayloadsNamesToArray(payloads.value);
-    console.log(payloads.value);
-    */
   }
 );
 
-const $loading = inject("$loading");
-
 const onSubmit = (payloadConfiguredOptions) => {
-  /*
-  let selectedModuleData = reactive({});
-let selectedModuleSetOptions = reactive([]);
-let payloadOptions = reactive([]);
-let payloadData = reactive({});
-*/
-  console.log(selectedModuleData, selectedModuleSetOptions, payloadConfiguredOptions);
   runModule(selectedModuleData, selectedModuleSetOptions, payloadConfiguredOptions);
   emit("closeModuleConfigurationModal");
   toggleModal();
-
-  /*
-  const loader = $loading.show();
-  console.log(selectedModuleData);
-
-  options.PAYLOAD = selectedPayload.value;
-  console.log(options);
-
-  ToastService.showToast("Module was run successfully");
-  setTimeout(loader.hide(), 5000);
-  */
 };
 
 async function runModule(module, moduleOptions, payloadOptions) {
-  //console.log(module, payloadOptions);
   emit("runModule", {
     module_details: module,
     module_options: moduleOptions,
     payload_options: payloadOptions,
   });
-  //emit("runNmapScan");
 }
 
 function onInvalidSubmit({ values, errors, results }) {
@@ -477,39 +413,6 @@ function onInvalidSubmit({ values, errors, results }) {
   console.log(errors); // a map of field names and their first error message
   console.log(results); // a detailed map of field names and their validation results
 }
-
-function isLetter(e) {
-  let char = String.fromCharCode(e.keyCode); // Get the character
-  if (/^[A-Za-z ]+$/.test(char)) return true;
-  // Match with regex
-  else e.preventDefault(); // If not match, don't add to input text
-}
-
-function isDigit(e) {
-  let char = String.fromCharCode(e.keyCode); // Get the character
-  if (/^[0-9]+$/.test(char)) return true;
-  // Match with regex
-  else e.preventDefault(); // If not match, don't add to input text
-}
-
-const boolTypeOptions = computed(() => {
-  return payloadOptions.filter((o) => {
-    if (o.type === "bool") return o;
-  });
-});
-
-const stringTypeOptions = computed(() => {
-  return payloadOptions.filter((o) => {
-    if (o.type != "bool" && o.type != "enum") return o;
-  });
-});
-
-const optionsType = "enum";
-const enumTypeOptions = computed(() => {
-  return payloadOptions.filter((o) => {
-    if (o.type === "enum") return o;
-  });
-});
 
 const createValidationSchema = (fields = []) => {
   const ObjectSchema = fields.reduce((schema, field) => {
@@ -574,4 +477,5 @@ const enumTypeAdvancedOptions = computed(() => {
   });
 });
 </script>
+
 <style src="@vueform/multiselect/themes/default.css"></style>

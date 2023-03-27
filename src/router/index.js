@@ -3,11 +3,7 @@ import HomeView from "../views/DashboardView.vue";
 import SetupView from "../views/SetupView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import SessionsView from "../views/SessionsView.vue";
-import TeamsView from "../views/TeamsView.vue";
-import AnalysisView from "../views/AnalysisView.vue";
 import JobsView from "../views/JobsView.vue";
-import PayloadGeneratorView from "../views/PayloadGeneratorView.vue";
-import SingleSessionView from "../views/SingleSessionView.vue";
 import ModulesView from "../views/ModulesView.vue";
 import SessionInteractWorkspaceView from '../views/SessionInteractWorkspaceView.vue'
 import RpcConnectionsView from '../views/RpcConnectionsView.vue'
@@ -28,19 +24,9 @@ const routes = [
         component: HostsView,
     },
     {
-        path: "/analysis",
-        name: "AnalysisView",
-        component: AnalysisView,
-    },
-    {
         path: "/modules",
         name: "ModulesView",
         component: ModulesView,
-    },
-    {
-        path: "/teams",
-        name: "TeamsView",
-        component: TeamsView,
     },
     {
         path: "/jobs",
@@ -51,16 +37,6 @@ const routes = [
         path: "/sessions",
         name: "SessionsView",
         component: SessionsView,
-    },
-    {
-        path: "/sessions/55",
-        name: "SingleSessionView",
-        component: SingleSessionView,
-    },
-    {
-        path: "/payload-generator",
-        name: "PayloadGeneratorView",
-        component: PayloadGeneratorView,
     },
     {
         path: "/rpc-connections",
@@ -95,7 +71,6 @@ const routes = [
     
 
 ]
-
 
 const router = createRouter({
     history: createWebHistory(),

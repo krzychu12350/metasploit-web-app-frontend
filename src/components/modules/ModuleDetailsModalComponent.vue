@@ -134,13 +134,10 @@
   </TransitionRoot>
 </template>
 <script setup>
-import { computed, ref, watch, onBeforeMount, reactive, onMounted, inject } from "vue";
+import { ref, watch, reactive } from "vue";
 import { Dialog, DialogOverlay, TransitionChild, TransitionRoot } from "@headlessui/vue";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
-import { Form, Field, ErrorMessage } from "vee-validate";
-import * as yup from "yup";
-import ToastService from "../../services/ToastService";
 
 const { bus, emit } = useEventsBus();
 let open = ref(false);
@@ -162,84 +159,4 @@ watch(
     toggleModal();
   }
 );
-
-const $loading = inject("$loading");
-
-const onSubmit = (newUserData) => {
-  const loader = $loading.show();
-  /*
-  newUserData.is_owner = 0;
-  UserDataService.update(empData.value.id, newUserData)
-    .then(() => {
-      ToastService.showToast("User data was updated successfully");
-      toggleModal();
-      emit("refreshEmployeesTable");
-      loader.hide();
-    })
-    .catch((error) => {
-      const message =
-        (error.response && error.response.data && error.response.data.message) ||
-        error.message ||
-        error.toString();
-      console.log(message);
-
-    });
-    */
-  ToastService.showToast("Module was run successfully");
-  setTimeout(loader.hide(), 5000);
-};
-
-let formValues = ref();
-
-const schema = yup.object({
-  /*
-  name: yup
-    .string()
-    .required("Name is a required field")
-    .min(2, "Name must be at least 2 characters")
-    .max(30, "Name must be at most 30 characters"),
-  surname: yup
-    .string()
-    .required("Surname is a required field")
-    .min(2, "Surname must be at least 2 characters")
-    .max(30, "Surname must be at most 30 characters"),
-  position: yup
-    .string()
-    .required("Position is a required field")
-    .min(2, "Position must be at least 2 characters")
-    .max(30, "Position must be at most 30 characters"),
-  salary: yup
-    .number()
-    .required("Salary is a required field")
-    .transform((value) =>
-      isNaN(value) || value === null || value === undefined ? 0 : value
-    )
-    .min(4, "Salary must be at least 4 digits"),
-    */
-});
-
-function onInvalidSubmit({ values, errors, results }) {
-  console.log(values); // current form values
-  console.log(errors); // a map of field names and their first error message
-  console.log(results); // a detailed map of field names and their validation results
-}
-
-function isLetter(e) {
-  let char = String.fromCharCode(e.keyCode); // Get the character
-  if (/^[A-Za-z ]+$/.test(char)) return true;
-  // Match with regex
-  else e.preventDefault(); // If not match, don't add to input text
-}
-
-function isDigit(e) {
-  let char = String.fromCharCode(e.keyCode); // Get the character
-  if (/^[0-9]+$/.test(char)) return true;
-  // Match with regex
-  else e.preventDefault(); // If not match, don't add to input text
-}
-function setOptionFieldType(optionType) {
-  if (optionType == "string") return "text";
-  else if (optionType == "bool") return "checkbox";
-  else return "text";
-}
 </script>

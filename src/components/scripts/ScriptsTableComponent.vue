@@ -96,15 +96,6 @@
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     {{ moment(script.updated_at).format("LLL") }}
                   </td>
-
-                  <!--
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ script.name }}
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ script.name }}
-                  </td>
-                  -->
                   <td
                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                   >
@@ -190,27 +181,16 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, onBeforeMount, onMounted, inject } from "vue";
-import DatabaseDataService from "../../services/DatabaseDataService";
+import { ref, watch, onBeforeMount, inject } from "vue";
 import ScriptsDataService from "../../services/ScriptsDataService";
-import ConsoleDataService from "../../services/ConsoleDataService";
 import moment from "moment";
-import ToastService from "../../services/ToastService";
 
-import {
-  PencilIcon,
-  XMarkIcon,
-  EyeIcon,
-  PlayIcon,
-  ArrowsRightLeftIcon,
-} from "@heroicons/vue/24/outline";
+import { PencilIcon, XMarkIcon, EyeIcon, PlayIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
 import { useArrayPagination } from "vue-composable";
 
 const { bus, emit } = useEventsBus();
-///const useMsfScript = useMsfCurrentScript();
 let scripts = ref([]);
-let currentScriptName = ref("");
 const $loading = inject("$loading");
 
 const { result, next, prev, currentPage, lastPage } = useArrayPagination(scripts, {
@@ -221,7 +201,6 @@ async function getAllScripts() {
   const loader = $loading.show();
   return ScriptsDataService.getAllMsfScripts()
     .then((res) => {
-      //console.log(res.data.scripts);
       scripts.value = res.data.scripts;
       loader.hide();
     })
@@ -239,69 +218,7 @@ onBeforeMount(async () => {
 watch(
   () => bus.value.get("refreshScriptsTable"),
   async () => {
-    //await getCurrentScript();
-    //console.log(currentScriptName.value);
     await getAllScripts();
   }
 );
-
-/*
-watch(
-  () => bus.value.get("fetchCurrentScript"),
-  async () => {
-    await getCurrentScript();
-  }
-);
-
-watch(
-  () => bus.value.get("deleteScript"),
-  async (data) => {
-    const scriptName = data[0].script_name;
-    let operationResult = await manageScript("script -d " + scriptName);
-    ToastService.showToast(operationResult.data);
-    emit("refreshScriptsTable");
-  }
-);
-
-watch(
-  () => bus.value.get("createNewScript"),
-  async (data) => {
-    const scriptName = data[0].script_name;
-    let operationResult = await manageScript("script -a " + scriptName);
-    ToastService.showToast(operationResult.data);
-    emit("refreshScriptsTable");
-  }
-);
-
-watch(
-  () => bus.value.get("changeScript"),
-  async (data) => {
-    const scriptName = data[0].script_name;
-    let operationResult = await manageScript("script " + scriptName);
-    useMsfScript.setCurrentRpcConnection(scriptName);
-    currentScriptName.value = await useMsfScript.getCurrentRpcConnection;
-    ToastService.showToast(operationResult.data);
-    emit("setCurrentScript");
-    emit("refreshScriptsTable");
-  }
-);
-
-watch(
-  () => bus.value.get("editScriptName"),
-  async (data) => {
-    // const scriptName = data[0].script_name;
-    const scriptOldName = data[0].script_old_name;
-    const scriptNewName = data[0].script_new_name;
-
-    let operationResult = await manageScript(
-      "script -r " + scriptOldName + " " + scriptNewName
-    );
-    useMsfScript.setCurrentRpcConnection(scriptNewName);
-    currentScriptName.value = await useMsfScript.getCurrentRpcConnection;
-    ToastService.showToast(operationResult.data);
-    //emit("setCurrentScript");
-    emit("refreshScriptsTable");
-  }
-);
-*/
 </script>

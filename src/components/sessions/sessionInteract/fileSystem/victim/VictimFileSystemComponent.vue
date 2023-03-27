@@ -1,17 +1,6 @@
 <template>
   <div class="px-4 py-5 sm:px-6">
     <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-1">
-      <!--<dt class="text-sm font-medium text-gray-500">File system</dt>
-      <dd class="whitespace-pre">
-        {{ meterpreterData }}
-      </dd>
-      -->
-
-      <!--
-      <font-awesome-icon class="w-10 h-10 text-yellow-400" icon="fa-solid fa-folder" />
-      <font-awesome-icon class="w-10 h-10 text-gray-600" icon="fa-solid fa-file" />
-      {{ victimLwd }}
-    -->
       <div class="flex">
         <div>
           <ArrowSmallUpIcon
@@ -130,142 +119,6 @@
           <v-contextmenu-item @click="getFileCheckSum('sha1')">SHA 1</v-contextmenu-item>
         </v-contextmenu-submenu>
       </v-contextmenu>
-
-      <!--
-      <div class="flex flex-col">
-        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Mode
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Size
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Type
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Last modifed
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Name
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td
-                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                    >
-                      <button
-                        @click="
-                          writeToMeterpreterSession(
-                            meterpreterCommands.FileSystemCommands.CD + ' ..'
-                          )
-                        "
-                        class="bg-indigo-700"
-                      >
-                        Cd..
-                      </button>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
-                    <td
-                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                    >
-                      <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                    </td>
-                  </tr>
-                  <tr
-                    v-for="(row, rowIdx) in rows"
-                    :key="row.email"
-                    :class="rowIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
-                  >
-                    <td
-                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                    >
-                      {{ row[0] }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {{ row[1] }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {{ row[2] }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {{ row[3] }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {{ row[4] }}
-                    </td>
-                    <td
-                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                    >
-                      <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      -->
-      <!--
-      <div v-for="info in sysinfo" class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">{{ info[0] }}</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ info[1] }}</dd>
-      </div>
-
-        <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Email address</dt>
-          <dd class="mt-1 text-sm text-gray-900">ricardocooper@example.com</dd>
-        </div>
-        <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Salary expectation</dt>
-          <dd class="mt-1 text-sm text-gray-900">$120,000</dd>
-        </div>
-        <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Phone</dt>
-          <dd class="mt-1 text-sm text-gray-900">+1 555-555-5555</dd>
-        </div>
-        <div class="sm:col-span-2">
-          <dt class="text-sm font-medium text-gray-500">About</dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            Fugiat ipsum ipsum deserunt culpa aute sint do nostrud anim incididunt cillum
-            culpa consequat. Excepteur qui ipsum aliquip consequat sint. Sit id mollit nulla
-            mollit nostrud in ea officia proident. Irure nostrud pariatur mollit ad
-            adipisicing reprehenderit deserunt qui eu.
-          </dd>
-        </div>
-        -->
     </dl>
   </div>
   <file-or-dir-props-modal></file-or-dir-props-modal>
@@ -308,22 +161,6 @@ const { bus, emit } = useEventsBus();
 
 onBeforeMount(async () => {
   emit("readVictimFileSystem");
-  /*
-   const responseAsArray = response.split("\n").splice(5);
-      console.log(responseAsArray);
-
-      responseAsArray.forEach((row) => {
-        if (row) {
-          let rowDetails = row.split("  ").filter((e) => e);
-          rowDetails = rowDetails.map(function (e) {
-            return e.trim();
-          });
-          rows.push(rowDetails);
-        }
-      });
-      console.log(rows);
-  */
-  //console.log(meterpreterCommands.SystemCommands.SYSINFO);
 });
 
 async function changeClickedFile(row) {
@@ -332,24 +169,17 @@ async function changeClickedFile(row) {
 
 async function readFileSystemData() {
   rows.splice(0);
-
   const fileSystemData = await writeToMeterpreterSession(
     meterpreterCommands.FileSystemCommands.LS
   );
   victimLwd.value = await writeToMeterpreterSession(
     meterpreterCommands.FileSystemCommands.GETWD
   );
-  console.log(fileSystemData);
-
   await processFileSystemData(fileSystemData);
-
-  console.log(victimLwd.value);
 }
 
 async function processFileSystemData(data) {
-  //rows.splice(0);
   const splicedArray = data.split("\n").splice(5);
-  console.log(splicedArray);
 
   splicedArray.forEach((row) => {
     if (row) {
@@ -360,27 +190,19 @@ async function processFileSystemData(data) {
       rows.push(rowDetails);
     }
   });
-  console.log(rows);
 }
 async function writeToMeterpreterSession(command) {
-  console.log(formContainer.value);
   const loader = $loading.show({
-    // Optional parameters
-
     isFullPage: fullPage.value,
     container: formContainer.value,
   });
-  //alert(command);
-  //console.log(command);
   const data = {
     session_id: currentSessionId.value,
     ps: command,
   };
-  console.log(data);
+
   await SessionDataService.meterpreterWrite(data)
-    .then((res) => {
-      console.log(res.data);
-    })
+    .then((res) => {})
     .catch((err) => {
       loader.hide();
       console.log(err);
@@ -394,30 +216,17 @@ async function readFromMeterpreterSession(loader) {
     session_id: currentSessionId.value,
   })
     .then((res) => {
-      console.log(res.data);
       const response = res.data.data.data;
-      console.log(response);
+
       loader.hide();
       return response;
-      /*
-      const rows = response.split("\n");
-      console.log(rows);
-
-      rows.forEach((info) => {
-        let divider = info.split(":");
-        sysinfo.push(divider);
-      });
-      console.log(sysinfo);
-      */
-      //meterpreterData.value = response;
-      loader.hide();
     })
     .catch((err) => {
       console.log(err);
       loader.hide();
     });
 }
-//alert(meterpreterCommands.SystemCommands.SYSINFO);
+
 async function openFile() {
   let command = "";
   if (clickedFile.value[2] == "fil") {
@@ -443,8 +252,8 @@ async function downloadSpecificFile() {
     meterpreterCommands.FileSystemCommands.DOWNLOAD + " " + clickedFile.value[4]
   );
   ToastService.showToast(downloadInfo.split("[*] ")[2]);
-  console.log(downloadInfo.split("[*] ")[2]);
 }
+
 watch(
   () => bus.value.get("deleteSpecficFile"),
   (val) => {
@@ -455,7 +264,7 @@ watch(
     } else {
       command = meterpreterCommands.FileSystemCommands.RMDIR;
     }
-    //alert(clickedFile.value[4]);
+
     writeToMeterpreterSession(command + " '" + clickedFile.value[4] + "'");
     emit("readVictimFileSystem");
     ToastService.showToast(clickedFile.value[4] + " was deleted successfully");
@@ -466,9 +275,7 @@ watch(
   () => bus.value.get("createNewDirectory"),
   async (val) => {
     const dirName = val[0].directory_name;
-
     const responseMessage = await createNewDirectory(dirName);
-    console.log(responseMessage);
     if (responseMessage.includes("Operation failed"))
       ToastService.showToast(
         "Cannot create a file when that file already exists. ",
@@ -500,19 +307,16 @@ async function createNewDirectory(directoryName) {
 
 async function renameFile(file) {
   const input = document.getElementById(file[4]);
-  //input.style.width = "10px";
   input.style.width = input.value.length + 2 + "ch";
   input.disabled = false;
   input.focus();
-  console.log(input);
-  //isFileNameInputDisabled.value = false;
 }
+
 async function handleBlurInput(oldfileName) {
   const input = document.getElementById(oldfileName);
   input.disabled = true;
   input.blur();
   const newFileName = input.value;
-  // alert(oldfileName);
   if (oldfileName != newFileName) {
     await writeToMeterpreterSession(
       meterpreterCommands.FileSystemCommands.MV + " " + oldfileName + " " + newFileName
@@ -521,8 +325,6 @@ async function handleBlurInput(oldfileName) {
 }
 
 async function changeCurrentDirectory() {
-  //const test = await victimLwd.value.replace(/\\/g, "/");
-  //alert(test);
   await writeToMeterpreterSession(
     meterpreterCommands.FileSystemCommands.CD + " " + victimLwd.value.replace(/\\/g, "/")
   );

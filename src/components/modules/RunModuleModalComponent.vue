@@ -328,14 +328,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, inject, computed, onMounted, onBeforeMount } from "vue";
+import { ref, reactive, watch, computed, onMounted } from "vue";
 import { Dialog, DialogOverlay, TransitionChild, TransitionRoot } from "@headlessui/vue";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
 import * as Yup from "yup";
 import ToastService from "../../services/ToastService";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import ConsoleDataService from "../../services/ConsoleDataService";
 import Multiselect from "@vueform/multiselect";
 import { useMsfModules } from "../../stores/useMsfModules";
 
@@ -343,12 +342,7 @@ const useMetasploitModules = useMsfModules();
 const selectedPayload = ref("");
 const showAdvancedOptions = ref(false);
 
-const options = ref(["Batman", "Robin", "Joker"]);
 let payloads = ref([]);
-
-function nameWithLang({ name, language }) {
-  return `${name} — [${language}]`;
-}
 
 let open = ref(false);
 let moduleData = reactive({});
@@ -357,13 +351,9 @@ let advancedModuleOptions = reactive([]);
 
 const schema = ref();
 
-let selectedOpt = ref("none");
-
 // Initial values
 let formValues = ref({});
 
-//let selected = ref(false);
-const $loading = inject("$loading");
 const { bus, emit } = useEventsBus();
 
 onMounted(async () => {});
@@ -384,7 +374,6 @@ function processModuleOptions() {
   advancedModuleOptions.splice(0);
   Object.keys(moduleData.options).forEach(function (key) {
     moduleData.options[key].name = key;
-    console.log(key, moduleData.options[key]);
     if (moduleData.options[key].advanced === false) {
       formValues.value[key] = moduleData.options[key].default;
 
@@ -395,8 +384,6 @@ function processModuleOptions() {
         if ((moduleData.options[key].required = "true"))
           newField.validations = ["string", "required"];
         else newField.validations = ["string"];
-
-        //newField.validations = ["string", "required"];
         newField.params = {
           required: moduleData.options[key].name + " is required",
         };
@@ -408,65 +395,7 @@ function processModuleOptions() {
       advancedModuleOptions.push(moduleData.options[key]);
     }
   });
-  console.log(basicModuleOptions);
-  console.log(advancedModuleOptions);
-  //console.log(formValues.value);
-  console.log(fields);
-  /*
-  const fields2 = [
-    {
-      name: "username",
-      type: "text",
-      label: "Username",
-      placeholder: "Username",
-      validations: ["string", "strict", "trim", "min", "max", "required"],
-      params: {
-        min: 3,
-        max: 20,
-        required: "Username is required",
-      },
-    },
-    {
-      name: "email",
-      type: "email",
-      label: "Email",
-      placeholder: "Email",
-      validations: ["string", "email", "trim", "required"],
-      params: {
-        required: "Email is required",
-      },
-    },
-    {
-      name: "isBig",
-      type: "checkbox",
-      label: "Is Big",
-      validations: ["boolean"],
-      params: {},
-    },
-    {
-      name: "count",
-      type: "number",
-      label: "Count",
-      validations: ["number", "when"],
-      params: {
-        when: [
-          "isBig",
-          {
-            is: true,
-            then: {
-              min: 5,
-            },
-            otherwise: {
-              min: 0,
-            },
-          },
-        ],
-      },
-    },
-  ];
-    */
   schema.value = createValidationSchema(fields);
-  console.log(schema.value);
 }
 
 async function extractPayloadsNamesToArray(payloads) {
@@ -476,33 +405,17 @@ async function extractPayloadsNamesToArray(payloads) {
 watch(
   () => bus.value.get("showRunModuleModal"),
   async (val) => {
-    // console.log(val[0].module_data);
     moduleData = val[0].module_data;
-    //moduleOptions = val[0].module_data.options;
-    // console.log(moduleOptions);
-
     processModuleOptions();
-    //console.log(moduleOptions);
     toggleModal();
     payloads.value = await useMetasploitModules.getMsfPayloads;
     payloads.value = await extractPayloadsNamesToArray(payloads.value);
-    console.log(payloads.value);
-    /*
-    // Initial values
-    formValues = {
-      name: empData.value.name,
-      surname: empData.value.surname,
-      position: empData.value.position,
-      salary: empData.value.salary,
-    };
-    */
   }
 );
 
 watch(
   () => bus.value.get("completeModuleRunningProcess"),
   (val) => {
-    //loader.hide();
     const moduleName = val[0].module_name;
     ToastService.showToast("Module " + moduleName + " was run successfully");
   }
@@ -516,94 +429,29 @@ watch(
 
 const onSubmit = (options) => {
   options.PAYLOAD = selectedPayload.value;
-  console.log(options);
-  console.log(moduleData);
-
-  console.log(options);
   if (moduleData.type == "exploit") {
     showPayloadConfigurationModal(moduleData, options);
   } else {
-    //$loading.show();
-
     runModule(moduleData, options);
     toggleModal();
-    /*
-  newUserData.is_owner = 0;
-  UserDataService.update(empData.value.id, newUserData)
-    .then(() => {
-      ToastService.showToast("User data was updated successfully");
-      toggleModal();
-      emit("refreshEmployeesTable");
-      loader.hide();
-    })
-    .catch((error) => {
-      const message =
-        (error.response && error.response.data && error.response.data.message) ||
-        error.message ||
-        error.toString();
-      console.log(message);
-
-    });
-    */
   }
 };
 
-/*
-const schema = Yup.object({
-  WORKSPACE: Yup.string().required("WORKSPACE is a required field"),
-
-});
-*/
 function showPayloadConfigurationModal(moduleData, moduleSetOptions) {
-  console.log(moduleData, moduleSetOptions);
   emit("showPayloadConfigurationModal", {
     module_data: moduleData,
     module_options: moduleSetOptions,
   });
-  // alert("showAnotherModal");
-}
-
-async function createConsole() {
-  return ConsoleDataService.create()
-    .then((res) => {
-      console.log(res.data);
-      return res.data.data;
-    })
-    .catch((err) => console.log(err));
-}
-
-function writeDataToConsole(data) {
-  ConsoleDataService.write(data).then((res) => {
-    console.log(res.data.data);
-    //const test = "dddd";
-    //this.send_to_terminal = `<p>` + res.data.data + `</p>`;
-  });
 }
 
 async function runModule(module, moduleOptions) {
-  //console.log(module, moduleOptions);
   emit("runModule", { module_details: module, module_options: moduleOptions });
-  //emit("runNmapScan");
 }
 
 function onInvalidSubmit({ values, errors, results }) {
   console.log(values); // current form values
   console.log(errors); // a map of field names and their first error message
   console.log(results); // a detailed map of field names and their validation results
-}
-
-function isLetter(e) {
-  let char = String.fromCharCode(e.keyCode); // Get the character
-  if (/^[A-Za-z ]+$/.test(char)) return true;
-  // Match with regex
-  else e.preventDefault(); // If not match, don't add to input text
-}
-
-function isDigit(e) {
-  let char = String.fromCharCode(e.keyCode); // Get the character
-  if (/^[0-9]+$/.test(char)) return true;
-  // Match with regex
-  else e.preventDefault(); // If not match, don't add to input text
 }
 
 const boolTypeBasicOptions = computed(() => {
@@ -642,20 +490,6 @@ const enumTypeAdvancedOptions = computed(() => {
   });
 });
 
-/*
-const basicOptions = computed(() => {
-  return basicModuleOptions.filter((o) => {
-    if (o.advanced === true) return o;
-  });
-});
-
-const advancedOptions = computed(() => {
-  return basicModuleOptions.filter((o) => {
-    if (o.advanced === true) return o;
-  });
-});
-*/
-
 function createValidationSchema(fields = []) {
   const ObjectSchema = fields.reduce((schema, field) => {
     if (field?.validations?.length) {
@@ -683,4 +517,5 @@ function createValidationSchema(fields = []) {
   return Yup.object().shape({ ...ObjectSchema });
 }
 </script>
+
 <style src="@vueform/multiselect/themes/default.css"></style>

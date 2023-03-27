@@ -113,7 +113,7 @@
 </template>
 
 <script setup>
-import { ref, watch, reactive } from "vue";
+import { ref, watch } from "vue";
 import { Dialog, DialogOverlay, TransitionChild, TransitionRoot } from "@headlessui/vue";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
@@ -141,8 +141,6 @@ watch(
 );
 
 const onSubmit = async (workspace) => {
-  console.log(workspace);
-  //emit("addNewHost", { host_workspace_name_address: host.workspace_name });
   emit("editWorkspaceName", {
     workspace_old_name: currentWorkspaceName.value,
     workspace_new_name: workspace.workspace_name,

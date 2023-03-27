@@ -186,12 +186,6 @@ const onSubmit = async (nmapScanningSettings) => {
 
 const schema = yup.object({
   ip_range: yup.string().required("This field is a required field"),
-  /*
-    .matches(
-      /(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])|((\b|\.)(0|1|2(?!5(?=6|7|8|9)|6|7|8|9))?\d{1,2}){4}(-((\b|\.)(0|1|2(?!5(?=6|7|8|9)|6|7|8|9))?\d{1,2}){4}|\/((0|1|2|3(?=1|2))\d|\d))\b/,
-      "Enter proper IP address or IP addresses range"
-    ),
-    */
 });
 
 function onInvalidSubmit({ values, errors, results }) {

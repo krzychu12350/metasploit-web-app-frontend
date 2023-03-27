@@ -134,8 +134,6 @@ watch(
 );
 
 const onSubmit = async (workspace) => {
-  console.log(workspace);
-  //emit("addNewHost", { host_workspace_name_address: host.workspace_name });
   emit("createNewWorkspace", { workspace_name: workspace.workspace_name });
   toggleModal();
 };

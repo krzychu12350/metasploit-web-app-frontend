@@ -1,17 +1,4 @@
 <template>
-  <!--
-  <NavbarComponent />
-  <BreadcrumbComponent />
-
-  <JobsTableComponent></JobsTableComponent>
-  <JobKillingModal></JobKillingModal>
-
-  <h1>Jobs view</h1>
-  <div v-for="job in jobs">
-    <p>{{ job }}</p>
-  </div>
-  -->
-
   <ViewBaseComponent>
     <template v-slot:subpage-header> <BreadcrumbComponent subpageName="Jobs" /></template>
     <template v-slot:subpage-content>
@@ -22,7 +9,6 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from "vue";
 import NavbarComponent from "../components/NavbarComponent.vue";
 import BreadcrumbComponent from "../components/BreadcrumbComponent.vue";
 import JobsTableComponent from "../components/jobs/JobsTableComponent.vue";

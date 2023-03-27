@@ -118,6 +118,7 @@ function deleteFile() {
   toggleModal();
   emit("deleteSpecficFile", { file: filePropsData });
 }
+
 watch(
   () => bus.value.get("showFileDeletingModal"),
   async (val) => {

@@ -195,7 +195,6 @@ const isHttpEnabled = ref(false);
 const router = useRouter();
 
 const $loading = inject("$loading");
-const fullPage = ref(true);
 const showPassword = ref(false);
 const { emit } = useEventsBus();
 const useMetasploitModules = useMsfModules();
@@ -241,25 +240,15 @@ const schema = yup.object({
 });
 
 const onSubmit = (credentials) => {
-  /*
-  const credentials = {
-    user_password: "pass123",
-    ssl: true,
-    user_name: "user",
-    ip: "127.0.0.1",
-    port: 55553,
-    web_server_uri: "/api/1.0",
-  };
-  */
   credentials.ssl = isHttpEnabled.value;
   console.log(credentials);
   connectWithMsf(credentials);
 };
 
 function onInvalidSubmit({ values, errors, results }) {
-  console.log(values); // current form values
-  console.log(errors); // a map of field names and their first error message
-  console.log(results); // a detailed map of field names and their validation results
+  console.log(values);
+  console.log(errors);
+  console.log(results);
 }
 
 async function createFirstConsole() {
@@ -273,9 +262,7 @@ async function createFirstConsole() {
     });
 }
 onUnmounted(async () => {
-  //alert("create console");
   let firstConsoleId = await createFirstConsole();
-  //alert(firstConsoleId);
   await useConsoles.storeConsoleData(
     parseInt(firstConsoleId),
     "",
@@ -283,7 +270,6 @@ onUnmounted(async () => {
   );
 });
 
-// too many attempts
 const isTooManyAttempts = computed(() => {
   return submitCount.value >= 1;
 });
@@ -310,30 +296,15 @@ async function loginToMsfRpc(credentials, loader) {
     .login(credentials)
     .then(async () => {
       await useMetasploitModules.fetchAllModules();
-      //emit("fetchCurrentWorkspace");
       router.push("/");
       loader.hide();
     })
     .catch((err) => {
-      //console.log(err.response.data.message);
-      /*
-      ToastService.showToast(
-        "Invalid credentials, check your MSF RPC Server Configuration",
-        "error"
-      );
-      */
       if (err) {
         loader.hide();
         ToastService.showToast(err.response.data.message, "error");
       }
     });
-}
-
-function isLetter(e) {
-  let char = String.fromCharCode(e.keyCode); // Get the character
-  if (/^[A-Za-z ]+$/.test(char)) return true;
-  // Match with regex
-  else e.preventDefault(); // If not match, don't add to input text
 }
 
 function isDigit(e) {
@@ -350,11 +321,3 @@ function isDigitOrDot(e) {
   else e.preventDefault(); // If not match, don't add to input text
 }
 </script>
-
-<style>
-.setup-container {
-  background-image: url("../assets/msf_wallpaper.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-</style>

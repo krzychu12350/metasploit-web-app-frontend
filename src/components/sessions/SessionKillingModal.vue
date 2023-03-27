@@ -124,7 +124,6 @@ async function killSpecificSession(sessionId) {
   const sessionData = { session_id: sessionId };
   SessionDataService.stop(sessionData)
     .then((res) => {
-      //console.log(res.data.result === "success");
       if (res.data.data.result === "success") {
         ToastService.showToast(
           "Session with ID " + sessionId + " was killed successfully"

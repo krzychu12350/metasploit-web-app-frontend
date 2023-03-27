@@ -3,19 +3,6 @@
     <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
       <dt class="text-sm font-medium text-gray-500">User interface</dt>
       <dd class="flex flex-col whitespace-pre">
-        <!-- {{ meterpreterData }}
-        enumdesktops List all accessible desktops and window stations <br />getdesktop Get
-        the current meterpreter desktop <br />idletime Returns the number of seconds the
-        remote user has been idle <br />
-        keyboard_send Send keystrokes <br />keyevent Send key events <br />keyscan_dump
-        Dump the keystroke buffer <br />keyscan_start Start capturing keystrokes
-        keyscan_stop <br />Stop capturing keystrokes mouse <br />Send mouse events
-        <br />screenshare Watch the remote user's desktop in real time <br />screenshot
-        Grab a screenshot of the interactive desktop <br />
-        setdesktop Change the meterpreters current desktop <br />
-        uictl Control some of the user interface components
-         -->
-
         <button-component
           name="START KEYLOGGING"
           v-tooltip.top="'Start capturing keystrokes'"
@@ -46,16 +33,12 @@
 
 <script setup>
 import { ref, reactive, onBeforeMount } from "vue";
-import SessionDataService from "../../../../services/SessionDataService";
 import { useRoute } from "vue-router";
 import meterpreterCommands from "../../../../constants/MeterpreterCommands";
 import ButtonComponent from "../../../ButtonComponent.vue";
 import useMeterpreterSession from "../../../../composables/meterpreterSession";
 import ToastService from "../../../../services/ToastService";
 import useEventsBus from "../../../../composables/eventBus";
-import SendingKeyboardEventModal from "./components/SendingKeyboardEventModal.vue";
-import SendingMouseEventModal from "./components/SendingMouseEventModal.vue";
-import MouseKeyboardControlModal from "./components/MouseKeyboardControlModal.vue";
 
 const { writeToMeterpreter, readFromMeterpreter } = useMeterpreterSession();
 const route = useRoute();
@@ -137,12 +120,10 @@ async function showUserIdleTime() {
 
 async function saveKeylogginDumpingToFile(content) {
   const link = document.createElement("a");
-  //const content = document.querySelector("textarea").value;
   const file = new Blob([content], { type: "text/plain" });
   link.href = URL.createObjectURL(file);
   link.download = "keyboard_dump.txt";
   link.click();
   URL.revokeObjectURL(link.href);
 }
-onBeforeMount(() => {});
 </script>

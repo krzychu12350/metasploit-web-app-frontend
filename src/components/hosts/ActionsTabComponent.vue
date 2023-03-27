@@ -38,15 +38,6 @@
       <MagnifyingGlassIcon class="-ml-1 mr-2 h-5 w-5 text-gray-400" aria-hidden="true" />
       MSF Scans...
     </button>
-    <!--
-    <button
-      type="button"
-      class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-    >
-      <TrashIcon class="-ml-1 mr-2 h-5 w-5 text-gray-400" aria-hidden="true" />
-      Clear hosts
-    </button>
-    -->
     <button
       type="button"
       class="flex -ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
@@ -112,36 +103,18 @@
         </MenuItems>
       </transition>
     </Menu>
-    <!--
-    <button
-      type="button"
-      class="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-    >
-      <BookmarkIcon class="-ml-1 mr-2 h-5 w-5 text-gray-400" aria-hidden="true" />
-      Clear hosts
-    </button>
-    -->
   </span>
 </template>
 <script setup>
 import {
-  BookmarkIcon,
   PlusCircleIcon,
-  MapIcon,
-  TrashIcon,
   ArrowDownTrayIcon,
   MagnifyingGlassIcon,
   MagnifyingGlassPlusIcon,
 } from "@heroicons/vue/24/solid";
-import { ref } from "vue";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { ArrowDownIcon } from "@heroicons/vue/24/solid";
 import useEventsBus from "../../composables/eventBus";
-const items = ref([
-  { name: "Quick scan", href: "#" },
-  { name: "Ping scan", href: "#" },
-  { name: "Custom scan", href: "#" },
-]);
 
 const { emit } = useEventsBus();
 </script>

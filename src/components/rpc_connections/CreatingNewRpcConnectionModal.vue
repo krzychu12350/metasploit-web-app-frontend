@@ -236,13 +236,7 @@
 
 <script setup>
 import { ref, watch, onMounted, onBeforeUnmount, reactive } from "vue";
-import {
-  Dialog,
-  DialogOverlay,
-  DialogTitle,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
+import { Dialog, DialogOverlay, TransitionChild, TransitionRoot } from "@headlessui/vue";
 import { ExclamationTriangleIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../composables/eventBus";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
@@ -265,24 +259,11 @@ function toggleModal() {
 const togglePasswordVisibity = () => {
   showPassword.value = !showPassword.value;
 };
-/*
-function deleteIdPropertyFromArrayConnection(array) {
-  let connections = [];
-  array.forEach(function (connection) {
-    //console.log(connection);
-    delete connection.id;
-    connections.push(connection);
-  });
-  return connections;
-}
-*/
 
 watch(
   () => bus.value.get("showCreatingNewRpcConnectionModal"),
   (data) => {
     connections = data[0].all_connections;
-    //connections = deleteIdPropertyFromArrayConnection(allContections);
-    //console.log(connections);
     toggleModal();
   }
 );
@@ -302,7 +283,6 @@ async function createNewRpcConnection(connectionSettings) {
 
 async function checkIfConnectionAlreadyExist(connectionSettings) {
   return connections.some((connection) => {
-    //console.log(connection);
     if (
       connection.user_name === connectionSettings.user_name &&
       connection.user_password === connectionSettings.user_password &&
@@ -330,8 +310,6 @@ const onSubmit = async (newConnectionSettings) => {
     );
     toggleModal();
   } else createNewRpcConnection(newConnectionSettings);
-
-  //createNewRpcConnection(newConnectionSettings);
 };
 
 const schema = yup.object({

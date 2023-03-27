@@ -1,17 +1,4 @@
 <template>
-  <!--
-  <NavbarComponent />
-  <BreadcrumbComponent />
-
-  <JobsTableComponent></JobsTableComponent>
-  <JobKillingModal></JobKillingModal>
-
-  <h1>Jobs view</h1>
-  <div v-for="job in jobs">
-    <p>{{ job }}</p>
-  </div>
-  -->
-
   <ViewBaseComponent>
     <template v-slot:subpage-header>
       <BreadcrumbComponent subpageName="Scripts"
@@ -22,11 +9,6 @@
       <ScriptDeletingModal></ScriptDeletingModal>
       <EditingScriptModal></EditingScriptModal>
       <ScriptDetailsModal></ScriptDetailsModal>
-      <!--
-          <WorkspacesTableComponent></WorkspacesTableComponent>
-      <WorkspaceDeletingModal></WorkspaceDeletingModal>
-      <WorkspaceAddingModalComponentVue></WorkspaceAddingModalComponentVue>
-      -->
     </template>
   </ViewBaseComponent>
 </template>
@@ -44,5 +26,3 @@ import CreatingNewScriptModal from "../components/scripts/CreatingNewScriptModal
 import EditingScriptModal from "../components/scripts/EditingScriptModal.vue";
 import ScriptDetailsModal from "../components/scripts/ScriptDetailsModal.vue";
 </script>
-
-<style scoped></style>

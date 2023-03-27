@@ -17,8 +17,6 @@
             class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
           />
         </TransitionChild>
-
-        <!-- This element is to trick the browser into centering the modal contents. -->
         <span
           class="hidden sm:inline-block sm:align-middle sm:h-screen"
           aria-hidden="true"
@@ -80,7 +78,7 @@
 </template>
 
 <script setup>
-import { ref, watch, reactive, onMounted } from "vue";
+import { ref, watch } from "vue";
 import {
   Dialog,
   DialogOverlay,
@@ -105,25 +103,17 @@ function toggleModal() {
 function getHostDetails(hostId) {
   DatabaseDataService.getHostDetails(hostId)
     .then((res) => {
-      //console.log(res.data.host_details);
       hostDetails.value = res.data.host_details;
-      console.log(hostDetails.value);
     })
     .catch((err) => {
       console.log(err);
     });
 }
 
-onMounted(() => {
-  console.log("Mounted");
-});
-
 watch(
   () => bus.value.get("showHostDetailsModal"),
   (val) => {
     toggleModal();
-    //alert("testt");
-    //console.log(val[0].host_id);
     getHostDetails(val[0].host.id);
   }
 );

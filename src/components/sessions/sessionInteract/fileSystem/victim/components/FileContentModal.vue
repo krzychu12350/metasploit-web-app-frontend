@@ -17,8 +17,6 @@
             class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
           />
         </TransitionChild>
-
-        <!-- This element is to trick the browser into centering the modal contents. -->
         <span
           class="hidden sm:inline-block sm:align-middle sm:h-screen"
           aria-hidden="true"
@@ -49,16 +47,7 @@
 
                 <div class="flex flex-col mt-2">
                   <span>{{ fileContent }}</span>
-
-                  <!--
-                  <p class="text-sm text-gray-500">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur
-                    amet labore.
-                  </p>
-                  
-                  {{ filePropsData }}
-           
-                --></div>
+                </div>
               </div>
             </div>
             <div class="mt-5 sm:mt-6">
@@ -78,7 +67,7 @@
 </template>
 
 <script setup>
-import { ref, watch, reactive, onMounted } from "vue";
+import { ref, watch, reactive } from "vue";
 import {
   Dialog,
   DialogOverlay,
@@ -99,18 +88,11 @@ function toggleModal() {
   open.value = !open.value;
 }
 
-onMounted(() => {
-  console.log("Mounted");
-});
-
 watch(
   () => bus.value.get("showFileContentModal"),
   (val) => {
     toggleModal();
-    //alert("testt");
-    //console.log(val[0].host_id);
     fileContent = val[0].file_content;
-    console.log(fileContent);
   }
 );
 </script>
