@@ -29,7 +29,7 @@
         ></button-component>
       </div>
 
-      <div ref="formContainer" class="whitespace-pre p-8 bg-gray-50 rounded-lg">
+      <div ref="formContainer" class="whitespace-pre-wrap p-8 bg-gray-50 rounded-lg">
         <p class="text-gray-800">
           {{ meterpreterData }}
         </p>
