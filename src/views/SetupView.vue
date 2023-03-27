@@ -283,8 +283,8 @@ async function setMsfConnection(credentials, loader) {
     .then((connectionSettings) => {
       useCurrentMetasploitRpcConnection.setCurrentRpcConnection(connectionSettings);
       useMsfConsoles.createCurrentConnectionConsolesDataArray;
-      loginToMsfRpc(credentials, loader);
       emit("fetchCurrentWorkspace");
+      loginToMsfRpc(credentials, loader);
     });
 }
 
