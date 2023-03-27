@@ -39,32 +39,6 @@
             <attacker-file-system-component
               :victimPwdPath="victimLwd"
             ></attacker-file-system-component>
-            <!--
-                
-            <div>
-              <div
-                class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100"
-              >
-                <CheckIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
-              </div>
-              <div class="mt-3 text-center sm:mt-5">
-                <DialogTitle as="h3" class="text-lg leading-6 font-medium text-gray-900">
-                  File content
-                </DialogTitle>
-
-                <div class="flex flex-col mt-2">
-                 
-                  <p class="text-sm text-gray-500">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur
-                    amet labore.
-                  </p>
-                  
-                  {{ filePropsData }}
-           
-               </div>
-              </div>
-            </div>
-            -->
           </div>
         </TransitionChild>
       </div>
@@ -82,7 +56,6 @@ import {
   TransitionRoot,
 } from "@headlessui/vue";
 
-import { CheckIcon } from "@heroicons/vue/24/outline";
 import useEventsBus from "../../../../../composables/eventBus";
 import AttackerFileSystemComponent from "./AttackerFileSystemComponent.vue";
 

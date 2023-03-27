@@ -55,17 +55,24 @@
 </template>
 
 <script setup>
-import { InformationCircleIcon, UserIcon, UsersIcon } from "@heroicons/vue/24/solid";
+import {
+  InformationCircleIcon,
+  FolderIcon,
+  GlobeAltIcon,
+  WindowIcon,
+  PowerIcon,
+  Cog6ToothIcon,
+} from "@heroicons/vue/24/solid";
 import useEventsBus from "../../composables/eventBus";
 import { reactive, onMounted } from "vue";
 
 const tabs = reactive([
   { name: "System Info", href: "#", icon: InformationCircleIcon, current: false },
-  { name: "Network", href: "#", icon: InformationCircleIcon, current: false },
-  { name: "File System", href: "#", icon: InformationCircleIcon, current: false },
-  { name: "User Interface", href: "#", icon: InformationCircleIcon, current: false },
-  { name: "Processes", href: "#", icon: InformationCircleIcon, current: false },
-  { name: "Power", href: "#", icon: InformationCircleIcon, current: false },
+  { name: "Network", href: "#", icon: GlobeAltIcon, current: false },
+  { name: "File System", href: "#", icon: FolderIcon, current: false },
+  { name: "User Interface", href: "#", icon: WindowIcon, current: false },
+  { name: "Processes", href: "#", icon: Cog6ToothIcon, current: false },
+  { name: "Power", href: "#", icon: PowerIcon, current: false },
 ]);
 
 onMounted(() => {

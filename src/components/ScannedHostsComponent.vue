@@ -21,7 +21,10 @@
         @click="emit('showHostDetailsModal', { host: changeClickedHost.value })"
         >More info</v-contextmenu-item
       >
-      <v-contextmenu-item>Services</v-contextmenu-item>
+      <v-contextmenu-item
+        @click="emit('showHostServicesModal', { host: changeClickedHost.value })"
+        >Services</v-contextmenu-item
+      >
       <!--
       <v-contextmenu-submenu title="Attack">
         <v-contextmenu-item>Menu Item 2.1</v-contextmenu-item>

@@ -31,57 +31,12 @@
           v-tooltip.top="'Dump the keystroke buffer'"
           @click="dumpKeylogging()"
         ></button-component>
-
-        <button-component
-          name="SEND MOUSE EVENT"
-          v-tooltip.top="'Send mouse event'"
-          @click="emit('showEmittingMouseEventModal')"
-        ></button-component>
-        <button-component
-          name="SEND KEYBOARD EVENT"
-          v-tooltip.top="'Send keystrokes'"
-          @click="emit('showEmittingKeyboardEventModal')"
-        ></button-component>
-
-        <button-component
-          name="CONTROL MOUSE AND KEYBOARD"
-          v-tooltip.top="'Control some of the user interface components'"
-          @click="emit('showMouseAndKeyboardControllingModal')"
-        ></button-component>
         <button-component
           name="USER IDLE TIME"
           v-tooltip.top="'Get the time during the remote user has been idle'"
           @click="showUserIdleTime()"
         ></button-component>
       </dd>
-      <!--
-      <div v-for="info in sysinfo" class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">{{ info[0] }}</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ info[1] }}</dd>
-      </div>
-
-        <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Email address</dt>
-          <dd class="mt-1 text-sm text-gray-900">ricardocooper@example.com</dd>
-        </div>
-        <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Salary expectation</dt>
-          <dd class="mt-1 text-sm text-gray-900">$120,000</dd>
-        </div>
-        <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Phone</dt>
-          <dd class="mt-1 text-sm text-gray-900">+1 555-555-5555</dd>
-        </div>
-        <div class="sm:col-span-2">
-          <dt class="text-sm font-medium text-gray-500">About</dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            Fugiat ipsum ipsum deserunt culpa aute sint do nostrud anim incididunt cillum
-            culpa consequat. Excepteur qui ipsum aliquip consequat sint. Sit id mollit nulla
-            mollit nostrud in ea officia proident. Irure nostrud pariatur mollit ad
-            adipisicing reprehenderit deserunt qui eu.
-          </dd>
-        </div>
-        -->
     </dl>
   </div>
   <mouse-keyboard-control-modal></mouse-keyboard-control-modal>

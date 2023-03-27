@@ -56,13 +56,26 @@
                 <div class="pt-8">
                   <div>
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
-                      Nmap quick scan
+                      <span v-if="scanType === 'quick'">Nmap quick scan</span>
+                      <span v-if="scanType === 'aggressive'">Nmap aggressive scan</span>
+                      <span v-if="scanType === 'os detection'"
+                        >Nmap os detection scan</span
+                      >
+                      <span v-if="scanType === 'custom'">Nmap custom scan</span>
                     </h3>
                     <p class="mt-1 text-sm text-gray-500">Fill in IP address range</p>
                   </div>
                   <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-1">
                     <div class="space-y-1">
                       <label
+                        for="nmap_command"
+                        class="block text-sm font-medium text-gray-800"
+                        v-if="scanType === 'custom'"
+                      >
+                        Nmap command
+                      </label>
+                      <label
+                        v-else
                         for="ip_range"
                         class="block text-sm font-medium text-gray-800"
                       >
@@ -70,6 +83,16 @@
                       </label>
                       <div class="mt-1">
                         <Field
+                          v-if="scanType === 'custom'"
+                          id="ip_range"
+                          name="ip_range"
+                          type="text"
+                          placeholder="eg. nmap -sP 192.168.2.1/24"
+                          autocomplete="ip_range"
+                          class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
+                        />
+                        <Field
+                          v-else
                           id="ip_range"
                           name="ip_range"
                           type="text"
@@ -124,6 +147,8 @@ import ToastService from "../../services/ToastService";
 let open = ref(false);
 const { bus, emit } = useEventsBus();
 let scanType = ref("");
+let fieldName = ref("");
+
 function toggleModal() {
   open.value = !open.value;
 }
@@ -150,13 +175,17 @@ const onSubmit = async (nmapScanningSettings) => {
     emit("runNmapScan", {
       nmap_command: "db_nmap -O " + nmapScanningSettings.ip_range,
     });
+  else if (scanType.value === "custom")
+    emit("runNmapScan", {
+      nmap_command: "db_" + nmapScanningSettings.ip_range,
+    });
   else ToastService.showToast("Something went wrong...", "error");
   //
   toggleModal();
 };
 
 const schema = yup.object({
-  ip_range: yup.string().required("IP Address is a required field"),
+  ip_range: yup.string().required("This field is a required field"),
   /*
     .matches(
       /(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])|((\b|\.)(0|1|2(?!5(?=6|7|8|9)|6|7|8|9))?\d{1,2}){4}(-((\b|\.)(0|1|2(?!5(?=6|7|8|9)|6|7|8|9))?\d{1,2}){4}|\/((0|1|2|3(?=1|2))\d|\d))\b/,
@@ -169,12 +198,5 @@ function onInvalidSubmit({ values, errors, results }) {
   console.log(values); // current form values
   console.log(errors); // a map of field names and their first error message
   console.log(results); // a detailed map of field names and their validation results
-}
-
-function isDigitOrDot(e) {
-  let char = String.fromCharCode(e.keyCode); // Get the character
-  if (/^[0-9\.:]+$/.test(char)) return true;
-  // Match with regex
-  else e.preventDefault(); // If not match, don't add to input text
 }
 </script>

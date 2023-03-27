@@ -27,10 +27,11 @@ export default function useMeterpreterSession(){
             })
             .catch((err) => {
               console.log(err);
-            });
+            });    
+         
     }
 
-    async function processTextDataToArray(data) {
+    function processTextDataToArray(data) {
         let subArray = [];
         const rows = data.data.data.split("\n");
         console.log(rows);

@@ -47,11 +47,18 @@
                   Host details
                 </DialogTitle>
                 <div class="mt-2">
-                  IP Address {{ hostDetails.address }}<br />
-                  OS {{ hostDetails.os_name }}
                   <p class="text-sm text-gray-500">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur
-                    amet labore. {{ hostDetails }}}
+                    IP Address: {{ hostDetails.address }}
+                  </p>
+                  <p class="text-sm text-gray-500">MAC Address: {{ hostDetails.mac }}</p>
+                  <p class="text-sm text-gray-500">
+                    Created at: {{ hostDetails.created_at }}
+                  </p>
+                  <p class="text-sm text-gray-500">OS: {{ hostDetails.os_name }}</p>
+                  <p class="text-sm text-gray-500">OS Arch: {{ hostDetails.arch }}</p>
+                  <p class="text-sm text-gray-500">Purpose: {{ hostDetails.purpose }}</p>
+                  <p class="text-sm text-gray-500">
+                    Service count: {{ hostDetails.service_count }}
                   </p>
                 </div>
               </div>
@@ -59,7 +66,7 @@
             <div class="mt-5 sm:mt-6">
               <button
                 type="button"
-                class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-800 text-base font-medium text-white hover:bg-gray-900 focus:outline-none sm:text-sm"
+                class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-900 focus:outline-none sm:text-sm"
                 @click="open = false"
               >
                 Ok

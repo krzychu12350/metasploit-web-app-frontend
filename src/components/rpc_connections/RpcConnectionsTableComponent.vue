@@ -219,7 +219,6 @@ import { useArrayPagination } from "vue-composable";
 import { useCurrentMsfRpcConnection } from "../../stores/useCurrentMsfRpcConnection";
 import CreatingNewRpcConnectionModal from "./CreatingNewRpcConnectionModal.vue";
 import UpdatingNewRpcConnectionModal from "./UpdatingNewRpcConnectionModal.vue";
-import useMsfRpcConnection from "../../composables/msfRpcConnection";
 import { useMsfAuth } from "../../stores/useMsfAuth";
 import { useMsfModules } from "../../stores/useMsfModules";
 import { useRouter } from "vue-router";

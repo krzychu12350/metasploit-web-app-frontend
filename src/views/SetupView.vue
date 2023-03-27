@@ -166,7 +166,7 @@
         </div>
       </div>
     </div>
-    <div class="hidden lg:block relative w-0 flex-1 bg-blend-darken">
+    <div class="hidden lg:block relative w-0 flex-1 brightness-75">
       <img
         class="absolute inset-0 h-full w-full object-cover"
         src="../assets/msf_wallpaper2.jpg"

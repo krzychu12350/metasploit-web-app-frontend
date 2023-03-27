@@ -80,8 +80,14 @@ async function requestSystemInfo() {
 }
 
 async function readSystemInfo() {
+  const loader = $loading.show();
+
   const systemInfoData = await readFromMeterpreter(currentSessionId.value);
-  sysinfo.value = await processTextDataToArray(systemInfoData);
+  setTimeout(async () => {
+    sysinfo.value = await processTextDataToArray(systemInfoData);
+  }, 100);
+
+  loader.hide();
   /*
   const rows = systemInfo.data.data.split("\n");
   console.log(rows);
@@ -94,8 +100,6 @@ async function readSystemInfo() {
 }
 
 onMounted(async () => {
-  // const loader = $loading.show();
-
   await requestSystemInfo();
   await readSystemInfo();
 
@@ -103,6 +107,5 @@ onMounted(async () => {
   //await readLocalDataTime();
 
   //victimLocalDatetime.value = localDateTimeResponse.data.data;
-  // loader.hide();
 });
 </script>

@@ -6,7 +6,7 @@ class DatabaseDataService {
         return http.get(METHOD_TYPE + `/workspaces/${workspaceId}/hosts`);
     }
     getHostServices(hostId) {
-        return http.get(METHOD_TYPE + `/services/${hostId}`);
+        return http.get(METHOD_TYPE + `/hosts/${hostId}/services`);
     }
     getHostDetails(hostId) {
         return http.get(METHOD_TYPE + `/hosts/${hostId}`);

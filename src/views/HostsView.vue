@@ -31,6 +31,7 @@
   <importing-data-modal-component>></importing-data-modal-component>
   <exporting-data-modal-component></exporting-data-modal-component>
   <nmap-scan-modal-component></nmap-scan-modal-component>
+  <host-servcies-modal-component></host-servcies-modal-component>
 </template>
 
 <script setup>
@@ -44,6 +45,7 @@ import MsfTcpPortScannerModalComponent from "../components/hosts/MsfTcpPortScann
 import ImportingDataModalComponent from "../components/hosts/ImportingDataModalComponent.vue";
 import ExportingDataModalComponent from "../components/hosts/ExportingDataModalComponent.vue";
 import NmapScanModalComponent from "../components/hosts/NmapScanModalComponent.vue";
+import HostServciesModalComponent from "../components/hosts/HostServciesModalComponent.vue";
 </script>
 
 <style scoped></style>

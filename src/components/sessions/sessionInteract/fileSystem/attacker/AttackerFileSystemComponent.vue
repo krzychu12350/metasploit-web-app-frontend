@@ -1,18 +1,6 @@
 <template>
   <div class="px-4 py-5 sm:px-6">
     <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-1">
-      {{ selectedFiles }}
-      <!--<dt class="text-sm font-medium text-gray-500">File system</dt>
-      <dd class="whitespace-pre">
-        {{ meterpreterData }}
-      </dd>
-      -->
-
-      <!--
-      <font-awesome-icon class="w-10 h-10 text-yellow-400" icon="fa-solid fa-folder" />
-      <font-awesome-icon class="w-10 h-10 text-gray-600" icon="fa-solid fa-file" />
-      {{ attackerLwd }}
-    -->
       <div class="flex">
         <div>
           <ArrowSmallUpIcon

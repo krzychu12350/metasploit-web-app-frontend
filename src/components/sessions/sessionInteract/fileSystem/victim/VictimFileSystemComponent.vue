@@ -306,7 +306,7 @@ let search = ref("");
 let isFileNameInputDisabled = ref(true);
 const { bus, emit } = useEventsBus();
 
-onMounted(async () => {
+onBeforeMount(async () => {
   emit("readVictimFileSystem");
   /*
    const responseAsArray = response.split("\n").splice(5);
@@ -336,11 +336,11 @@ async function readFileSystemData() {
   const fileSystemData = await writeToMeterpreterSession(
     meterpreterCommands.FileSystemCommands.LS
   );
-
-  console.log(fileSystemData);
   victimLwd.value = await writeToMeterpreterSession(
     meterpreterCommands.FileSystemCommands.GETWD
   );
+  console.log(fileSystemData);
+
   await processFileSystemData(fileSystemData);
 
   console.log(victimLwd.value);

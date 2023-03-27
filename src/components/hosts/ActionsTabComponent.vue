@@ -101,8 +101,11 @@
               </button>
             </MenuItem>
             <MenuItem class="hover:bg-gray-100 text-left">
-              <button class="text-gray-700 block px-4 py-2 text-sm w-full">
-                Custom scan
+              <button
+                class="text-gray-700 block px-4 py-2 text-sm w-full"
+                @click="emit('showNmapScanSettingsModal', { scan_type: 'custom' })"
+              >
+                Custom scan (Advanced)
               </button>
             </MenuItem>
           </div>

@@ -148,7 +148,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onBeforeMount, computed, onMounted, watch } from "vue";
+import { ref, inject, onBeforeMount, computed, onMounted, watch } from "vue";
 import { usePagination } from "vue-composable";
 import SessionDataService from "../../../../services/SessionDataService";
 import { useRoute } from "vue-router";
@@ -161,6 +161,7 @@ const route = useRoute();
 let processes = ref([]);
 const currentSessionId = ref(route.params.id);
 const { bus, emit } = useEventsBus();
+const $loading = inject("$loading");
 
 // paginate array
 const { currentPage, lastPage, next, prev, offset, pageSize } = usePagination({
@@ -197,6 +198,7 @@ async function requestAllProcess() {
 }
 
 async function getAllProcess() {
+  const loader = $loading.show();
   processes.value.splice(0);
   SessionDataService.meterpreterRead({
     session_id: currentSessionId.value,
@@ -223,15 +225,10 @@ async function getAllProcess() {
       console.log(processes.value);
       processes.value.shift();
       next();
-      /*
-      const processs = response.split("\n");
-      console.log(processs);
-
-
-
-      */
+      loader.hide();
     })
     .catch((err) => {
+      loader.hide();
       console.log(err);
     });
 }
