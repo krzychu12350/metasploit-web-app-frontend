@@ -3,7 +3,7 @@
 <img width="100px" src="./public/logo.svg">
 </p>
 <p align="center">
-	  <em>The graphical interface for control Metasploit framework</em>
+	  <em>The graphical interface for controling Metasploit framework</em>
 </p>
 
 ## Table of Contents
